@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css')}}">
+<title>Login Form Design</title>
+
+<body>
+    <div class="loginbox">
+
+        <h1>UT Task Master Login Portal</h1>
+        <form name="login"
+            method = "POST"
+            action = "/"
+            >
+
+            <p>Username</p>
+            <input type="text" name="username" placeholder="Enter Username">
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Enter Password">
+            <input type="submit" name="submit" value="Login">
+
+        </form>
+        <script>
+            function error(){
+
+                alert("Wrong username or password!");
+                }
+        </script>
+
+    </div>
+
+</body>
+</head>
+</html>
