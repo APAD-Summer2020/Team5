@@ -12,43 +12,28 @@
 </head>
 <body>
     <div class="jumbotron text-center" style="margin-bottom:0;">
-        <h1>Hi, welcome to the homepage!</h1>
+        <h1>Hi, welcome to the website!</h1>
         <p>Add brief website description or catch logo/catch phrase</p> 
       </div>
       
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <a class="navbar-brand" href="#">Home</a>
+        <a class="navbar-brand" href="#manage.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="manage.html">Manage</a>
+              <a class="nav-link" href="#create.html">Create</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="create_report.html">Create Report</a>
-            </li>
-            <!--ONLY ADMINS WILL SEE CREATE THEME-->
-            <li class="nav-item">
-              <a class="nav-link" href="create_theme.html">Create Theme</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="">View</a>
-            </li>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                View
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="all_themes.html">View All Themes</a>
-                <a class="dropdown-item" href="one_theme.html">View Themes</a>
-              </div>
-            </div>
-            <li class="nav-item">
-              <a class="nav-link" href="search.html">Search</a>
+              <a class="nav-link" href="#all_themes.html">Themes</a>
             </li>
           </ul>
+          <form class="form-inline my-2 my-lg-0" action="one_theme.html" method="POST">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
         </div>  
       </nav>
       
