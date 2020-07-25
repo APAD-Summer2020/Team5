@@ -1,4 +1,4 @@
-var config = config = {
+var config = {
   apiKey: "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
   authDomain: "apad-team5.firebaseapp.com",
   databaseURL: "https://apad-team5.firebaseio.com/",
