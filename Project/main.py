@@ -1,17 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session
 
 app = Flask(__name__)
+app.secret_key = "hello"
+
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        session["user"] = username
+
         if username == 'admin' and password == 'admin':
-            return redirect(url_for('manage'))
+            return redirect(url_for('create'))
+
+        elif username == 'test' and password =='test':
+            return redirect(url_for('create'))
+
         else:
             return render_template('login.html',error = "wrong username or password")
-    return  render_template('login.html', error = None)
+        return  render_template('login.html', error = None)
     return render_template('login.html')
 
 
@@ -23,8 +31,8 @@ def manage():
 
 @app.route('/create',methods = ['POST','GET'])
 def create():
-
-    return render_template('create.html', error = None)
+    user = session["user"]
+    return render_template('create.html',username=user)
 
 
 @app.route('/all_themes',methods = ['POST','GET'])
