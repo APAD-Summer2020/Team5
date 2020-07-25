@@ -26,10 +26,10 @@ def login():
         session["user"] = username
 
         if username == 'admin' and password == 'admin':
-            return redirect(url_for('create'))
+            return redirect(url_for('manage'))
 
         elif username == 'test' and password =='test':
-            return redirect(url_for('create'))
+            return redirect(url_for('manage'))
 
         else:
             return render_template('login.html',error = "wrong username or password")
