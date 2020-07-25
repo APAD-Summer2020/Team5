@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Post Reports</title>
+{% endblock %}
+
+{% block body %}
+<div>
+<h1>Create new Report</h1>
+<hr>
+<h2>Forms</h2>
+    <form>
+        <div>
+            <label for="theme">Theme</label><br>
+            <select>
+                {% for loop to display each theme%}
+                <option value="th1">{}</option>
+                {% end for loop%}
+            </select><br>
+            <label for="tname">report title</label><br>
+            <input type="text" id="rTitle" name="rTitle" value="insert a report title"><br>
+            <label for="Rdescri" id ="Rdescri" name="Rdescri">Report Description</label><br>
+            <textarea id="reportDescription" name="reportDescription" rows="4" cols="50"></textarea>
+        </div>
+        <div>
+            <label for="rTag">Report Tags</label><br>
+            <input type="text" id="rTag" name="rTag" value="insert report tags" ><br>
+            <label for="rImage">Report Image</label><br>
+            <button type="button"> Select new image</button><br>
+            <button type="button"> Submit</button>
+            <button type="button"> cancel</button>
+        </div>
+
+    </form>
+</div>
+<div>
+    <hr>
+    <h1>Create a new theme</h1>
+    <hr>
+    <h2>Forms</h2>
+
+    <form action="">
+        <div>
+            <label for="tname">Theme Name</label><br>
+            <input type="text" id="tname" name="tname" ><br>
+            <label for="tdescri" id ="tdescri" name="tdescri">Theme Description</label><br>
+            <textarea id="themeDescription" name="themeDescription" rows="4" cols="50"></textarea>
+        </div>
+        <div>
+            <label for="tname">Cover Image</label><br>
+            <button type="button"> Select new image</button><br>
+            <label for="or">or</label><br>
+            <select>
+                <option value="img1">img1</option>
+                <option value="img2">img2</option>
+                <option value="img3">img3</option>
+                <option value="img4">img4</option>
+                <option value="img5">img5</option>
+            </select>
+            <br>
+            <button type="button"> Submit</button>
+            <button type="button"> cancel</button>
+
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
