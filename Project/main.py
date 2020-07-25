@@ -1,5 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for,session
-from firebase import firebase
+import pyrebase
+
+config = {
+  "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
+  "authDomain": "apad-team5.firebaseapp.com",
+  "databaseURL": "https://apad-team5.firebaseio.com/",
+  "storageBucket": "apad-team5.appspot.com"
+}
+
+firebase = pyrebase.initialize_app(config)
+
 
 app = Flask(__name__)
 app.secret_key = "hello"
