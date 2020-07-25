@@ -10,6 +10,10 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 
+db = firebase.database()
+
+#db.child("names").push("name":"test")
+
 app = Flask(__name__)
 app.secret_key = "hello"
 
