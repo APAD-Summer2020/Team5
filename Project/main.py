@@ -15,12 +15,13 @@ config = {
 firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
+auth = firebase.auth()
 
 # Creating Keys
 # data = {"AdminAccount": {"username": "admin", "password": "admin"},
 #         "TestUserAccount": {"username": "test", "password": "test"}
 #         }
-
+#
 # db.child("UserAccounts").set(data)
 
 app = Flask(__name__)
@@ -56,16 +57,20 @@ for user in all_users.each():
 """
 
 
-@app.route('/signup', methods=['POST','GET'])
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    return render_template('signup.html', error = None)
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = auth.create_user_with_email_and_password(email, password)
+        return redirect(url_for('manage'))
+
+    return render_template('signup.html', error=None)
 
 
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
-
-    return render_template('manage.html', error = None)
-
+    return render_template('manage.html', error=None)
 
 
 @app.route('/create', methods=['POST', 'GET'])
