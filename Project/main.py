@@ -78,7 +78,8 @@ def create():
 def themes():
     return render_template('all_themes.html', error=None)
 
-
+# db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
+# https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
     return render_template('one_theme.html', error=None)
