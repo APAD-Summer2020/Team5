@@ -46,6 +46,11 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/signup', methods=['POST','GET'])
+def signup():
+    return render_template('signup.html', error = None)
+
+
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
 
