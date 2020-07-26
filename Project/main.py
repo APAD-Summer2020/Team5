@@ -63,6 +63,8 @@ def signup():
         email = request.form['email']
         password = request.form['password']
         user = auth.create_user_with_email_and_password(email, password)
+        data = {"email": email, "password": password}
+        db.child("users").push(data)
         return redirect(url_for('manage'))
 
     return render_template('signup.html', error=None)
