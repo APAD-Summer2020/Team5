@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
     <title>Create Account</title>
 </head>
 <body>
-
+  <div class="signupbox">
     <form action="login.html" action="post">
         <h3>Create a New Account</h3>
         <p>Username</p>
@@ -22,6 +23,6 @@
         <br>
         <input type="submit" name="register" value="Register">
     </form>
-
+  </div>
 </body>
 </html>
