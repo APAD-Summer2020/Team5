@@ -36,8 +36,7 @@ def login():
         #session["user"] = username
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            if user:
-                return redirect(url_for('manage'))
+            return redirect(url_for('manage'))
         except:
             message = "Invalid Login Credentials"
             return render_template('login.html', message=message)
