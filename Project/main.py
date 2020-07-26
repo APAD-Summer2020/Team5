@@ -1,6 +1,35 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pyrebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
+# Use the application default credentials
+cred = credentials.ApplicationDefault()
+firebase_admin.initialize_app(cred, {
+  'projectId': 'apad-team5'
+})
+
+db_firestore = firestore.client()
+
+# HARD CODED DATA
+doc_ref = db_firestore.collection(u'users').document(u'admin')
+doc_ref.set({
+    u'username': u'adminaccount',
+    u'email': u'admin@utexas.edu',
+    u'password': 'adminadmin',
+    u'type': 'admin'
+})
+doc_ref = db_firestore.collection(u'users').document(u'regular')
+doc_ref.set({
+    u'username': u'regularaccount',
+    u'email': u'regular@utexas.edu',
+    u'password': 'regreg',
+    u'type': 'regular'
+})
+
+
+#OLD CODE
 config = {
     "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
     "authDomain": "apad-team5.firebaseapp.com",
@@ -16,6 +45,9 @@ firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
 auth = firebase.auth()
+#END OLD CODE
+
+
 
 # Creating Keys
 # data = {"AdminAccount": {"username": "admin", "password": "admin"},
