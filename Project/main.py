@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pyrebase
 
+#Database configuration
 config = {
     "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
     "authDomain": "apad-team5.firebaseapp.com",
@@ -11,17 +12,10 @@ config = {
     "appId": "1:311004038430:web:e70bcb7c84b0e96075750f",
     "measurementId": "G-FSQ5JBDS95"
 }
-
+#initializing pyrebase
 firebase = pyrebase.initialize_app(config)
-
+#initializing database
 db = firebase.database()
-
-# Creating Keys
-# data = {"AdminAccount": {"username": "admin", "password": "admin"},
-#         "TestUserAccount": {"username": "test", "password": "test"}
-#         }
-
-# db.child("UserAccounts").set(data)
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -58,6 +52,12 @@ for user in all_users.each():
 
 @app.route('/signup', methods=['POST','GET'])
 def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        db.child("user").push(username)
+        db.child("user").push(password)
+        return render_template('/')
     return render_template('signup.html', error = None)
 
 
