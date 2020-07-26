@@ -53,17 +53,19 @@ for user in all_users.each():
     print(user.val()) # {name": "Mortimer 'Morty' Smith"}
 """
 
+
+
+
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
         try:
             user = auth.create_user_with_email_and_password(email, password)
-            data = {"email": email, "password": password, "usertype": usertype}
-            db.child("users").child(username).set(data)
+            data = {"email": email, "password": password}
+            db.child("users").child(usertype).set(data)
             return redirect(url_for('manage'))
         except:
             message = "Could Not Create New Account! "
