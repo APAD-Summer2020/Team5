@@ -33,7 +33,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        #session["user"] = username
+        session["user"] = username
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             return redirect(url_for('manage'))
@@ -60,6 +60,7 @@ def signup():
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
+        session["user"] = usertype
         try:
             user = auth.create_user_with_email_and_password(email, password)
             data = {"email": email, "password": password, "usertype": usertype}
