@@ -36,18 +36,18 @@ h1{
     font-size: 22px;
 }
 
-.loginbox, .signupbox p{
+.loginbox p, .signupbox p{
     margin: 0;
     padding: 0;
     font-weight: bold;
 }
 
-.loginbox, .signupbox input{
+.loginbox input, .signupbox input{
     width: 100%;
     margin-bottom: 20px;
 }
 
-.loginbox, .signupbox input[type="text"], input[type="password"]
+.loginbox input[type="text"], input[type="password"], .signupbox input[type="text"], input[type="password"]
 {
     border: none;
     border-bottom: 1px solid #fff;
@@ -57,7 +57,7 @@ h1{
     color: #fff;
     font-size: 16px;
 }
-.loginbox, .signupbox input[type="submit"]
+.loginbox input[type="submit"], .signupbox input[type="submit"]
 {
     border: none;
     outline: none;
@@ -68,25 +68,25 @@ h1{
     border-radius: 20px;
 }
 
-.loginbox, .signupbox select
+.loginbox select, .signupbox select
 {
     margin-left: auto;
     margin-right: auto;
 }
 
-.loginbox, .signupbox input[type="submit"]:hover
+.loginbox input[type="submit"]:hover, .signupbox input[type="submit"]:hover
 {
     cursor: pointer;
     background: #ffc107;
     color: #000;
 }
-.loginbox, .signupbox a{
+.loginbox a, .signupbox a{
     text-decoration: none;
     font-size: 12px;
     line-height: 20px;
     color: darkgrey;
 }
 
-.loginbox, .signupbox a:hover {
+.loginbox a:hover, .signupbox a:hover {
     color: #ffc107;
 }
