@@ -16,21 +16,19 @@ firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
 
-#Pushing Data
+# Pushing Data
 # data = {
 #     "username": "admin",
 #     "password": "admin"
 # }
 # db.push(data)
 
-#Creating Key
-#Admin Account
-# data = {"username": "admin", "password": "admin"}
-# db.child("AdminAccount").set(data)
+# Creating Keys
+# data = {"AdminAccount": {"username": "admin", "password": "admin"},
+#         "TestUserAccount": {"username": "test", "password": "test"}
+#         }
 
-#Test User Account
-# data = {"username": "test", "password": "test"}
-# db.child("TestUserAccount").set(data)
+# db.child("UserAccounts").set(data)
 
 app = Flask(__name__)
 app.secret_key = "hello"
