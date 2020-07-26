@@ -46,6 +46,16 @@ def login():
     return render_template('login.html')
 
 
+""" FOR SEARCHING BY TAG
+From https://dev.to/gogamic/introduction-to-pyrebase-database-2mif
+# reterving data using loops
+all_users = db.child("users").get()
+for user in all_users.each():
+    print(user.key()) # Morty
+    print(user.val()) # {name": "Mortimer 'Morty' Smith"}
+"""
+
+
 @app.route('/signup', methods=['POST','GET'])
 def signup():
     return render_template('signup.html', error = None)
