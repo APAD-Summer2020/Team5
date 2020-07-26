@@ -94,6 +94,19 @@ https://github.com/thisbejim/Pyrebase
 @app.route('/create', methods=['POST', 'GET'])
 def create():
     user = session["user"]
+    if request.method == 'POST':
+        themename = request.form['t-name']
+        themedes = request.form['theme-description']
+        data = {"theme-description": themedes}
+        db.child("themes").child(themename).set(data)
+        return redirect(url_for('create'))
+    #theme = request.form['theme']
+    #reportname = request.form['r-title']
+    #reportdes = request.form['report-description']
+    #reporttag = request.form['r-tag']
+    #data = {"report-description": reportdes, "report-tags":reporttag}
+    #db.child("themes").child(theme).child(reportname).set(data)
+
     return render_template('create.html', username=user)
 
 
