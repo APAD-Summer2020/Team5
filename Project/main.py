@@ -24,8 +24,13 @@ db = firebase.database()
 # db.push(data)
 
 #Creating Key
+#Admin Account
 # data = {"username": "admin", "password": "admin"}
 # db.child("AdminAccount").set(data)
+
+#Test User Account
+# data = {"username": "test", "password": "test"}
+# db.child("TestUserAccount").set(data)
 
 app = Flask(__name__)
 app.secret_key = "hello"
