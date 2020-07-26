@@ -63,8 +63,9 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        usertype = request.form['usertype']
         user = auth.create_user_with_email_and_password(email, password)
-        data = {"email": email, "password": password}
+        data = {"email": email, "password": password, "usertype": usertype}
         db.child("users").child(username).set(data)
         return redirect(url_for('manage'))
 
