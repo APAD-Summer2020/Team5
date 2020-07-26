@@ -54,14 +54,6 @@ for user in all_users.each():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
-<<<<<<< HEAD
-        username = request.form['username']
-        password = request.form['password']
-        db.child("user").push(username)
-        db.child("user").push(password)
-        return render_template('/')
-    return render_template('signup.html', error = None)
-=======
         email = request.form['email']
         password = request.form['password']
         user = auth.create_user_with_email_and_password(email, password)
@@ -70,7 +62,6 @@ def signup():
         return redirect(url_for('manage'))
 
     return render_template('signup.html', error=None)
->>>>>>> 6de75a42d9d928ce45eec7a9c7d6e04437cfea21
 
 
 @app.route('/manage', methods=['POST', 'GET'])
