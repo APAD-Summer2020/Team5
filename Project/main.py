@@ -53,7 +53,6 @@ for user in all_users.each():
     print(user.val()) # {name": "Mortimer 'Morty' Smith"}
 """
 
-
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -61,10 +60,14 @@ def signup():
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
-        user = auth.create_user_with_email_and_password(email, password)
-        data = {"email": email, "password": password, "usertype": usertype}
-        db.child("users").child(username).set(data)
-        return redirect(url_for('manage'))
+        try:
+            user = auth.create_user_with_email_and_password(email, password)
+            data = {"email": email, "password": password, "usertype": usertype}
+            db.child("users").child(username).set(data)
+            return redirect(url_for('manage'))
+        except:
+            message = "Could Not Create New Account! "
+            return render_template('signup.html', message=message)
 
     return render_template('signup.html', error=None)
 

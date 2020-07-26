@@ -10,6 +10,9 @@
 
   <div class="signupbox">
     <form method = "POST" action = "/signup">
+        {% if message %}
+        {{ message }}
+        {% endif %}
         <h3>Create a New Account</h3>
         <p>Username:</p>
         <input type="text" name="username" placeholder="Enter Username">
