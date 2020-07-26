@@ -67,7 +67,24 @@ def manage():
     return render_template('manage.html', error = None)
 
 
+"""
+To update data for an existing entry use the update() method.
+db.child("users").child("Morty").update({"name": "Mortiest Morty"})
 
+To create your own keys use the set() method. The key in the example below is "Morty".
+
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").child("Morty").set(data)
+
+push
+To save data with a unique, auto-generated, timestamp-based key, use the push() method.
+
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").push(data)
+
+Source:
+https://github.com/thisbejim/Pyrebase
+"""
 @app.route('/create', methods=['POST', 'GET'])
 def create():
     user = session["user"]
