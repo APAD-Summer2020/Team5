@@ -16,6 +16,7 @@ config = {
 firebase = pyrebase.initialize_app(config)
 #initializing database
 db = firebase.database()
+auth = firebase.auth()
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -50,24 +51,50 @@ for user in all_users.each():
 """
 
 
-@app.route('/signup', methods=['POST','GET'])
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
+<<<<<<< HEAD
         username = request.form['username']
         password = request.form['password']
         db.child("user").push(username)
         db.child("user").push(password)
         return render_template('/')
     return render_template('signup.html', error = None)
+=======
+        email = request.form['email']
+        password = request.form['password']
+        user = auth.create_user_with_email_and_password(email, password)
+        data = {"email": email, "password": password}
+        db.child("users").push(data)
+        return redirect(url_for('manage'))
+
+    return render_template('signup.html', error=None)
+>>>>>>> 6de75a42d9d928ce45eec7a9c7d6e04437cfea21
 
 
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
+    return render_template('manage.html', error=None)
 
-    return render_template('manage.html', error = None)
+"""
+To update data for an existing entry use the update() method.
+db.child("users").child("Morty").update({"name": "Mortiest Morty"})
 
+To create your own keys use the set() method. The key in the example below is "Morty".
 
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").child("Morty").set(data)
 
+push
+To save data with a unique, auto-generated, timestamp-based key, use the push() method.
+
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").push(data)
+
+Source:
+https://github.com/thisbejim/Pyrebase
+"""
 @app.route('/create', methods=['POST', 'GET'])
 def create():
     user = session["user"]
@@ -78,7 +105,8 @@ def create():
 def themes():
     return render_template('all_themes.html', error=None)
 
-
+# db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
+# https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
     return render_template('one_theme.html', error=None)

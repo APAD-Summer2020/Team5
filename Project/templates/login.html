@@ -11,7 +11,7 @@
             method = "POST"
             action = "/"
             >
-            <p><i>These login credentials are incorrect</i></p>
+            <p id="invalidcred"><i>These login credentials are incorrect</i></p>
             <p>Username</p>
             <input type="text" name="username" placeholder="Enter Username">
             <p>Password</p>
@@ -21,10 +21,13 @@
         </form>
 
         <a href="/signup">Sign Up</a>
-
+        <script>
+          document.getElementById("invalidcred").style.display = "none";
+        </script>
         <script>
             function error(){
                 alert("Wrong username or password!");
+                document.getElementById("invalidcred").style.display = "";
                 }
         </script>
 

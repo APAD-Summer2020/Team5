@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
     <title>Create Account</title>
 </head>
 <body>
 
-    <form action="signup.html" action="post">
+
+
+    <form method = "POST" action = "/signup">
+
+  <div class="signupbox">
+    <form action="login.html" action="post">
+
         <h3>Create a New Account</h3>
         <p>Username</p>
-        <input type="text" name="username" placeholder="Enter Username">
+        <input type="text" name="email" placeholder="Enter Username">
         <p>Password</p>
         <input type="password" name="password" placeholder="Enter Password">
         <p>What kind of user are you?</p>
@@ -22,6 +29,6 @@
         <br>
         <input type="submit" name="register" value="Register">
     </form>
-
+  </div>
 </body>
 </html>
