@@ -60,11 +60,12 @@ for user in all_users.each():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
+        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         user = auth.create_user_with_email_and_password(email, password)
         data = {"email": email, "password": password}
-        db.child("users").push(data)
+        db.child("users").child(username).set(data)
         return redirect(url_for('manage'))
 
     return render_template('signup.html', error=None)
