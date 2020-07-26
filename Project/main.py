@@ -39,7 +39,6 @@ def login():
 
 @app.route('/manage',methods = ['POST','GET'])
 def manage():
-
     return render_template('manage.html', error = None)
 
 
