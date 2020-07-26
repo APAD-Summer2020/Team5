@@ -16,13 +16,6 @@ firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
 
-# Pushing Data
-# data = {
-#     "username": "admin",
-#     "password": "admin"
-# }
-# db.push(data)
-
 # Creating Keys
 # data = {"AdminAccount": {"username": "admin", "password": "admin"},
 #         "TestUserAccount": {"username": "test", "password": "test"}
