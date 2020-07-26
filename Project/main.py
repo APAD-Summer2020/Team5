@@ -102,7 +102,8 @@ def create():
 
 @app.route('/all_themes', methods=['POST', 'GET'])
 def themes():
-    return render_template('all_themes.html', error=None)
+    all_themes = db.child("themes").get()
+    return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
