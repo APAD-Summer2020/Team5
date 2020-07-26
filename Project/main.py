@@ -34,11 +34,13 @@ def login():
         email = request.form['email']
         password = request.form['password']
         #session["user"] = username
-        user = auth.sign_in_with_email_and_password(email, password)
-        if user:
-            return redirect(url_for('manage'))
-        else:
-            return render_template('login.html', error="wrong username or password")
+        try:
+            user = auth.sign_in_with_email_and_password(email, password)
+            if user:
+                return redirect(url_for('manage'))
+        except:
+            message = "Invalid Login Credentials"
+            return render_template('login.html', message=message)
         return render_template('login.html', error=None)
     return render_template('login.html')
 
