@@ -25,18 +25,15 @@ app.secret_key = "hello"
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        session["user"] = username
-
-        if username == 'admin' and password == 'admin':
+        #session["user"] = username
+        try:
+            user = auth.sign_in_with_email_and_password(email, password)
             return redirect(url_for('manage'))
-
-        elif username == 'test' and password == 'test':
-            return redirect(url_for('manage'))
-
-        else:
-            return render_template('login.html', error="wrong username or password")
+        except:
+            message = "Invalid Login Credentials"
+            return render_template('login.html', message=message)
         return render_template('login.html', error=None)
     return render_template('login.html')
 
@@ -57,8 +54,9 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        usertype = request.form['usertype']
         user = auth.create_user_with_email_and_password(email, password)
-        data = {"email": email, "password": password}
+        data = {"email": email, "password": password, "usertype": usertype}
         db.child("users").child(username).set(data)
         return redirect(url_for('manage'))
 

@@ -5,15 +5,15 @@
 
 <body>
     <div class="loginbox">
-
+        {% if message %}
+            {{message}}
+        {% endif %}
+        <h4></h4>
         <h1>Login</h1>
-        <form name="login"
-            method = "POST"
-            action = "/"
-            >
+        <form method = "POST" action = "/">
             <p id="invalidcred"><i>These login credentials are incorrect</i></p>
             <p>Username</p>
-            <input type="text" name="username" placeholder="Enter Username">
+            <input type="text" name="email" placeholder="Enter Email">
             <p>Password</p>
             <input type="password" name="password" placeholder="Enter Password">
             <br><br>
