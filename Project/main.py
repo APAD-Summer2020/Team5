@@ -10,7 +10,7 @@ firebase_admin.initialize_app(cred)
 
 db_firestore = firestore.client()
 
-# HARD CODED DATA
+'''#DELETE LATER #HARD CODED DATA
 doc_ref = db_firestore.collection(u'users').document(u'admin')
 doc_ref.set({
     u'username': u'adminaccount',
@@ -24,10 +24,10 @@ doc_ref.set({
     u'email': u'regular@utexas.edu',
     u'password': 'regreg',
     u'type': 'regular'
-})
+})'''
 
 
-#OLD CODE
+'''#DELETE #OLD CODE
 config = {
     "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
     "authDomain": "apad-team5.firebaseapp.com",
@@ -43,7 +43,7 @@ firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
 auth = firebase.auth()
-#END OLD CODE
+#END OLD CODE'''
 
 
 
@@ -58,27 +58,25 @@ app = Flask(__name__)
 app.secret_key = "hello"
 
 
-# #Test Code
-# user = db.child("users").child("commercial").get()
-# for user in user.each():
-#     print(user.val())
-
-
-
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
-        #session["user"] = username
-        try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            return redirect(url_for('manage'))
-        except:
-            message = "Invalid Login Credentials"
-            return render_template('login.html', message=message)
-        return render_template('login.html', error=None)
+
+        
+        doc_ref = db_firestore.collection(u'users').document(username)
+        doc = doc_ref.get()
+
+        if doc.exists:
+            return render_template('manage.html')
+        else:
+            return render_template('login.html')
+
+        return render_template('manage.html')
+
     return render_template('login.html')
+    
 
 
 """ FOR SEARCHING BY TAG
