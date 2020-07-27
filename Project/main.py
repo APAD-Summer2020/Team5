@@ -115,22 +115,9 @@ def signup():
             u'password': password,
             u'type': usertype
         })
+        return render_template('login.html', error=None)
 
-
-
-        ''' #OLD CODE USING FIREBASE
-        try:
-            user = auth.create_user_with_email_and_password(email, password)
-            data = {"email": email, "password": password}
-            db.child("users").child(usertype).child(username).set(data)
-
-            return redirect(url_for('manage'))
-        except:
-            message = "Could Not Create New Account! "
-            return render_template('signup.html', message=message)
-        '''
-
-    return render_template('login.html', error=None)
+    return render_template('signup.html', error=None)
 
 
 @app.route('/manage', methods=['POST', 'GET'])
