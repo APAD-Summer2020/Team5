@@ -40,6 +40,7 @@ def login():
                 db_username = doc.get('username')
                 db_email = doc.get('email')
                 db_usertype = doc.get('type')
+                session['usertype'] = doc.get('type')
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
         
     return render_template('login.html')
@@ -103,12 +104,16 @@ https://github.com/thisbejim/Pyrebase
 @app.route('/create', methods=['POST', 'GET'])
 def create():
 
-    user = session["user"]
+    user = session["usertype"]
     if request.method == 'POST':
         themename = request.form['t-name']
         themedes = request.form['theme-description']
-        data = {"theme-description": themedes}
-        db.child("themes").child(themename).set(data)
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'themes').document(themename)
+        doc_ref.set({
+            u'theme-description': themedes
+
+        })
         return redirect(url_for('create'))
     #theme = request.form['theme']
     #reportname = request.form['r-title']
