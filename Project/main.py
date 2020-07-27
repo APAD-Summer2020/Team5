@@ -5,10 +5,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 # Use the application default credentials
-cred = credentials.ApplicationDefault()
-firebase_admin.initialize_app(cred, {
-  'projectId': 'apad-team5'
-})
+cred = credentials.Certificate("gc_privatekey.json")
+firebase_admin.initialize_app(cred)
 
 db_firestore = firestore.client()
 
@@ -97,21 +95,42 @@ for user in all_users.each():
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
+    '''
+    TODO: 
+    Add validation to check if user already exists in the database.
+    Alert to let them know their account was successfully created.
+    '''
+
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
+
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'users').document(username)
+        doc_ref.set({
+            u'username': username,
+            u'email': email,
+            u'password': password,
+            u'type': usertype
+        })
+
+
+
+        ''' #OLD CODE USING FIREBASE
         try:
             user = auth.create_user_with_email_and_password(email, password)
             data = {"email": email, "password": password}
             db.child("users").child(usertype).child(username).set(data)
+
             return redirect(url_for('manage'))
         except:
             message = "Could Not Create New Account! "
             return render_template('signup.html', message=message)
+        '''
 
-    return render_template('signup.html', error=None)
+    return render_template('login.html', error=None)
 
 
 @app.route('/manage', methods=['POST', 'GET'])
