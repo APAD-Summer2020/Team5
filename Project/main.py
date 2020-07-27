@@ -6,6 +6,8 @@ from firebase_admin import credentials, firestore, initialize_app
 '''
 Firestore documentation:
 https://firebase.google.com/docs/firestore
+API:
+https://googleapis.dev/python/firestore/latest/index.html
 '''
 
 # Use the application default credentials
@@ -81,7 +83,27 @@ def signup():
 
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
+
     return render_template('manage.html', error=None)
+
+"""
+To update data for an existing entry use the update() method.
+db.child("users").child("Morty").update({"name": "Mortiest Morty"})
+
+To create your own keys use the set() method. The key in the example below is "Morty".
+
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").child("Morty").set(data)
+
+push
+To save data with a unique, auto-generated, timestamp-based key, use the push() method.
+
+data = {"name": "Mortimer 'Morty' Smith"}
+db.child("users").push(data)
+
+Source:
+https://github.com/thisbejim/Pyrebase
+"""
 
 
 
@@ -95,6 +117,12 @@ def create():
         data = {"theme-description": themedes}
         db.child("themes").child(themename).set(data)
         return redirect(url_for('create'))
+    #theme = request.form['theme']
+    #reportname = request.form['r-title']
+    #reportdes = request.form['report-description']
+    #reporttag = request.form['r-tag']
+    #data = {"report-description": reportdes, "report-tags":reporttag}
+    #db.child("themes").child(theme).child(reportname).set(data)
 
     return render_template('create.html', username=user)
 
@@ -102,8 +130,11 @@ def create():
 
 @app.route('/all_themes', methods=['POST', 'GET'])
 def themes():
-    #all_themes = db.child("themes").get()
-    return render_template('all_themes.html', error=None)
+    all_themes = db.child("themes").get()
+    return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
+
+# db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
+# https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
 
 
 
