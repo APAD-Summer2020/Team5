@@ -1,0 +1,165 @@
+       """
+       dyld emulation
+    1: """
+       
+    1: import os
+    1: from ctypes.macholib.framework import framework_info
+    1: from ctypes.macholib.dylib import dylib_info
+    1: from itertools import *
+       
+       __all__ = [
+    1:     'dyld_find', 'framework_find',
+    1:     'framework_info', 'dylib_info',
+       ]
+       
+       # These are the defaults as per man dyld(1)
+       #
+       DEFAULT_FRAMEWORK_FALLBACK = [
+    1:     os.path.expanduser("~/Library/Frameworks"),
+    1:     "/Library/Frameworks",
+    1:     "/Network/Library/Frameworks",
+    1:     "/System/Library/Frameworks",
+       ]
+       
+       DEFAULT_LIBRARY_FALLBACK = [
+    1:     os.path.expanduser("~/lib"),
+    1:     "/usr/local/lib",
+    1:     "/lib",
+    1:     "/usr/lib",
+       ]
+       
+    1: def dyld_env(env, var):
+    1:     if env is None:
+    1:         env = os.environ
+    1:     rval = env.get(var)
+    1:     if rval is None:
+    1:         return []
+           return rval.split(':')
+       
+    1: def dyld_image_suffix(env=None):
+    1:     if env is None:
+    1:         env = os.environ
+    1:     return env.get('DYLD_IMAGE_SUFFIX')
+       
+    1: def dyld_framework_path(env=None):
+           return dyld_env(env, 'DYLD_FRAMEWORK_PATH')
+       
+    1: def dyld_library_path(env=None):
+    1:     return dyld_env(env, 'DYLD_LIBRARY_PATH')
+       
+    1: def dyld_fallback_framework_path(env=None):
+           return dyld_env(env, 'DYLD_FALLBACK_FRAMEWORK_PATH')
+       
+    1: def dyld_fallback_library_path(env=None):
+           return dyld_env(env, 'DYLD_FALLBACK_LIBRARY_PATH')
+       
+    1: def dyld_image_suffix_search(iterator, env=None):
+           """For a potential path iterator, add DYLD_IMAGE_SUFFIX semantics"""
+    1:     suffix = dyld_image_suffix(env)
+    1:     if suffix is None:
+    1:         return iterator
+           def _inject(iterator=iterator, suffix=suffix):
+               for path in iterator:
+                   if path.endswith('.dylib'):
+                       yield path[:-len('.dylib')] + suffix + '.dylib'
+                   else:
+                       yield path + suffix
+                   yield path
+           return _inject()
+       
+    1: def dyld_override_search(name, env=None):
+           # If DYLD_FRAMEWORK_PATH is set and this dylib_name is a
+           # framework name, use the first file that exists in the framework
+           # path if any.  If there is none go on to search the DYLD_LIBRARY_PATH
+           # if any.
+       
+    1:     framework = framework_info(name)
+       
+    1:     if framework is not None:
+               for path in dyld_framework_path(env):
+                   yield os.path.join(path, framework['name'])
+       
+           # If DYLD_LIBRARY_PATH is set then use the first file that exists
+           # in the path.  If none use the original name.
+    1:     for path in dyld_library_path(env):
+               yield os.path.join(path, os.path.basename(name))
+       
+    1: def dyld_executable_path_search(name, executable_path=None):
+           # If we haven't done any searching and found a library and the
+           # dylib_name starts with "@executable_path/" then construct the
+           # library name.
+    1:     if not executable_path:
+    1:         import sys
+    1:         if sys.prefix:
+    1:             executable_path = os.path.join(sys.prefix, 'bin')
+    1:     if name.startswith('@executable_path/') and executable_path is not None:
+    1:         yield os.path.join(executable_path, name[len('@executable_path/'):])
+       
+    1: def dyld_default_search(name, env=None):
+           yield name
+       
+           framework = framework_info(name)
+       
+           if framework is not None:
+               fallback_framework_path = dyld_fallback_framework_path(env)
+               for path in fallback_framework_path:
+                   yield os.path.join(path, framework['name'])
+       
+           fallback_library_path = dyld_fallback_library_path(env)
+           for path in fallback_library_path:
+               yield os.path.join(path, os.path.basename(name))
+       
+           if framework is not None and not fallback_framework_path:
+               for path in DEFAULT_FRAMEWORK_FALLBACK:
+                   yield os.path.join(path, framework['name'])
+       
+           if not fallback_library_path:
+               for path in DEFAULT_LIBRARY_FALLBACK:
+                   yield os.path.join(path, os.path.basename(name))
+       
+    1: def dyld_find(name, executable_path=None, env=None):
+           """
+           Find a library or framework using dyld semantics
+           """
+    1:     for path in dyld_image_suffix_search(chain(
+    1:                 dyld_override_search(name, env),
+    1:                 dyld_executable_path_search(name, executable_path),
+    1:                 dyld_default_search(name, env),
+    1:             ), env):
+    1:         if os.path.isfile(path):
+    1:             return path
+           raise ValueError("dylib %s could not be found" % (name,))
+       
+    1: def framework_find(fn, executable_path=None, env=None):
+           """
+           Find a framework using dyld semantics in a very loose manner.
+       
+           Will take input such as:
+               Python
+               Python.framework
+               Python.framework/Versions/Current
+           """
+           error = None
+           try:
+               return dyld_find(fn, executable_path=executable_path, env=env)
+           except ValueError as e:
+               error = e
+           fmwk_index = fn.rfind('.framework')
+           if fmwk_index == -1:
+               fmwk_index = len(fn)
+               fn += '.framework'
+           fn = os.path.join(fn, os.path.basename(fn[:fmwk_index]))
+           try:
+               return dyld_find(fn, executable_path=executable_path, env=env)
+           except ValueError:
+               raise error
+           finally:
+               error = None
+       
+    1: def test_dyld_find():
+           env = {}
+           assert dyld_find('libSystem.dylib') == '/usr/lib/libSystem.dylib'
+           assert dyld_find('System.framework/System') == '/System/Library/Frameworks/System.framework/System'
+       
+    1: if __name__ == '__main__':
+           test_dyld_find()

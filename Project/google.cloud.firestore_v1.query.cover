@@ -1,0 +1,203 @@
+       # Copyright 2017 Google LLC All rights reserved.
+       #
+       # Licensed under the Apache License, Version 2.0 (the "License");
+       # you may not use this file except in compliance with the License.
+       # You may obtain a copy of the License at
+       #
+       #     http://www.apache.org/licenses/LICENSE-2.0
+       #
+       # Unless required by applicable law or agreed to in writing, software
+       # distributed under the License is distributed on an "AS IS" BASIS,
+       # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       # See the License for the specific language governing permissions and
+       # limitations under the License.
+       
+       """Classes for representing queries for the Google Cloud Firestore API.
+       
+       A :class:`~google.cloud.firestore_v1.query.Query` can be created directly from
+       a :class:`~google.cloud.firestore_v1.collection.Collection` and that can be
+       a more common way to create a query than direct usage of the constructor.
+    1: """
+    1: import copy
+    1: import math
+       
+    1: from google.protobuf import wrappers_pb2
+    1: import six
+       
+    1: from google.cloud.firestore_v1 import _helpers
+    1: from google.cloud.firestore_v1 import document
+    1: from google.cloud.firestore_v1 import field_path as field_path_module
+    1: from google.cloud.firestore_v1 import transforms
+    1: from google.cloud.firestore_v1.gapic import enums
+    1: from google.cloud.firestore_v1.proto import query_pb2
+    1: from google.cloud.firestore_v1.order import Order
+    1: from google.cloud.firestore_v1.watch import Watch
+       
+    1: _EQ_OP = "=="
+    1: _operator_enum = enums.StructuredQuery.FieldFilter.Operator
+       _COMPARISON_OPERATORS = {
+    1:     "<": _operator_enum.LESS_THAN,
+    1:     "<=": _operator_enum.LESS_THAN_OR_EQUAL,
+    1:     _EQ_OP: _operator_enum.EQUAL,
+    1:     ">=": _operator_enum.GREATER_THAN_OR_EQUAL,
+    1:     ">": _operator_enum.GREATER_THAN,
+    1:     "array_contains": _operator_enum.ARRAY_CONTAINS,
+    1:     "in": _operator_enum.IN,
+    1:     "array_contains_any": _operator_enum.ARRAY_CONTAINS_ANY,
+       }
+    1: _BAD_OP_STRING = "Operator string {!r} is invalid. Valid choices are: {}."
+    1: _BAD_OP_NAN_NULL = 'Only an equality filter ("==") can be used with None or NaN values'
+    1: _INVALID_WHERE_TRANSFORM = "Transforms cannot be used as where values."
+    1: _BAD_DIR_STRING = "Invalid direction {!r}. Must be one of {!r} or {!r}."
+    1: _INVALID_CURSOR_TRANSFORM = "Transforms cannot be used as cursor values."
+       _MISSING_ORDER_BY = (
+    1:     'The "order by" field path {!r} is not present in the cursor data {!r}. '
+           "All fields sent to ``order_by()`` must be present in the fields "
+           "if passed to one of ``start_at()`` / ``start_after()`` / "
+           "``end_before()`` / ``end_at()`` to define a cursor."
+       )
+       _NO_ORDERS_FOR_CURSOR = (
+    1:     "Attempting to create a cursor with no fields to order on. "
+           "When defining a cursor with one of ``start_at()`` / ``start_after()`` / "
+           "``end_before()`` / ``end_at()``, all fields in the cursor must "
+           "come from fields set in ``order_by()``."
+       )
+    1: _MISMATCH_CURSOR_W_ORDER_BY = "The cursor {!r} does not match the order fields {!r}."
+       
+       
+    2: class Query(object):
+           """Represents a query to the Firestore API.
+       
+           Instances of this class are considered immutable: all methods that
+           would modify an instance instead return a new instance.
+       
+           Args:
+               parent (:class:`~google.cloud.firestore_v1.collection.CollectionReference`):
+                   The collection that this query applies to.
+               projection (Optional[:class:`google.cloud.proto.firestore.v1.\
+                   query_pb2.StructuredQuery.Projection`]):
+                   A projection of document fields to limit the query results to.
+               field_filters (Optional[Tuple[:class:`google.cloud.proto.firestore.v1.\
+                   query_pb2.StructuredQuery.FieldFilter`, ...]]):
+                   The filters to be applied in the query.
+               orders (Optional[Tuple[:class:`google.cloud.proto.firestore.v1.\
+                   query_pb2.StructuredQuery.Order`, ...]]):
+                   The "order by" entries to use in the query.
+               limit (Optional[int]):
+                   The maximum number of documents the query is allowed to return.
+               limit_to_last (Optional[bool]):
+                   Denotes whether a provided limit is applied to the end of the result set.
+               offset (Optional[int]):
+                   The number of results to skip.
+               start_at (Optional[Tuple[dict, bool]]):
+                   Two-tuple of :
+       
+                   * a mapping of fields. Any field that is present in this mapping
+                     must also be present in ``orders``
+                   * an ``after`` flag
+       
+                   The fields and the flag combine to form a cursor used as
+                   a starting point in a query result set. If the ``after``
+                   flag is :data:`True`, the results will start just after any
+                   documents which have fields matching the cursor, otherwise
+                   any matching documents will be included in the result set.
+                   When the query is formed, the document values
+                   will be used in the order given by ``orders``.
+               end_at (Optional[Tuple[dict, bool]]):
+                   Two-tuple of:
+       
+                   * a mapping of fields. Any field that is present in this mapping
+                     must also be present in ``orders``
+                   * a ``before`` flag
+       
+                   The fields and the flag combine to form a cursor used as
+                   an ending point in a query result set. If the ``before``
+                   flag is :data:`True`, the results will end just before any
+                   documents which have fields matching the cursor, otherwise
+                   any matching documents will be included in the result set.
+                   When the query is formed, the document values
+                   will be used in the order given by ``orders``.
+               all_descendants (Optional[bool]):
+                   When false, selects only collections that are immediate children
+                   of the `parent` specified in the containing `RunQueryRequest`.
+                   When true, selects all descendant collections.
+    1:     """
+       
+    1:     ASCENDING = "ASCENDING"
+           """str: Sort query results in ascending order on a field."""
+    1:     DESCENDING = "DESCENDING"
+           """str: Sort query results in descending order on a field."""
+       
+           def __init__(
+               self,
+               parent,
+               projection=None,
+               field_filters=(),
+               orders=(),
+               limit=None,
+               limit_to_last=False,
+               offset=None,
+               start_at=None,
+               end_at=None,
+    1:         all_descendants=False,
+           ):
+               self._parent = parent
+               self._projection = projection
+               self._field_filters = field_filters
+               self._orders = orders
+               self._limit = limit
+               self._limit_to_last = limit_to_last
+               self._offset = offset
+               self._start_at = start_at
+               self._end_at = end_at
+               self._all_descendants = all_descendants
+       
+    1:     def __eq__(self, other):
+               if not isinstance(other, self.__class__):
+                   return NotImplemented
+               return (
+                   self._parent == other._parent
+                   and self._projection == other._projection
+                   and self._field_filters == other._field_filters
+                   and self._orders == other._orders
+                   and self._limit == other._limit
+                   and self._limit_to_last == other._limit_to_last
+                   and self._offset == other._offset
+                   and self._start_at == other._start_at
+                   and self._end_at == other._end_at
+                   and self._all_descendants == other._all_descendants
+               )
+       
+    1:     @property
+           def _client(self):
+               """The client of the parent collection.
+       
+               Returns:
+                   :class:`~google.cloud.firestore_v1.client.Client`:
+                   The client that owns this query.
+               """
+               return self._parent._client
+       
+    1:     def select(self, field_paths):
+               """Project documents matching query to a limited set of fields.
+       
+               See :meth:`~google.cloud.firestore_v1.client.Client.field_path` for
+               more information on **field paths**.
+       
+               If the current query already has a projection set (i.e. has already
+               called :meth:`~google.cloud.firestore_v1.query.Query.select`), this
+               will overwrite it.
+       
+               Args:
+                   field_paths (Iterable[str, ...]): An iterable of field paths
+                       (``.``-delimited list of field names) to use as a projection
+                       of document fields in the query results.
+       
+               Returns:
+                   :class:`~google.cloud.firestore_v1.query.Query`:
+                   A "projected" query. Acts as a copy of the current query,
+                   modified with the newly added projection.
+               Raises:
+                   ValueError: If any ``field_path`` is invalid.
+               """
+       

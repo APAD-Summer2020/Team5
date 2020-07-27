@@ -1,0 +1,15 @@
+       # -*- coding: utf-8 -*-
+       """
+       requests-toolbelt.adapters
+       ==========================
+       
+       See http://toolbelt.rtfd.org/ for documentation
+       
+       :copyright: (c) 2014 by Ian Cordasco and Cory Benfield
+       :license: Apache v2.0, see LICENSE for more details
+    1: """
+       
+    1: from .ssl import SSLAdapter
+    1: from .source import SourceAddressAdapter
+       
+    1: __all__ = ['SSLAdapter', 'SourceAddressAdapter']

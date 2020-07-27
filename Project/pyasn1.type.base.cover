@@ -1,0 +1,707 @@
+       #
+       # This file is part of pyasn1 software.
+       #
+       # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
+       # License: http://snmplabs.com/pyasn1/license.html
+       #
+    1: import sys
+       
+    1: from pyasn1 import error
+    1: from pyasn1.compat import calling
+    1: from pyasn1.type import constraint
+    1: from pyasn1.type import tag
+    1: from pyasn1.type import tagmap
+       
+    1: __all__ = ['Asn1Item', 'Asn1Type', 'SimpleAsn1Type',
+    1:            'ConstructedAsn1Type']
+       
+       
+    2: class Asn1Item(object):
+    1:     @classmethod
+    1:     def getTypeId(cls, increment=1):
+   30:         try:
+   30:             Asn1Item._typeCounter += increment
+    1:         except AttributeError:
+    1:             Asn1Item._typeCounter = increment
+   30:         return Asn1Item._typeCounter
+       
+       
+    2: class Asn1Type(Asn1Item):
+           """Base class for all classes representing ASN.1 types.
+       
+           In the user code, |ASN.1| class is normally used only for telling
+           ASN.1 objects from others.
+       
+           Note
+           ----
+           For as long as ASN.1 is concerned, a way to compare ASN.1 types
+           is to use :meth:`isSameTypeWith` and :meth:`isSuperTypeOf` methods.
+    1:     """
+           #: Set or return a :py:class:`~pyasn1.type.tag.TagSet` object representing
+           #: ASN.1 tag(s) associated with |ASN.1| type.
+    1:     tagSet = tag.TagSet()
+       
+           #: Default :py:class:`~pyasn1.type.constraint.ConstraintsIntersection`
+           #: object imposing constraints on initialization values.
+    1:     subtypeSpec = constraint.ConstraintsIntersection()
+       
+           # Disambiguation ASN.1 types identification
+    1:     typeId = None
+       
+    1:     def __init__(self, **kwargs):
+               readOnly = {
+  742:             'tagSet': self.tagSet,
+  742:             'subtypeSpec': self.subtypeSpec
+               }
+       
+  742:         readOnly.update(kwargs)
+       
+  742:         self.__dict__.update(readOnly)
+       
+  742:         self._readOnly = readOnly
+       
+    1:     def __setattr__(self, name, value):
+ 1815:         if name[0] != '_' and name in self._readOnly:
+                   raise error.PyAsn1Error('read-only instance attribute "%s"' % name)
+       
+ 1815:         self.__dict__[name] = value
+       
+    1:     def __str__(self):
+               return self.prettyPrint()
+       
+    1:     @property
+           def readOnly(self):
+  977:         return self._readOnly
+       
+    1:     @property
+           def effectiveTagSet(self):
+               """For |ASN.1| type is equivalent to *tagSet*
+               """
+               return self.tagSet  # used by untagged types
+       
+    1:     @property
+           def tagMap(self):
+               """Return a :class:`~pyasn1.type.tagmap.TagMap` object mapping ASN.1 tags to ASN.1 objects within callee object.
+               """
+ 1921:         return tagmap.TagMap({self.tagSet: self})
+       
+    1:     def isSameTypeWith(self, other, matchTags=True, matchConstraints=True):
+               """Examine |ASN.1| type for equality with other ASN.1 type.
+       
+               ASN.1 tags (:py:mod:`~pyasn1.type.tag`) and constraints
+               (:py:mod:`~pyasn1.type.constraint`) are examined when carrying
+               out ASN.1 types comparison.
+       
+               Python class inheritance relationship is NOT considered.
+       
+               Parameters
+               ----------
+               other: a pyasn1 type object
+                   Class instance representing ASN.1 type.
+       
+               Returns
+               -------
+               : :class:`bool`
+                   :obj:`True` if *other* is |ASN.1| type,
+                   :obj:`False` otherwise.
+               """
+               return (self is other or
+                       (not matchTags or self.tagSet == other.tagSet) and
+                       (not matchConstraints or self.subtypeSpec == other.subtypeSpec))
+       
+    1:     def isSuperTypeOf(self, other, matchTags=True, matchConstraints=True):
+               """Examine |ASN.1| type for subtype relationship with other ASN.1 type.
+       
+               ASN.1 tags (:py:mod:`~pyasn1.type.tag`) and constraints
+               (:py:mod:`~pyasn1.type.constraint`) are examined when carrying
+               out ASN.1 types comparison.
+       
+               Python class inheritance relationship is NOT considered.
+       
+               Parameters
+               ----------
+                   other: a pyasn1 type object
+                       Class instance representing ASN.1 type.
+       
+               Returns
+               -------
+                   : :class:`bool`
+                       :obj:`True` if *other* is a subtype of |ASN.1| type,
+                       :obj:`False` otherwise.
+               """
+               return (not matchTags or
+                       (self.tagSet.isSuperTagSetOf(other.tagSet)) and
+                        (not matchConstraints or self.subtypeSpec.isSuperTypeOf(other.subtypeSpec)))
+       
+    1:     @staticmethod
+           def isNoValue(*values):
+               for value in values:
+                   if value is not noValue:
+                       return False
+               return True
+       
+    1:     def prettyPrint(self, scope=0):
+               raise NotImplementedError()
+       
+           # backward compatibility
+       
+    1:     def getTagSet(self):
+               return self.tagSet
+       
+    1:     def getEffectiveTagSet(self):
+               return self.effectiveTagSet
+       
+    1:     def getTagMap(self):
+               return self.tagMap
+       
+    1:     def getSubtypeSpec(self):
+               return self.subtypeSpec
+       
+           # backward compatibility
+    1:     def hasValue(self):
+               return self.isValue
+       
+       # Backward compatibility
+    1: Asn1ItemBase = Asn1Type
+       
+       
+    2: class NoValue(object):
+           """Create a singleton instance of NoValue class.
+       
+           The *NoValue* sentinel object represents an instance of ASN.1 schema
+           object as opposed to ASN.1 value object.
+       
+           Only ASN.1 schema-related operations can be performed on ASN.1
+           schema objects.
+       
+           Warning
+           -------
+           Any operation attempted on the *noValue* object will raise the
+           *PyAsn1Error* exception.
+    1:     """
+    1:     skipMethods = set(
+    1:         ('__slots__',
+                # attributes
+                '__getattribute__',
+                '__getattr__',
+                '__setattr__',
+                '__delattr__',
+                # class instance
+                '__class__',
+                '__init__',
+                '__del__',
+                '__new__',
+                '__repr__',
+                '__qualname__',
+                '__objclass__',
+                'im_class',
+                '__sizeof__',
+                # pickle protocol
+                '__reduce__',
+                '__reduce_ex__',
+                '__getnewargs__',
+                '__getinitargs__',
+                '__getstate__',
+                '__setstate__')
+           )
+       
+    1:     _instance = None
+       
+    1:     def __new__(cls):
+    2:         if cls._instance is None:
+    1:             def getPlug(name):
+   59:                 def plug(self, *args, **kw):
+                           raise error.PyAsn1Error('Attempted "%s" operation on ASN.1 schema object' % name)
+   59:                 return plug
+       
+    6:             op_names = [name
+    5:                         for typ in (str, int, list, dict)
+  238:                         for name in dir(typ)
+  234:                         if (name not in cls.skipMethods and
+  192:                             name.startswith('__') and
+  117:                             name.endswith('__') and
+  117:                             calling.callable(getattr(typ, name)))]
+       
+   60:             for name in set(op_names):
+   59:                 setattr(cls, name, getPlug(name))
+       
+    1:             cls._instance = object.__new__(cls)
+       
+    2:         return cls._instance
+       
+    1:     def __getattr__(self, attr):
+               if attr in self.skipMethods:
+                   raise AttributeError('Attribute %s not present' % attr)
+       
+               raise error.PyAsn1Error('Attempted "%s" operation on ASN.1 schema object' % attr)
+       
+    1:     def __repr__(self):
+               return '<%s object>' % self.__class__.__name__
+       
+       
+    1: noValue = NoValue()
+       
+       
+    2: class SimpleAsn1Type(Asn1Type):
+           """Base class for all simple classes representing ASN.1 types.
+       
+           ASN.1 distinguishes types by their ability to hold other objects.
+           Scalar types are known as *simple* in ASN.1.
+       
+           In the user code, |ASN.1| class is normally used only for telling
+           ASN.1 objects from others.
+       
+           Note
+           ----
+           For as long as ASN.1 is concerned, a way to compare ASN.1 types
+           is to use :meth:`isSameTypeWith` and :meth:`isSuperTypeOf` methods.
+    1:     """
+           #: Default payload value
+    1:     defaultValue = noValue
+       
+    1:     def __init__(self, value=noValue, **kwargs):
+  507:         Asn1Type.__init__(self, **kwargs)
+  507:         if value is noValue:
+  357:             value = self.defaultValue
+               else:
+  150:             value = self.prettyIn(value)
+  150:             try:
+  150:                 self.subtypeSpec(value)
+       
+                   except error.PyAsn1Error:
+                       exType, exValue, exTb = sys.exc_info()
+                       raise exType('%s at %s' % (exValue, self.__class__.__name__))
+       
+  507:         self._value = value
+       
+    1:     def __repr__(self):
+  547:         representation = '%s %s object' % (
+  547:             self.__class__.__name__, self.isValue and 'value' or 'schema')
+       
+ 2153:         for attr, value in self.readOnly.items():
+ 1606:             if value:
+ 1010:                 representation += ', %s %s' % (attr, value)
+       
+  547:         if self.isValue:
+   92:             value = self.prettyPrint()
+   92:             if len(value) > 32:
+                       value = value[:16] + '...' + value[-16:]
+   92:             representation += ', payload [%s]' % value
+       
+  547:         return '<%s>' % representation
+       
+    1:     def __eq__(self, other):
+               return self is other and True or self._value == other
+       
+    1:     def __ne__(self, other):
+               return self._value != other
+       
+    1:     def __lt__(self, other):
+               return self._value < other
+       
+    1:     def __le__(self, other):
+               return self._value <= other
+       
+    1:     def __gt__(self, other):
+               return self._value > other
+       
+    1:     def __ge__(self, other):
+               return self._value >= other
+       
+    1:     if sys.version_info[0] <= 2:
+               def __nonzero__(self):
+                   return self._value and True or False
+           else:
+    1:         def __bool__(self):
+                   return self._value and True or False
+       
+    1:     def __hash__(self):
+  128:         return hash(self._value)
+       
+    1:     @property
+           def isValue(self):
+               """Indicate that |ASN.1| object represents ASN.1 value.
+       
+               If *isValue* is :obj:`False` then this object represents just
+               ASN.1 schema.
+       
+               If *isValue* is :obj:`True` then, in addition to its ASN.1 schema
+               features, this object can also be used like a Python built-in object
+               (e.g. :class:`int`, :class:`str`, :class:`dict` etc.).
+       
+               Returns
+               -------
+               : :class:`bool`
+                   :obj:`False` if object represents just ASN.1 schema.
+                   :obj:`True` if object represents ASN.1 schema and can be used as a normal value.
+       
+               Note
+               ----
+               There is an important distinction between PyASN1 schema and value objects.
+               The PyASN1 schema objects can only participate in ASN.1 schema-related
+               operations (e.g. defining or testing the structure of the data). Most
+               obvious uses of ASN.1 schema is to guide serialisation codecs whilst
+               encoding/decoding serialised ASN.1 contents.
+       
+               The PyASN1 value objects can **additionally** participate in many operations
+               involving regular Python objects (e.g. arithmetic, comprehension etc).
+               """
+ 1094:         return self._value is not noValue
+       
+    1:     def clone(self, value=noValue, **kwargs):
+               """Create a modified version of |ASN.1| schema or value object.
+       
+               The `clone()` method accepts the same set arguments as |ASN.1|
+               class takes on instantiation except that all arguments
+               of the `clone()` method are optional.
+       
+               Whatever arguments are supplied, they are used to create a copy
+               of `self` taking precedence over the ones used to instantiate `self`.
+       
+               Note
+               ----
+               Due to the immutable nature of the |ASN.1| object, if no arguments
+               are supplied, no new |ASN.1| object will be created and `self` will
+               be returned instead.
+               """
+               if value is noValue:
+                   if not kwargs:
+                       return self
+       
+                   value = self._value
+       
+               initializers = self.readOnly.copy()
+               initializers.update(kwargs)
+       
+               return self.__class__(value, **initializers)
+       
+    1:     def subtype(self, value=noValue, **kwargs):
+               """Create a specialization of |ASN.1| schema or value object.
+       
+               The subtype relationship between ASN.1 types has no correlation with
+               subtype relationship between Python types. ASN.1 type is mainly identified
+               by its tag(s) (:py:class:`~pyasn1.type.tag.TagSet`) and value range
+               constraints (:py:class:`~pyasn1.type.constraint.ConstraintsIntersection`).
+               These ASN.1 type properties are implemented as |ASN.1| attributes.  
+       
+               The `subtype()` method accepts the same set arguments as |ASN.1|
+               class takes on instantiation except that all parameters
+               of the `subtype()` method are optional.
+       
+               With the exception of the arguments described below, the rest of
+               supplied arguments they are used to create a copy of `self` taking
+               precedence over the ones used to instantiate `self`.
+       
+               The following arguments to `subtype()` create a ASN.1 subtype out of
+               |ASN.1| type:
+       
+               Other Parameters
+               ----------------
+               implicitTag: :py:class:`~pyasn1.type.tag.Tag`
+                   Implicitly apply given ASN.1 tag object to `self`'s
+                   :py:class:`~pyasn1.type.tag.TagSet`, then use the result as
+                   new object's ASN.1 tag(s).
+       
+               explicitTag: :py:class:`~pyasn1.type.tag.Tag`
+                   Explicitly apply given ASN.1 tag object to `self`'s
+                   :py:class:`~pyasn1.type.tag.TagSet`, then use the result as
+                   new object's ASN.1 tag(s).
+       
+               subtypeSpec: :py:class:`~pyasn1.type.constraint.ConstraintsIntersection`
+                   Add ASN.1 constraints object to one of the `self`'s, then
+                   use the result as new object's ASN.1 constraints.
+       
+               Returns
+               -------
+               :
+                   new instance of |ASN.1| schema or value object
+       
+               Note
+               ----
+               Due to the immutable nature of the |ASN.1| object, if no arguments
+               are supplied, no new |ASN.1| object will be created and `self` will
+               be returned instead.
+               """
+  126:         if value is noValue:
+  126:             if not kwargs:
+                       return self
+       
+  126:             value = self._value
+       
+  126:         initializers = self.readOnly.copy()
+       
+  126:         implicitTag = kwargs.pop('implicitTag', None)
+  126:         if implicitTag is not None:
+   39:             initializers['tagSet'] = self.tagSet.tagImplicitly(implicitTag)
+       
+  126:         explicitTag = kwargs.pop('explicitTag', None)
+  126:         if explicitTag is not None:
+   21:             initializers['tagSet'] = self.tagSet.tagExplicitly(explicitTag)
+       
+  203:         for arg, option in kwargs.items():
+   77:             initializers[arg] += option
+       
+  126:         return self.__class__(value, **initializers)
+       
+    1:     def prettyIn(self, value):
+               return value
+       
+    1:     def prettyOut(self, value):
+               return str(value)
+       
+    1:     def prettyPrint(self, scope=0):
+   92:         return self.prettyOut(self._value)
+       
+    1:     def prettyPrintType(self, scope=0):
+               return '%s -> %s' % (self.tagSet, self.__class__.__name__)
+       
+       # Backward compatibility
+    1: AbstractSimpleAsn1Item = SimpleAsn1Type
+       
+       #
+       # Constructed types:
+       # * There are five of them: Sequence, SequenceOf/SetOf, Set and Choice
+       # * ASN1 types and values are represened by Python class instances
+       # * Value initialization is made for defaulted components only
+       # * Primary method of component addressing is by-position. Data model for base
+       #   type is Python sequence. Additional type-specific addressing methods
+       #   may be implemented for particular types.
+       # * SequenceOf and SetOf types do not implement any additional methods
+       # * Sequence, Set and Choice types also implement by-identifier addressing
+       # * Sequence, Set and Choice types also implement by-asn1-type (tag) addressing
+       # * Sequence and Set types may include optional and defaulted
+       #   components
+       # * Constructed types hold a reference to component types used for value
+       #   verification and ordering.
+       # * Component type is a scalar type for SequenceOf/SetOf types and a list
+       #   of types for Sequence/Set/Choice.
+       #
+       
+       
+    2: class ConstructedAsn1Type(Asn1Type):
+           """Base class for all constructed classes representing ASN.1 types.
+       
+           ASN.1 distinguishes types by their ability to hold other objects.
+           Those "nesting" types are known as *constructed* in ASN.1.
+       
+           In the user code, |ASN.1| class is normally used only for telling
+           ASN.1 objects from others.
+       
+           Note
+           ----
+           For as long as ASN.1 is concerned, a way to compare ASN.1 types
+           is to use :meth:`isSameTypeWith` and :meth:`isSuperTypeOf` methods.
+    1:     """
+       
+           #: If :obj:`True`, requires exact component type matching,
+           #: otherwise subtype relation is only enforced
+    1:     strictConstraints = False
+       
+    1:     componentType = None
+       
+           # backward compatibility, unused
+    1:     sizeSpec = constraint.ConstraintsIntersection()
+       
+    1:     def __init__(self, **kwargs):
+               readOnly = {
+  235:             'componentType': self.componentType,
+                   # backward compatibility, unused
+  235:             'sizeSpec': self.sizeSpec
+               }
+       
+               # backward compatibility: preserve legacy sizeSpec support
+  235:         kwargs = self._moveSizeSpec(**kwargs)
+       
+  235:         readOnly.update(kwargs)
+       
+  235:         Asn1Type.__init__(self, **readOnly)
+       
+    1:     def _moveSizeSpec(self, **kwargs):
+               # backward compatibility, unused
+  235:         sizeSpec = kwargs.pop('sizeSpec', self.sizeSpec)
+  235:         if sizeSpec:
+   28:             subtypeSpec = kwargs.pop('subtypeSpec', self.subtypeSpec)
+   28:             if subtypeSpec:
+    8:                 subtypeSpec = sizeSpec
+       
+                   else:
+   20:                 subtypeSpec += sizeSpec
+       
+   28:             kwargs['subtypeSpec'] = subtypeSpec
+       
+  235:         return kwargs
+       
+    1:     def __repr__(self):
+  252:         representation = '%s %s object' % (
+  252:             self.__class__.__name__, self.isValue and 'value' or 'schema'
+               )
+       
+ 1260:         for attr, value in self.readOnly.items():
+ 1008:             if value is not noValue:
+ 1008:                 representation += ', %s=%r' % (attr, value)
+       
+  252:         if self.isValue and self.components:
+                   representation += ', payload [%s]' % ', '.join(
+                       [repr(x) for x in self.components])
+       
+  252:         return '<%s>' % representation
+       
+    1:     def __eq__(self, other):
+               return self is other or self.components == other
+       
+    1:     def __ne__(self, other):
+               return self.components != other
+       
+    1:     def __lt__(self, other):
+               return self.components < other
+       
+    1:     def __le__(self, other):
+               return self.components <= other
+       
+    1:     def __gt__(self, other):
+               return self.components > other
+       
+    1:     def __ge__(self, other):
+               return self.components >= other
+       
+    1:     if sys.version_info[0] <= 2:
+               def __nonzero__(self):
+                   return bool(self.components)
+           else:
+    1:         def __bool__(self):
+                   return bool(self.components)
+       
+    1:     @property
+           def components(self):
+               raise error.PyAsn1Error('Method not implemented')
+       
+    1:     def _cloneComponentValues(self, myClone, cloneValueFlag):
+               pass
+       
+    1:     def clone(self, **kwargs):
+               """Create a modified version of |ASN.1| schema object.
+       
+               The `clone()` method accepts the same set arguments as |ASN.1|
+               class takes on instantiation except that all arguments
+               of the `clone()` method are optional.
+       
+               Whatever arguments are supplied, they are used to create a copy
+               of `self` taking precedence over the ones used to instantiate `self`.
+       
+               Possible values of `self` are never copied over thus `clone()` can
+               only create a new schema object.
+       
+               Returns
+               -------
+               :
+                   new instance of |ASN.1| type/value
+       
+               Note
+               ----
+               Due to the mutable nature of the |ASN.1| object, even if no arguments
+               are supplied, a new |ASN.1| object will be created and returned.
+               """
+               cloneValueFlag = kwargs.pop('cloneValueFlag', False)
+       
+               initializers = self.readOnly.copy()
+               initializers.update(kwargs)
+       
+               clone = self.__class__(**initializers)
+       
+               if cloneValueFlag:
+                   self._cloneComponentValues(clone, cloneValueFlag)
+       
+               return clone
+       
+    1:     def subtype(self, **kwargs):
+               """Create a specialization of |ASN.1| schema object.
+       
+               The `subtype()` method accepts the same set arguments as |ASN.1|
+               class takes on instantiation except that all parameters
+               of the `subtype()` method are optional.
+       
+               With the exception of the arguments described below, the rest of
+               supplied arguments they are used to create a copy of `self` taking
+               precedence over the ones used to instantiate `self`.
+       
+               The following arguments to `subtype()` create a ASN.1 subtype out of
+               |ASN.1| type.
+       
+               Other Parameters
+               ----------------
+               implicitTag: :py:class:`~pyasn1.type.tag.Tag`
+                   Implicitly apply given ASN.1 tag object to `self`'s
+                   :py:class:`~pyasn1.type.tag.TagSet`, then use the result as
+                   new object's ASN.1 tag(s).
+       
+               explicitTag: :py:class:`~pyasn1.type.tag.Tag`
+                   Explicitly apply given ASN.1 tag object to `self`'s
+                   :py:class:`~pyasn1.type.tag.TagSet`, then use the result as
+                   new object's ASN.1 tag(s).
+       
+               subtypeSpec: :py:class:`~pyasn1.type.constraint.ConstraintsIntersection`
+                   Add ASN.1 constraints object to one of the `self`'s, then
+                   use the result as new object's ASN.1 constraints.
+       
+       
+               Returns
+               -------
+               :
+                   new instance of |ASN.1| type/value
+       
+               Note
+               ----
+               Due to the mutable nature of the |ASN.1| object, even if no arguments
+               are supplied, a new |ASN.1| object will be created and returned.
+               """
+       
+   52:         initializers = self.readOnly.copy()
+       
+   52:         cloneValueFlag = kwargs.pop('cloneValueFlag', False)
+       
+   52:         implicitTag = kwargs.pop('implicitTag', None)
+   52:         if implicitTag is not None:
+   44:             initializers['tagSet'] = self.tagSet.tagImplicitly(implicitTag)
+       
+   52:         explicitTag = kwargs.pop('explicitTag', None)
+   52:         if explicitTag is not None:
+    7:             initializers['tagSet'] = self.tagSet.tagExplicitly(explicitTag)
+       
+   54:         for arg, option in kwargs.items():
+    2:             initializers[arg] += option
+       
+   52:         clone = self.__class__(**initializers)
+       
+   52:         if cloneValueFlag:
+                   self._cloneComponentValues(clone, cloneValueFlag)
+       
+   52:         return clone
+       
+    1:     def getComponentByPosition(self, idx):
+               raise error.PyAsn1Error('Method not implemented')
+       
+    1:     def setComponentByPosition(self, idx, value, verifyConstraints=True):
+               raise error.PyAsn1Error('Method not implemented')
+       
+    1:     def setComponents(self, *args, **kwargs):
+               for idx, value in enumerate(args):
+                   self[idx] = value
+               for k in kwargs:
+                   self[k] = kwargs[k]
+               return self
+       
+           # backward compatibility
+       
+    1:     def setDefaultComponents(self):
+               pass
+       
+    1:     def getComponentType(self):
+               return self.componentType
+       
+           # backward compatibility, unused
+    1:     def verifySizeSpec(self):
+               self.subtypeSpec(self)
+       
+       
+               # Backward compatibility
+    1: AbstractConstructedAsn1Item = ConstructedAsn1Type

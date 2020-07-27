@@ -1,0 +1,14 @@
+    1: __all__ = ['FFI', 'VerificationError', 'VerificationMissing', 'CDefError',
+    1:            'FFIError']
+       
+    1: from .api import FFI
+    1: from .error import CDefError, FFIError, VerificationError, VerificationMissing
+    1: from .error import PkgConfigError
+       
+    1: __version__ = "1.14.0"
+    1: __version_info__ = (1, 14, 0)
+       
+       # The verifier module file names are based on the CRC32 of a string that
+       # contains the following version number.  It may be older than __version__
+       # if nothing is clearly incompatible.
+    1: __version_verifier_modules__ = "0.8.6"

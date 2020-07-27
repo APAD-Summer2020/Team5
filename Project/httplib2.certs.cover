@@ -1,0 +1,42 @@
+    1: """Utilities for certificate management."""
+       
+    1: import os
+       
+    1: certifi_available = False
+    1: certifi_where = None
+    1: try:
+    1:     from certifi import where as certifi_where
+    1:     certifi_available = True
+       except ImportError:
+           pass
+       
+    1: custom_ca_locater_available = False
+    1: custom_ca_locater_where = None
+    1: try:
+    1:     from ca_certs_locater import get as custom_ca_locater_where
+           custom_ca_locater_available = True
+    1: except ImportError:
+    1:     pass
+       
+       
+    1: BUILTIN_CA_CERTS = os.path.join(
+    1:     os.path.dirname(os.path.abspath(__file__)), "cacerts.txt"
+       )
+       
+       
+    1: def where():
+    1:     env = os.environ.get("HTTPLIB2_CA_CERTS")
+    1:     if env is not None:
+               if os.path.isfile(env):
+                   return env
+               else:
+                   raise RuntimeError("Environment variable HTTPLIB2_CA_CERTS not a valid file")
+    1:     if custom_ca_locater_available:
+               return custom_ca_locater_where()
+    1:     if certifi_available:
+    1:         return certifi_where()
+           return BUILTIN_CA_CERTS
+       
+       
+    1: if __name__ == "__main__":
+           print(where())

@@ -1,0 +1,44 @@
+       # -*- coding: utf-8 -*-
+       """Jinja is a template engine written in pure Python. It provides a
+       non-XML syntax that supports inline expressions and an optional
+       sandboxed environment.
+    1: """
+    1: from markupsafe import escape
+    1: from markupsafe import Markup
+       
+    1: from .bccache import BytecodeCache
+    1: from .bccache import FileSystemBytecodeCache
+    1: from .bccache import MemcachedBytecodeCache
+    1: from .environment import Environment
+    1: from .environment import Template
+    1: from .exceptions import TemplateAssertionError
+    1: from .exceptions import TemplateError
+    1: from .exceptions import TemplateNotFound
+    1: from .exceptions import TemplateRuntimeError
+    1: from .exceptions import TemplatesNotFound
+    1: from .exceptions import TemplateSyntaxError
+    1: from .exceptions import UndefinedError
+    1: from .filters import contextfilter
+    1: from .filters import environmentfilter
+    1: from .filters import evalcontextfilter
+    1: from .loaders import BaseLoader
+    1: from .loaders import ChoiceLoader
+    1: from .loaders import DictLoader
+    1: from .loaders import FileSystemLoader
+    1: from .loaders import FunctionLoader
+    1: from .loaders import ModuleLoader
+    1: from .loaders import PackageLoader
+    1: from .loaders import PrefixLoader
+    1: from .runtime import ChainableUndefined
+    1: from .runtime import DebugUndefined
+    1: from .runtime import make_logging_undefined
+    1: from .runtime import StrictUndefined
+    1: from .runtime import Undefined
+    1: from .utils import clear_caches
+    1: from .utils import contextfunction
+    1: from .utils import environmentfunction
+    1: from .utils import evalcontextfunction
+    1: from .utils import is_undefined
+    1: from .utils import select_autoescape
+       
+    1: __version__ = "2.11.1"

@@ -1,0 +1,335 @@
+       #
+       # This file is part of pyasn1 software.
+       #
+       # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
+       # License: http://snmplabs.com/pyasn1/license.html
+       #
+    1: from pyasn1 import error
+       
+    1: __all__ = ['tagClassUniversal', 'tagClassApplication', 'tagClassContext',
+    1:            'tagClassPrivate', 'tagFormatSimple', 'tagFormatConstructed',
+    1:            'tagCategoryImplicit', 'tagCategoryExplicit',
+    1:            'tagCategoryUntagged', 'Tag', 'TagSet']
+       
+       #: Identifier for ASN.1 class UNIVERSAL
+    1: tagClassUniversal = 0x00
+       
+       #: Identifier for ASN.1 class APPLICATION
+    1: tagClassApplication = 0x40
+       
+       #: Identifier for ASN.1 class context-specific
+    1: tagClassContext = 0x80
+       
+       #: Identifier for ASN.1 class private
+    1: tagClassPrivate = 0xC0
+       
+       #: Identifier for "simple" ASN.1 structure (e.g. scalar)
+    1: tagFormatSimple = 0x00
+       
+       #: Identifier for "constructed" ASN.1 structure (e.g. may have inner components)
+    1: tagFormatConstructed = 0x20
+       
+    1: tagCategoryImplicit = 0x01
+    1: tagCategoryExplicit = 0x02
+    1: tagCategoryUntagged = 0x04
+       
+       
+    2: class Tag(object):
+           """Create ASN.1 tag
+       
+           Represents ASN.1 tag that can be attached to a ASN.1 type to make
+           types distinguishable from each other.
+       
+           *Tag* objects are immutable and duck-type Python :class:`tuple` objects
+           holding three integer components of a tag.
+       
+           Parameters
+           ----------
+           tagClass: :py:class:`int`
+               Tag *class* value
+       
+           tagFormat: :py:class:`int`
+               Tag *format* value
+       
+           tagId: :py:class:`int`
+               Tag ID value
+    1:     """
+    1:     def __init__(self, tagClass, tagFormat, tagId):
+  297:         if tagId < 0:
+                   raise error.PyAsn1Error('Negative tag ID (%s) not allowed' % tagId)
+  297:         self.__tagClass = tagClass
+  297:         self.__tagFormat = tagFormat
+  297:         self.__tagId = tagId
+  297:         self.__tagClassId = tagClass, tagId
+  297:         self.__hash = hash(self.__tagClassId)
+       
+    1:     def __repr__(self):
+               representation = '[%s:%s:%s]' % (
+                   self.__tagClass, self.__tagFormat, self.__tagId)
+               return '<%s object, tag %s>' % (
+                   self.__class__.__name__, representation)
+       
+    1:     def __eq__(self, other):
+               return self.__tagClassId == other
+       
+    1:     def __ne__(self, other):
+               return self.__tagClassId != other
+       
+    1:     def __lt__(self, other):
+               return self.__tagClassId < other
+       
+    1:     def __le__(self, other):
+               return self.__tagClassId <= other
+       
+    1:     def __gt__(self, other):
+               return self.__tagClassId > other
+       
+    1:     def __ge__(self, other):
+               return self.__tagClassId >= other
+       
+    1:     def __hash__(self):
+               return self.__hash
+       
+    1:     def __getitem__(self, idx):
+               if idx == 0:
+                   return self.__tagClass
+               elif idx == 1:
+                   return self.__tagFormat
+               elif idx == 2:
+                   return self.__tagId
+               else:
+                   raise IndexError()
+       
+    1:     def __iter__(self):
+               yield self.__tagClass
+               yield self.__tagFormat
+               yield self.__tagId
+       
+    1:     def __and__(self, otherTag):
+               return self.__class__(self.__tagClass & otherTag.tagClass,
+                                     self.__tagFormat & otherTag.tagFormat,
+                                     self.__tagId & otherTag.tagId)
+       
+    1:     def __or__(self, otherTag):
+               return self.__class__(self.__tagClass | otherTag.tagClass,
+                                     self.__tagFormat | otherTag.tagFormat,
+                                     self.__tagId | otherTag.tagId)
+       
+    1:     @property
+           def tagClass(self):
+               """ASN.1 tag class
+       
+               Returns
+               -------
+               : :py:class:`int`
+                   Tag class
+               """
+ 1153:         return self.__tagClass
+       
+    1:     @property
+           def tagFormat(self):
+               """ASN.1 tag format
+       
+               Returns
+               -------
+               : :py:class:`int`
+                   Tag format
+               """
+  941:         return self.__tagFormat
+       
+    1:     @property
+           def tagId(self):
+               """ASN.1 tag ID
+       
+               Returns
+               -------
+               : :py:class:`int`
+                   Tag ID
+               """
+ 1123:         return self.__tagId
+       
+       
+    2: class TagSet(object):
+           """Create a collection of ASN.1 tags
+       
+           Represents a combination of :class:`~pyasn1.type.tag.Tag` objects
+           that can be attached to a ASN.1 type to make types distinguishable
+           from each other.
+       
+           *TagSet* objects are immutable and duck-type Python :class:`tuple` objects
+           holding arbitrary number of :class:`~pyasn1.type.tag.Tag` objects.
+       
+           Parameters
+           ----------
+           baseTag: :class:`~pyasn1.type.tag.Tag`
+               Base *Tag* object. This tag survives IMPLICIT tagging.
+       
+           *superTags: :class:`~pyasn1.type.tag.Tag`
+               Additional *Tag* objects taking part in subtyping.
+       
+           Examples
+           --------
+           .. code-block:: python
+       
+               class OrderNumber(NumericString):
+                   '''
+                   ASN.1 specification
+       
+                   Order-number ::=
+                       [APPLICATION 5] IMPLICIT NumericString
+                   '''
+                   tagSet = NumericString.tagSet.tagImplicitly(
+                       Tag(tagClassApplication, tagFormatSimple, 5)
+                   )
+       
+               orderNumber = OrderNumber('1234')
+    1:     """
+    1:     def __init__(self, baseTag=(), *superTags):
+  316:         self.__baseTag = baseTag
+  316:         self.__superTags = superTags
+  316:         self.__superTagsClassId = tuple(
+  817:             [(superTag.tagClass, superTag.tagId) for superTag in superTags]
+               )
+  316:         self.__lenOfSuperTags = len(superTags)
+  316:         self.__hash = hash(self.__superTagsClassId)
+       
+    1:     def __repr__(self):
+ 2441:         representation = '-'.join(['%s:%s:%s' % (x.tagClass, x.tagFormat, x.tagId)
+ 1621:                                    for x in self.__superTags])
+  820:         if representation:
+  773:             representation = 'tags ' + representation
+               else:
+   47:             representation = 'untagged'
+       
+  820:         return '<%s object, %s>' % (self.__class__.__name__, representation)
+       
+    1:     def __add__(self, superTag):
+  147:         return self.__class__(self.__baseTag, *self.__superTags + (superTag,))
+       
+    1:     def __radd__(self, superTag):
+               return self.__class__(self.__baseTag, *(superTag,) + self.__superTags)
+       
+    1:     def __getitem__(self, i):
+  117:         if i.__class__ is slice:
+  117:             return self.__class__(self.__baseTag, *self.__superTags[i])
+               else:
+                   return self.__superTags[i]
+       
+    1:     def __eq__(self, other):
+   30:         return self.__superTagsClassId == other
+       
+    1:     def __ne__(self, other):
+               return self.__superTagsClassId != other
+       
+    1:     def __lt__(self, other):
+  295:         return self.__superTagsClassId < other
+       
+    1:     def __le__(self, other):
+               return self.__superTagsClassId <= other
+       
+    1:     def __gt__(self, other):
+  295:         return self.__superTagsClassId > other
+       
+    1:     def __ge__(self, other):
+               return self.__superTagsClassId >= other
+       
+    1:     def __hash__(self):
+ 5796:         return self.__hash
+       
+    1:     def __len__(self):
+ 1095:         return self.__lenOfSuperTags
+       
+    1:     @property
+           def baseTag(self):
+               """Return base ASN.1 tag
+       
+               Returns
+               -------
+               : :class:`~pyasn1.type.tag.Tag`
+                   Base tag of this *TagSet*
+               """
+               return self.__baseTag
+       
+    1:     @property
+           def superTags(self):
+               """Return ASN.1 tags
+       
+               Returns
+               -------
+               : :py:class:`tuple`
+                   Tuple of :class:`~pyasn1.type.tag.Tag` objects that this *TagSet* contains
+               """
+               return self.__superTags
+       
+    1:     def tagExplicitly(self, superTag):
+               """Return explicitly tagged *TagSet*
+       
+               Create a new *TagSet* representing callee *TagSet* explicitly tagged
+               with passed tag(s). With explicit tagging mode, new tags are appended
+               to existing tag(s).
+       
+               Parameters
+               ----------
+               superTag: :class:`~pyasn1.type.tag.Tag`
+                   *Tag* object to tag this *TagSet*
+       
+               Returns
+               -------
+               : :class:`~pyasn1.type.tag.TagSet`
+                   New *TagSet* object
+               """
+   30:         if superTag.tagClass == tagClassUniversal:
+                   raise error.PyAsn1Error("Can't tag with UNIVERSAL class tag")
+   30:         if superTag.tagFormat != tagFormatConstructed:
+   27:             superTag = Tag(superTag.tagClass, tagFormatConstructed, superTag.tagId)
+   30:         return self + superTag
+       
+    1:     def tagImplicitly(self, superTag):
+               """Return implicitly tagged *TagSet*
+       
+               Create a new *TagSet* representing callee *TagSet* implicitly tagged
+               with passed tag(s). With implicit tagging mode, new tag(s) replace the
+               last existing tag.
+       
+               Parameters
+               ----------
+               superTag: :class:`~pyasn1.type.tag.Tag`
+                   *Tag* object to tag this *TagSet*
+       
+               Returns
+               -------
+               : :class:`~pyasn1.type.tag.TagSet`
+                   New *TagSet* object
+               """
+  117:         if self.__superTags:
+  110:             superTag = Tag(superTag.tagClass, self.__superTags[-1].tagFormat, superTag.tagId)
+  117:         return self[:-1] + superTag
+       
+    1:     def isSuperTagSetOf(self, tagSet):
+               """Test type relationship against given *TagSet*
+       
+               The callee is considered to be a supertype of given *TagSet*
+               tag-wise if all tags in *TagSet* are present in the callee and
+               they are in the same order.
+       
+               Parameters
+               ----------
+               tagSet: :class:`~pyasn1.type.tag.TagSet`
+                   *TagSet* object to evaluate against the callee
+       
+               Returns
+               -------
+               : :py:class:`bool`
+                   :obj:`True` if callee is a supertype of *tagSet*
+               """
+               if len(tagSet) < self.__lenOfSuperTags:
+                   return False
+               return self.__superTags == tagSet[:self.__lenOfSuperTags]
+       
+           # Backward compatibility
+       
+    1:     def getBaseTag(self):
+               return self.__baseTag
+       
+    1: def initTagSet(tag):
+   13:     return TagSet(tag, tag)

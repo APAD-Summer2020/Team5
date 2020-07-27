@@ -1,0 +1,80 @@
+    1: import sys
+    1: from . import model
+    1: from .error import FFIError
+       
+       
+    1: COMMON_TYPES = {}
+       
+    1: try:
+           # fetch "bool" and all simple Windows types
+    1:     from _cffi_backend import _get_common_types
+    1:     _get_common_types(COMMON_TYPES)
+       except ImportError:
+           pass
+       
+    1: COMMON_TYPES['FILE'] = model.unknown_type('FILE', '_IO_FILE')
+    1: COMMON_TYPES['bool'] = '_Bool'    # in case we got ImportError above
+       
+   52: for _type in model.PrimitiveType.ALL_PRIMITIVE_TYPES:
+   51:     if _type.endswith('_t'):
+   34:         COMMON_TYPES[_type] = _type
+    1: del _type
+       
+    1: _CACHE = {}
+       
+    1: def resolve_common_type(parser, commontype):
+  205:     try:
+  205:         return _CACHE[commontype]
+    7:     except KeyError:
+    7:         cdecl = COMMON_TYPES.get(commontype, commontype)
+    7:         if not isinstance(cdecl, str):
+                   result, quals = cdecl, 0    # cdecl is already a BaseType
+    7:         elif cdecl in model.PrimitiveType.ALL_PRIMITIVE_TYPES:
+    7:             result, quals = model.PrimitiveType(cdecl), 0
+               elif cdecl == 'set-unicode-needed':
+                   raise FFIError("The Windows type %r is only available after "
+                                  "you call ffi.set_unicode()" % (commontype,))
+               else:
+                   if commontype == cdecl:
+                       raise FFIError(
+                           "Unsupported type: %r.  Please look at "
+               "http://cffi.readthedocs.io/en/latest/cdef.html#ffi-cdef-limitations "
+                           "and file an issue if you think this type should really "
+                           "be supported." % (commontype,))
+                   result, quals = parser.parse_type_and_quals(cdecl)   # recursive
+       
+    7:         assert isinstance(result, model.BaseTypeByIdentity)
+    7:         _CACHE[commontype] = result, quals
+    7:         return result, quals
+       
+       
+       # ____________________________________________________________
+       # extra types for Windows (most of them are in commontypes.c)
+       
+       
+    1: def win_common_types():
+           return {
+               "UNICODE_STRING": model.StructType(
+                   "_UNICODE_STRING",
+                   ["Length",
+                    "MaximumLength",
+                    "Buffer"],
+                   [model.PrimitiveType("unsigned short"),
+                    model.PrimitiveType("unsigned short"),
+                    model.PointerType(model.PrimitiveType("wchar_t"))],
+                   [-1, -1, -1]),
+               "PUNICODE_STRING": "UNICODE_STRING *",
+               "PCUNICODE_STRING": "const UNICODE_STRING *",
+       
+               "TBYTE": "set-unicode-needed",
+               "TCHAR": "set-unicode-needed",
+               "LPCTSTR": "set-unicode-needed",
+               "PCTSTR": "set-unicode-needed",
+               "LPTSTR": "set-unicode-needed",
+               "PTSTR": "set-unicode-needed",
+               "PTBYTE": "set-unicode-needed",
+               "PTCHAR": "set-unicode-needed",
+               }
+       
+    1: if sys.platform == 'win32':
+           COMMON_TYPES.update(win_common_types())

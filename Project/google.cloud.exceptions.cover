@@ -1,0 +1,59 @@
+       # Copyright 2014 Google LLC
+       #
+       # Licensed under the Apache License, Version 2.0 (the "License");
+       # you may not use this file except in compliance with the License.
+       # You may obtain a copy of the License at
+       #
+       #     http://www.apache.org/licenses/LICENSE-2.0
+       #
+       # Unless required by applicable law or agreed to in writing, software
+       # distributed under the License is distributed on an "AS IS" BASIS,
+       # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       # See the License for the specific language governing permissions and
+       # limitations under the License.
+       
+       # pylint: disable=invalid-name
+       # pylint recognizies all of these aliases as constants and thinks they have
+       # invalid names.
+       
+    1: """Custom exceptions for :mod:`google.cloud` package."""
+       
+       # Avoid the grpc and google.cloud.grpc collision.
+    1: from __future__ import absolute_import
+       
+    1: from google.api_core import exceptions
+       
+    1: try:
+    1:     from grpc._channel import _Rendezvous
+       except ImportError:  # pragma: NO COVER
+           _Rendezvous = None
+       
+    1: GrpcRendezvous = _Rendezvous
+       """Exception class raised by gRPC stable."""
+       
+       # Aliases to moved classes.
+    1: GoogleCloudError = exceptions.GoogleAPICallError
+    1: Redirection = exceptions.Redirection
+    1: MovedPermanently = exceptions.MovedPermanently
+    1: NotModified = exceptions.NotModified
+    1: TemporaryRedirect = exceptions.TemporaryRedirect
+    1: ResumeIncomplete = exceptions.ResumeIncomplete
+    1: ClientError = exceptions.ClientError
+    1: BadRequest = exceptions.BadRequest
+    1: Unauthorized = exceptions.Unauthorized
+    1: Forbidden = exceptions.Forbidden
+    1: NotFound = exceptions.NotFound
+    1: MethodNotAllowed = exceptions.MethodNotAllowed
+    1: Conflict = exceptions.Conflict
+    1: LengthRequired = exceptions.LengthRequired
+    1: PreconditionFailed = exceptions.PreconditionFailed
+    1: RequestRangeNotSatisfiable = exceptions.RequestRangeNotSatisfiable
+    1: TooManyRequests = exceptions.TooManyRequests
+    1: ServerError = exceptions.ServerError
+    1: InternalServerError = exceptions.InternalServerError
+    1: MethodNotImplemented = exceptions.MethodNotImplemented
+    1: BadGateway = exceptions.BadGateway
+    1: ServiceUnavailable = exceptions.ServiceUnavailable
+    1: GatewayTimeout = exceptions.GatewayTimeout
+    1: from_http_status = exceptions.from_http_status
+    1: from_http_response = exceptions.from_http_response

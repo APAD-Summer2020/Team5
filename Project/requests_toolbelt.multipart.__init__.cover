@@ -1,0 +1,31 @@
+       """
+       requests_toolbelt.multipart
+       ===========================
+       
+       See http://toolbelt.rtfd.org/ for documentation
+       
+       :copyright: (c) 2014 by Ian Cordasco and Cory Benfield
+       :license: Apache v2.0, see LICENSE for more details
+    1: """
+       
+    1: from .encoder import MultipartEncoder, MultipartEncoderMonitor
+    1: from .decoder import MultipartDecoder
+    1: from .decoder import ImproperBodyPartContentException
+    1: from .decoder import NonMultipartContentTypeException
+       
+    1: __title__ = 'requests-toolbelt'
+    1: __authors__ = 'Ian Cordasco, Cory Benfield'
+    1: __license__ = 'Apache v2.0'
+    1: __copyright__ = 'Copyright 2014 Ian Cordasco, Cory Benfield'
+       
+       __all__ = [
+    1:     'MultipartEncoder',
+    1:     'MultipartEncoderMonitor',
+    1:     'MultipartDecoder',
+    1:     'ImproperBodyPartContentException',
+    1:     'NonMultipartContentTypeException',
+    1:     '__title__',
+    1:     '__authors__',
+    1:     '__license__',
+    1:     '__copyright__',
+       ]

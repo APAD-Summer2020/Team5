@@ -1,0 +1,70 @@
+    1: from __future__ import absolute_import
+       
+    1: import jws.algos as algos
+       
+    1: from .exceptions import AlgorithmNotImplemented, ParameterNotImplemented, ParameterNotUnderstood, RouteMissingError
+       
+    2: class HeaderBase(object):
+    1:     def __init__(self, name, value, data):
+               self.name = name
+               self.value = self.clean(value)
+               self.data = data
+    1:     def sign(self): return self.value
+    1:     def verify(self): return self.value
+    1:     def clean(self, value): return value
+       
+    2: class GenericString(HeaderBase):
+    1:     def clean(self, value):
+               return str(value)
+       
+    2: class SignNotImplemented(HeaderBase):
+    1:     def sign(self):
+               raise ParameterNotImplemented("Header Parameter %s not implemented in the context of signing" % self.name)
+       
+    2: class VerifyNotImplemented(HeaderBase):
+    1:     def verify(self):
+               raise ParameterNotImplemented("Header Parameter %s not implemented in the context of verifying" % self.name)
+       
+    2: class NotImplemented(HeaderBase):
+    1:     def clean(self, *a):
+               raise ParameterNotUnderstood("Could not find an action for Header Parameter '%s'" % self.name)
+       
+    2: class Algorithm(HeaderBase):
+    1:     def clean(self, value):
+               try:
+                   self.methods = algos.route(value)
+               except RouteMissingError as e:
+                   raise AlgorithmNotImplemented('"%s" not implemented.' % value)
+       
+    1:     def sign(self):
+               self.data['signer'] = self.methods['sign']
+    1:     def verify(self):
+               self.data['verifier'] = self.methods['verify']
+       
+       KNOWN_HEADERS = {
+           # REQUIRED, signing algo, see signing_methods
+    1:     'alg': Algorithm,
+           # OPTIONAL, type of signed content
+    1:     'typ': GenericString,
+           # OPTIONAL, JSON Key URL. See http://self-issued.info/docs/draft-jones-json-web-key.html
+    1:     'jku': VerifyNotImplemented,
+            # OPTIONAL, key id, hint for which key to use.
+    1:     'kid': VerifyNotImplemented,
+           # OPTIONAL, x.509 URL pointing to certificate or certificate chain
+    1:     'x5u': VerifyNotImplemented,
+           # OPTIONAL, x.509 certificate thumbprint
+    1:     'x5t': VerifyNotImplemented,
+       }
+       
+       # data is by reference
+    1: def process(data, step):
+           for param in data['header']:
+               # The JWS Header Input MUST be validated to only include parameters
+               # and values whose syntax and semantics are both understood and
+               # supported. --- this is why it defaults to NotImplemented, which
+               # raises an exception
+               cls = KNOWN_HEADERS.get(param, NotImplemented)
+               instance = cls(param, data['header'][param], data)
+               procedure = getattr(instance, step)
+               procedure()
+           return data
