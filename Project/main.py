@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import pyrebase
+#import pyrebase
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import credentials, firestore, initialize_app
+#from google.cloud import firestore
 
 # Use the application default credentials
 cred = credentials.Certificate("gc_privatekey.json")
 firebase_admin.initialize_app(cred)
-
 db_firestore = firestore.client()
+
 
 '''#DELETE LATER #HARD CODED DATA
 doc_ref = db_firestore.collection(u'users').document(u'admin')
@@ -61,6 +61,13 @@ app.secret_key = "hello"
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
+        '''
+        TODO: 
+        - Add alerts if the user didn't enter in a valid username or password.
+        - Create a session key.
+        - Return user information.
+        '''
+
         username = request.form['username']
         password = request.form['password']
 
@@ -71,12 +78,10 @@ def login():
         #Check if there is a document with that username in the database
         if doc.exists:
             #If there is, check if the passwords match
-            return render_template('manage.html')
-        else:
-            return render_template('login.html')
-
+            db_pass = doc.get('password')
+            if db_pass == password:
+                return render_template('manage.html')
         
-
     return render_template('login.html')
     
 
@@ -97,8 +102,8 @@ for user in all_users.each():
 def signup():
     '''
     TODO: 
-    Add validation to check if user already exists in the database.
-    Alert to let them know their account was successfully created.
+    - Add validation to check if user already exists in the database.
+    - Alert to let them know their account was successfully created.
     '''
 
     if request.method == 'POST':
