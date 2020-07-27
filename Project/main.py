@@ -28,6 +28,11 @@ app = Flask(__name__)
 app.secret_key = "hello"
 
 
+#test portio
+user = db.child("users").child('commercial').get()
+for user in user.each():
+    print(user.val())
+
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -36,6 +41,7 @@ def login():
         session["user"] = username
         try:
             user = auth.sign_in_with_email_and_password(email, password)
+
             return redirect(url_for('manage'))
         except:
             message = "Invalid Login Credentials"
