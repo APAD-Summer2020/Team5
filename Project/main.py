@@ -64,16 +64,18 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        
+        #Get the document with the entered username
         doc_ref = db_firestore.collection(u'users').document(username)
         doc = doc_ref.get()
 
+        #Check if there is a document with that username in the database
         if doc.exists:
+            #If there is, check if the passwords match
             return render_template('manage.html')
         else:
             return render_template('login.html')
 
-        return render_template('manage.html')
+        
 
     return render_template('login.html')
     
