@@ -8,14 +8,13 @@
 <div class="container">
     <div class="row">
                <div class="col">
-<h1>Create New Report</h1>
+<h1>Create New Post</h1>
 <hr>
                <br>
 
-<h2>Forms</h2>
     <form>
         <div>
-            <label for="theme">Theme</label><br>
+            <label for="theme">Category</label><br>
             <select class="form-control">
 
                 <option value="th1" >test1</option>
@@ -23,18 +22,19 @@
                 <option value="th1" >test3</option>
 
             </select><br>
-            <label for="t-name">Report Title</label><br>
+            <label for="t-name">Post Title</label><br>
             <input class="form-control" type="text" id="r-title" name="r-title" placeholder="insert a report title"><br>
-            <label for="r-descri" id ="r-descri" name="r-descri">Report Description</label><br>
+            <label for="r-descri" id ="r-descri" name="r-descri">Post Content</label><br>
             <textarea class="form-control" id="report-description" name="report-description" rows="4" cols="50"></textarea>
         </div>
         <div>
-            <label for="r-tag">Report Tags</label><br>
+            <label for="r-tag">Post Tags</label><br>
             <input class="form-control" type="text" id="r-tag" name="r-tag" placeholder="insert report tags" ><br>
-            <label for="r-image">Report Image</label><br>
+            <label for="r-image">Post Image</label><br>
             <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
 
             <button class="form-control" type="button"> Submit</button>
+            <br>
             <button class="form-control" type="button"> cancel</button>
         </div>
 
@@ -43,23 +43,24 @@
 
 
      <div class="col">
-    <h1>Create a new theme</h1>
+    <h1>Create New Category</h1>
     <hr>
          <br>
 
-    <h2>Forms</h2>
+
 
     <form method = "POST" action = "/create">
         <div>
-            <label for="t-name">Theme Name</label><br>
+            <label for="t-name">Category Name</label><br>
             <input class="form-control" type="text" id="t-name" name="t-name" ><br>
-            <label for="t-descri" id ="t-descri" name="t-descri">Theme Description</label><br>
+            <label for="t-descri" id ="t-descri" name="t-descri">Category Description</label><br>
             <textarea class="form-control" id="theme-description" name="theme-description" rows="4" cols="50"></textarea>
         </div>
         <div>
-            <label for="t-name">Cover Image</label><br>
+            <label for="t-name">Category Image</label><br>
             <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
-            <label for="or">or</label><br>
+            <label for="or">OR</label><br>
+            <label for="or">Choose from Existing Image</label><br>
             <select class="form-control">
                 <option value="img1">img1</option>
                 <option value="img2">img2</option>
@@ -68,7 +69,7 @@
                 <option value="img5">img5</option>
             </select>
             <br>
-            <input class="form-control" type="submit" name="submit-theme" value="submit">
+            <input class="form-control" type="submit" name="submit-theme" value="submit"><br>
             <button class="form-control" type="button"> cancel</button>
 
         </div>
