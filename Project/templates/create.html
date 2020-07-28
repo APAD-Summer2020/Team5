@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block body %}
-<div class="create-report" id="new-report">
+<div class="container">
+    <div class="row">
+               <div class="col">
 <h1>Create New Report</h1>
 <hr>
+               <br>
+
 <h2>Forms</h2>
     <form>
         <div>
@@ -28,18 +32,21 @@
             <label for="r-tag">Report Tags</label><br>
             <input class="form-control" type="text" id="r-tag" name="r-tag" placeholder="insert report tags" ><br>
             <label for="r-image">Report Image</label><br>
-            <button class="form-control" type="button"> Select new image</button><br>
+            <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
+
             <button class="form-control" type="button"> Submit</button>
             <button class="form-control" type="button"> cancel</button>
         </div>
 
     </form>
-</div>
+        </div>
 
-<div class="create-theme" id="create-theme">
-    <hr>
+
+     <div class="col">
     <h1>Create a new theme</h1>
     <hr>
+         <br>
+
     <h2>Forms</h2>
 
     <form method = "POST" action = "/create">
@@ -51,7 +58,7 @@
         </div>
         <div>
             <label for="t-name">Cover Image</label><br>
-            <button class="form-control" type="button"> Select new image</button><br>
+            <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
             <label for="or">or</label><br>
             <select class="form-control">
                 <option value="img1">img1</option>
@@ -66,6 +73,8 @@
 
         </div>
     </form>
+        </div>
+    </div>
 </div>
 
 <script>
