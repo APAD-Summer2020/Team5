@@ -59,17 +59,18 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        usertype = request.form['usertype']
+        permissions = request.form['permissions']
 
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'users').document(username)
+        doc_ref = db_firestore.collection(u'users').document()
         doc_ref.set({
+            u'_id': doc_ref.id,
             u'username': username,
             u'email': email,
             u'password': password,
-            u'type': usertype
+            u'permissions': permissions
         })
-        return render_template('login.html', error=None)
+        
 
     return render_template('signup.html', error=None)
 
