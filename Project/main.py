@@ -28,29 +28,21 @@ def login():
         password = request.form['password']
 
         #Get the document with the entered username
-        query = db_firestore.collection("users").where("username", "==", "ella").get()
+        doc_ref = db_firestore.collection(u'users').document(username)
+        doc = doc_ref.get()
 
-        return render_template('manage.html', data=query)
-
-        '''
-        docs = query.stream()
-        data = OrderedDict([(doc.id, doc.to_dict()) for doc in docs])
-
-        #return render_template('manage.html', data=data)
-        
         #Check if there is a document with that username in the database
-        if len(data) == 1:
+        if doc.exists:
             #If there is, check if the passwords match
-            db_pass = data['password']
+            db_pass = doc.get('password')
             if db_pass == password:
                 #If passwords match, log in.
                 #Send all user information to template.
-                db_username = user['username']
-                db_email = user['email']
-                db_usertype = user['usertype']
-
-                session['usertype'] = user['usertype']
-                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)'''
+                db_username = doc.get('username')
+                db_email = doc.get('email')
+                db_usertype = doc.get('usertype')
+                session['usertype'] = doc.get('usertype')
+                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
         
     return render_template('login.html')
 
