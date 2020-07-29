@@ -116,12 +116,15 @@ def create():
 
 
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'themes').document(posttitle)
+        doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
-            u'theme-description': postcontent
+            u'category': postcategory,
+            u'title': posttitle,
+            u'content': postcontent,
+            u'tags': posttag
 
         })
-        return redirect(url_for('create'))
+        return redirect(url_for('create.html', username=user))
 
 
     return render_template('create.html', username=user)
