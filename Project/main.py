@@ -52,7 +52,7 @@ def login():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     '''
-    TODO: 
+    TODO:
     - Add validation to check if user already exists in the database.
     - Alert to let them know their account was successfully created.
     '''
@@ -132,8 +132,9 @@ def create():
 
 @app.route('/all_themes', methods=['POST', 'GET'])
 def themes():
-    all_themes = db.child("themes").get()
-    return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
+    all_themes1 = db_firestore.collection("categories").stream()
+    all_themes2 = all_themes1
+    return render_template('all_themes.html', all_themes=all_themes1, error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
