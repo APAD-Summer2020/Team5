@@ -6,19 +6,42 @@
 
 {% block body %}
   <h1>SAMPLE BODY HEADER</h1>
-  <p>{{ category }}</p>
-  <div class="onetheme-container">
+  <div class="container">
+    <div class="row">
+
+      <h3 id="heading"></h3>
+      
+      <script>
+        var type = {{ filterType|tojson }};
+        var tags = "tags";
+        var category = "category";
+        
+        if (type == tags) {
+          document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterType }};
+        }/*
+        else if (filterType == 'category') {
+          <h3>Posts with the tag ___</h3>
+        }*/
+
+      </script>
+      
+    </div>
+
+
+
+
+    <!--
     <div class = "onetheme-theme-res">
         <h3 id = "onetheme-res-name"></h3>
         <h4 id = "onetheme-res-date"></h4>
-        <!-- Image -->
+        
         <img id = "onetheme-res-img" src="img_girl.jpg" alt="Item Image"></img>
-        <!-- Tags -->
+        
         <div class="onetheme-res-tags">
           <a id = "onetheme-res-tag" href = ""></a>
         </div>
-        <!-- Description -->
+        
         <p id = "onetheme-res-desc"></p>
-    </div>
+    </div>-->
   </div>
 {% endblock %}

@@ -139,9 +139,19 @@ def themes():
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
     if request.method == 'POST':
-        category = request.form['category']
+        '''
+        TODO: Check if POST is coming from tags or categories.
+        '''
 
-    return render_template('one_theme.html', category=category, error=None)
+        if 'tags' in request.form:
+            filterType = 'tags'
+            #filterValue = request.form['value']
+            return render_template('one_theme.html', filterType=filterType)
+        #elif request.form['name'] == 'categories':
+            #filterType = 'categories'
+            #filterValue = request.form['value']
+
+        return render_template('one_theme.html', filterType=filterType, error=None)
 
 
 
