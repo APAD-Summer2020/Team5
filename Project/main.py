@@ -27,6 +27,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+
         #Get the document with the entered username
         doc_ref = db_firestore.collection(u'users').document(username)
         doc = doc_ref.get()
@@ -43,7 +44,7 @@ def login():
                 db_usertype = doc.get('usertype')
                 session['usertype'] = doc.get('usertype')
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
-        
+
     return render_template('login.html')
 
 
@@ -70,6 +71,7 @@ def signup():
             u'password': password,
             u'usertype': usertype
         })
+        return render_template('login.html', error=None)
 
     return render_template('signup.html', error=None)
 
@@ -110,15 +112,13 @@ def create():
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
         posttag = request.form['p-tag']
-        categoryname = request.form['c-name']
-        categorydescription = request.form['c-descri']
 
 
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
-            u'category': postcategory,
             u'title': posttitle,
+            u'category': postcategory,
             u'content': postcontent,
             u'tags': posttag
 
