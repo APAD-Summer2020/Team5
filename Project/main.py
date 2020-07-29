@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from collections import OrderedDict
 #import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
@@ -26,6 +27,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+
         #Get the document with the entered username
         doc_ref = db_firestore.collection(u'users').document(username)
         doc = doc_ref.get()
@@ -39,10 +41,10 @@ def login():
                 #Send all user information to template.
                 db_username = doc.get('username')
                 db_email = doc.get('email')
-                db_usertype = doc.get('type')
-                session['usertype'] = doc.get('type')
+                db_usertype = doc.get('usertype')
+                session['usertype'] = doc.get('usertype')
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
-        
+
     return render_template('login.html')
 
 
@@ -67,7 +69,7 @@ def signup():
             u'username': username,
             u'email': email,
             u'password': password,
-            u'type': usertype
+            u'usertype': usertype
         })
         return render_template('login.html', error=None)
 
@@ -105,33 +107,21 @@ https://github.com/thisbejim/Pyrebase
 def create():
 
     user = session["usertype"]
-    if request.method == 'POST' and request.method == "submit-theme":
-        themename = request.form['t-name']
-        themedes = request.form['theme-description']
-        # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'themes').document(themename)
-        doc_ref.set({
-            u'theme-description': themedes
-        })
-        return redirect(url_for('create'))
+    if request.method == 'POST':
+        postcategory = request.form['p-category']
+        posttitle = request.form['p-title']
+        postcontent = request.form['post-content']
+        posttag = request.form['p-tag']
 
-    elif request.method == 'POST' and name == 'submit-report':
-        themename = request.form['theme-title']
-        reportname = request.form['r-title']
-        reportdes = request.form['report-description']
-        reporttag = request.form['r-tag']
-        doc_ref = db_firestore.collection(u'themes').document(themename).collection(reports).document(reportname)
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
-            u'report-description': reportdes,
-            u'report-tags': reporttag
+            u'title': posttitle,
+            u'category': postcategory,
+            u'content': postcontent,
+            u'tags': posttag
         })
-        return redirect(url_for('create'))
-    #theme = request.form['theme']
-    #reportname = request.form['r-title']
-    #reportdes = request.form['report-description']
-    #reporttag = request.form['r-tag']
-    #data = {"report-description": reportdes, "report-tags":reporttag}
-    #db.child("themes").child(theme).child(reportname).set(data)
+        return redirect(url_for('create', username=user))
 
     return render_template('create.html', username=user)
 
@@ -149,7 +139,10 @@ def themes():
 
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
-    return render_template('one_theme.html', error=None)
+    if request.method == 'POST':
+        category = request.form['category']
+
+    return render_template('one_theme.html', category=category, error=None)
 
 
 
