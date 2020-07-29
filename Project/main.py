@@ -105,14 +105,25 @@ https://github.com/thisbejim/Pyrebase
 def create():
 
     user = session["usertype"]
-    if request.method == 'POST':
+    if request.method == 'POST' and request.method == "submit-theme":
         themename = request.form['t-name']
         themedes = request.form['theme-description']
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'themes').document(themename)
         doc_ref.set({
             u'theme-description': themedes
+        })
+        return redirect(url_for('create'))
 
+    elif request.method == 'POST' and name == 'submit-report':
+        themename = request.form['theme-title']
+        reportname = request.form['r-title']
+        reportdes = request.form['report-description']
+        reporttag = request.form['r-tag']
+        doc_ref = db_firestore.collection(u'themes').document(themename).collection(reports).document(reportname)
+        doc_ref.set({
+            u'report-description': reportdes,
+            u'report-tags': reporttag
         })
         return redirect(url_for('create'))
     #theme = request.form['theme']
