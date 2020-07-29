@@ -123,7 +123,7 @@ def create():
             u'tags': posttag
 
         })
-        return redirect(url_for('create.html', username=user))
+        return redirect(url_for('create', username=user))
 
 
     return render_template('create.html', username=user)
