@@ -14,7 +14,7 @@
 
     <form>
         <div>
-            <label for="theme">Category</label><br>
+            <label for="theme" >Category</label><br>
             <select class="form-control">
 
                 <option value="th1" >test1</option>
@@ -22,15 +22,15 @@
                 <option value="th1" >test3</option>
 
             </select><br>
-            <label for="t-name">Post Title</label><br>
-            <input class="form-control" type="text" id="r-title" name="r-title" placeholder="insert a report title"><br>
-            <label for="r-descri" id ="r-descri" name="r-descri">Post Content</label><br>
-            <textarea class="form-control" id="report-description" name="report-description" rows="4" cols="50"></textarea>
+            <label for="p-title">Post Title</label><br>
+            <input class="form-control" type="text" id="p-title" name="p-title" placeholder="insert a report title"><br>
+            <label for="p-descri" id ="p-descri" name="p-descri">Post Content</label><br>
+            <textarea class="form-control" id="post-description" name="post-description" rows="4" cols="50"></textarea>
         </div>
         <div>
-            <label for="r-tag">Post Tags</label><br>
-            <input class="form-control" type="text" id="r-tag" name="r-tag" placeholder="insert report tags" ><br>
-            <label for="r-image">Post Image</label><br>
+            <label for="p-tag">Post Tags</label><br>
+            <input class="form-control" type="text" id="p-tag" name="p-tag" placeholder="insert report tags" ><br>
+            <label for="p-image">Post Image</label><br>
             <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
 
             <button class="form-control" type="button"> Submit</button>
@@ -51,9 +51,9 @@
 
     <form method = "POST" action = "/create">
         <div>
-            <label for="t-name">Category Name</label><br>
-            <input class="form-control" type="text" id="t-name" name="t-name" ><br>
-            <label for="t-descri" id ="t-descri" name="t-descri">Category Description</label><br>
+            <label for="c-name">Category Name</label><br>
+            <input class="form-control" type="text" id="c-name" name="c-name" ><br>
+            <label for="c-descri" id ="c-descri" name="c-descri">Category Description</label><br>
             <textarea class="form-control" id="theme-description" name="theme-description" rows="4" cols="50"></textarea>
         </div>
         <div>
