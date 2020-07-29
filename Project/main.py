@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from collections import OrderedDict
 #import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
@@ -27,21 +28,29 @@ def login():
         password = request.form['password']
 
         #Get the document with the entered username
-        doc_ref = db_firestore.collection(u'users').document(username)
-        doc = doc_ref.get()
+        query = db_firestore.collection("users").where("username", "==", "ella").get()
 
+        return render_template('manage.html', data=query)
+
+        '''
+        docs = query.stream()
+        data = OrderedDict([(doc.id, doc.to_dict()) for doc in docs])
+
+        #return render_template('manage.html', data=data)
+        
         #Check if there is a document with that username in the database
-        if doc.exists:
+        if len(data) == 1:
             #If there is, check if the passwords match
-            db_pass = doc.get('password')
+            db_pass = data['password']
             if db_pass == password:
                 #If passwords match, log in.
                 #Send all user information to template.
-                db_username = doc.get('username')
-                db_email = doc.get('email')
-                db_usertype = doc.get('type')
-                session['usertype'] = doc.get('type')
-                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
+                db_username = user['username']
+                db_email = user['email']
+                db_usertype = user['usertype']
+
+                session['usertype'] = user['usertype']
+                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)'''
         
     return render_template('login.html')
 
@@ -59,18 +68,16 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        permissions = request.form['permissions']
+        usertype = request.form['usertype']
 
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'users').document()
+        doc_ref = db_firestore.collection(u'users').document(username)
         doc_ref.set({
-            u'_id': doc_ref.id,
             u'username': username,
             u'email': email,
             u'password': password,
-            u'permissions': permissions
+            u'usertype': usertype
         })
-        
 
     return render_template('signup.html', error=None)
 
@@ -139,7 +146,10 @@ def themes():
 
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
-    return render_template('one_theme.html', error=None)
+    if request.method == 'POST':
+        category = request.form['category']
+
+    return render_template('one_theme.html', category=category, error=None)
 
 
 
