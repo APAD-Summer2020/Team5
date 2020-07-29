@@ -107,21 +107,22 @@ def create():
 
     user = session["usertype"]
     if request.method == 'POST':
-        themename = request.form['t-name']
-        themedes = request.form['theme-description']
+        postcategory = request.form['p-category']
+        posttitle = request.form['p-title']
+        postcontent = request.form['post-content']
+        posttag = request.form['p-tag']
+        categoryname = request.form['c-name']
+        categorydescription = request.form['c-descri']
+
+
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'themes').document(themename)
+        doc_ref = db_firestore.collection(u'themes').document(posttitle)
         doc_ref.set({
-            u'theme-description': themedes
+            u'theme-description': postcontent
 
         })
         return redirect(url_for('create'))
-    #theme = request.form['theme']
-    #reportname = request.form['r-title']
-    #reportdes = request.form['report-description']
-    #reporttag = request.form['r-tag']
-    #data = {"report-description": reportdes, "report-tags":reporttag}
-    #db.child("themes").child(theme).child(reportname).set(data)
+
 
     return render_template('create.html', username=user)
 
