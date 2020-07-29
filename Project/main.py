@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from collections import OrderedDict
 #import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
@@ -39,8 +40,8 @@ def login():
                 #Send all user information to template.
                 db_username = doc.get('username')
                 db_email = doc.get('email')
-                db_usertype = doc.get('type')
-                session['usertype'] = doc.get('type')
+                db_usertype = doc.get('usertype')
+                session['usertype'] = doc.get('usertype')
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
         
     return render_template('login.html')
@@ -59,18 +60,16 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        permissions = request.form['permissions']
+        usertype = request.form['usertype']
 
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'users').document()
+        doc_ref = db_firestore.collection(u'users').document(username)
         doc_ref.set({
-            u'_id': doc_ref.id,
             u'username': username,
             u'email': email,
             u'password': password,
-            u'permissions': permissions
+            u'usertype': usertype
         })
-        
 
     return render_template('signup.html', error=None)
 
@@ -143,7 +142,10 @@ def themes():
 
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
-    return render_template('one_theme.html', error=None)
+    if request.method == 'POST':
+        category = request.form['category']
+
+    return render_template('one_theme.html', category=category, error=None)
 
 
 
