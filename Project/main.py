@@ -42,7 +42,11 @@ def login():
                 db_username = doc.get('username')
                 db_email = doc.get('email')
                 db_usertype = doc.get('usertype')
+
                 session['db_usertype'] = db_usertype
+
+                session['usertype'] = doc.get('usertype')
+
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
 
     return render_template('login.html')
@@ -80,7 +84,8 @@ def signup():
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
 
-    return render_template('manage.html')
+    return render_template('manage.html', error=None)
+
 
 """
 To update data for an existing entry use the update() method.
@@ -103,15 +108,23 @@ https://github.com/thisbejim/Pyrebase
 
 
 
+
 @app.route('/createP', methods=['POST', 'GET'])
 def createP():
     db_usertype = session['db_usertype']
+
+
+@app.route('/create', methods=['POST', 'GET'])
+def create():
+
+    user = session["usertype"]
 
     if request.method == 'POST':
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
         posttag = request.form['p-tag']
+
 
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'posts').document(posttitle)
@@ -141,7 +154,7 @@ def createT():
             u'description': catedescription,
             u'image': cateimage
         })
-        return redirect(url_for('createT',usertype = db_usertype))
+        return redirect(url_for('create',usertype = db_usertype))
 
     return render_template('createT.html',usertype = db_usertype)
 
@@ -151,8 +164,25 @@ def themes():
     all_themes = db.child("themes").get()
     return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
 
+
+
+    return redirect(url_for('create', username=user))
+
+
+    return render_template('create.html', username=user)
+
+
+
+@app.route('/all_categories', methods=['POST', 'GET'])
+def categories():
+    all_themes1 = db_firestore.collection("categories").stream()
+    all_themes2 = all_themes1
+    return render_template('all_categories.html', all_themes=all_themes1, error=None)
+
+
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
+
 
 
 
@@ -162,6 +192,24 @@ def search():
         category = request.form['category']
 
     return render_template('one_theme.html', category=category, error=None)
+
+@app.route('/results', methods=['POST', 'GET'])
+def search():
+    if request.method == 'POST':
+        '''
+        TODO: Check if POST is coming from tags or categories.
+        '''
+
+        if 'tags' in request.form:
+            filterType = 'tags'
+            #filterValue = request.form['value']
+            return render_template('results.html', filterType=filterType)
+        #elif request.form['name'] == 'categories':
+            #filterType = 'categories'
+            #filterValue = request.form['value']
+
+        return render_template('results.html', filterType=filterType, error=None)
+
 
 
 
