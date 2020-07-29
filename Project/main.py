@@ -1,22 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import pyrebase
+from collections import OrderedDict
+#import pyrebase
+import firebase_admin
+from firebase_admin import credentials, firestore, initialize_app
 
-#Database configuration
-config = {
-    "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
-    "authDomain": "apad-team5.firebaseapp.com",
-    "databaseURL": "https://apad-team5.firebaseio.com",
-    "projectId": "apad-team5",
-    "storageBucket": "apad-team5.appspot.com",
-    "messagingSenderId": "311004038430",
-    "appId": "1:311004038430:web:e70bcb7c84b0e96075750f",
-    "measurementId": "G-FSQ5JBDS95"
-}
-#initializing pyrebase
-firebase = pyrebase.initialize_app(config)
-#initializing database
-db = firebase.database()
-auth = firebase.auth()
+'''
+Firestore documentation:
+https://firebase.google.com/docs/firestore
+API:
+https://googleapis.dev/python/firestore/latest/index.html
+'''
+
+# Use the application default credentials
+cred = credentials.Certificate("gc_privatekey.json")
+firebase_admin.initialize_app(cred)
+db_firestore = firestore.client()
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -25,47 +23,64 @@ app.secret_key = "hello"
 @app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+
+        username = request.form['username']
         password = request.form['password']
-        #session["user"] = username
-        try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            return redirect(url_for('manage'))
-        except:
-            message = "Invalid Login Credentials"
-            return render_template('login.html', message=message)
-        return render_template('login.html', error=None)
+
+
+        #Get the document with the entered username
+        doc_ref = db_firestore.collection(u'users').document(username)
+        doc = doc_ref.get()
+
+        #Check if there is a document with that username in the database
+        if doc.exists:
+            #If there is, check if the passwords match
+            db_pass = doc.get('password')
+            if db_pass == password:
+                #If passwords match, log in.
+                #Send all user information to template.
+                db_username = doc.get('username')
+                db_email = doc.get('email')
+                db_usertype = doc.get('usertype')
+                session['db_usertype'] = db_usertype
+                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
+
     return render_template('login.html')
 
-
-""" FOR SEARCHING BY TAG
-From https://dev.to/gogamic/introduction-to-pyrebase-database-2mif
-# reterving data using loops
-all_users = db.child("users").get()
-for user in all_users.each():
-    print(user.key()) # Morty
-    print(user.val()) # {name": "Mortimer 'Morty' Smith"}
-"""
 
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
+    '''
+    TODO:
+    - Add validation to check if user already exists in the database.
+    - Alert to let them know their account was successfully created.
+    '''
+
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
-        user = auth.create_user_with_email_and_password(email, password)
-        data = {"email": email, "password": password, "usertype": usertype}
-        db.child("users").child(username).set(data)
-        return redirect(url_for('manage'))
+
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'users').document(username)
+        doc_ref.set({
+            u'username': username,
+            u'email': email,
+            u'password': password,
+            u'usertype': usertype
+        })
+        return render_template('login.html', error=None)
 
     return render_template('signup.html', error=None)
 
 
+
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
-    return render_template('manage.html', error=None)
+
+    return render_template('manage.html')
 
 """
 To update data for an existing entry use the update() method.
@@ -85,38 +100,69 @@ db.child("users").push(data)
 Source:
 https://github.com/thisbejim/Pyrebase
 """
-@app.route('/create', methods=['POST', 'GET'])
-def create():
-    user = session["user"]
+
+
+
+@app.route('/createP', methods=['POST', 'GET'])
+def createP():
+    db_usertype = session['db_usertype']
 
     if request.method == 'POST':
-        themename = request.form['t-name']
-        themedes = request.form['theme-description']
-        data = {"theme-description": themedes}
-        db.child("themes").child(themename).set(data)
+        postcategory = request.form['p-category']
+        posttitle = request.form['p-title']
+        postcontent = request.form['post-content']
+        posttag = request.form['p-tag']
 
-     #   theme = request.form['theme']
-    #    reportname = request.form['r-title']
-   #     reportdes = request.form['report-description']
-  #      reporttag = request.form['r-tag']
- #       data = {"report-description": reportdes, "report-tags":reporttag}
-#        db.child("themes").child(theme).child(reportname).set(data)
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'posts').document(posttitle)
+        doc_ref.set({
+            u'title': posttitle,
+            u'category': postcategory,
+            u'content': postcontent,
+            u'tags': posttag
+        })
+        return redirect(url_for('createP',usertype = db_usertype))
 
-        return redirect(url_for('create'))
+    return render_template('createP.html',usertype = db_usertype)
 
-    return render_template('create.html', username=user)
+
+@app.route('/createT', methods=['POST', 'GET'])
+def createT():
+    db_usertype = session['db_usertype']
+    if request.method == 'POST':
+        catename = request.form['c-name']
+        catedescription = request.form['c-descri']
+        cateimage = request.form['img']
+
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'categories').document(catename)
+        doc_ref.set({
+            u'name': catename,
+            u'description': catedescription,
+            u'image': cateimage
+        })
+        return redirect(url_for('createT',usertype = db_usertype))
+
+    return render_template('createT.html',usertype = db_usertype)
 
 
 @app.route('/all_themes', methods=['POST', 'GET'])
 def themes():
-
-    return render_template('all_themes.html', error=None)
+    all_themes = db.child("themes").get()
+    return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
+
+
+
 @app.route('/one_theme', methods=['POST', 'GET'])
 def search():
-    return render_template('one_theme.html', error=None)
+    if request.method == 'POST':
+        category = request.form['category']
+
+    return render_template('one_theme.html', category=category, error=None)
+
 
 
 if __name__ == "__main__":
