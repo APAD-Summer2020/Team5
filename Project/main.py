@@ -126,17 +126,17 @@ def create():
 
 
 
-@app.route('/all_themes', methods=['POST', 'GET'])
-def themes():
-    all_themes = db.child("themes").get()
-    return render_template('all_themes.html', all_themes=all_themes.val(), error=None)
+@app.route('/all_categories', methods=['POST', 'GET'])
+def categories():
+    all_categories = db.child("themes").get()
+    return render_template('all_categories.html', all_categories=all_categories.val(), error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
 
 
 
-@app.route('/one_theme', methods=['POST', 'GET'])
+@app.route('/results', methods=['POST', 'GET'])
 def search():
     if request.method == 'POST':
         '''
@@ -146,12 +146,12 @@ def search():
         if 'tags' in request.form:
             filterType = 'tags'
             #filterValue = request.form['value']
-            return render_template('one_theme.html', filterType=filterType)
+            return render_template('results.html', filterType=filterType)
         #elif request.form['name'] == 'categories':
             #filterType = 'categories'
             #filterValue = request.form['value']
 
-        return render_template('one_theme.html', filterType=filterType, error=None)
+        return render_template('results.html', filterType=filterType, error=None)
 
 
 
