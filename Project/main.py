@@ -132,12 +132,9 @@ def create():
 
 @app.route('/all_categories', methods=['POST', 'GET'])
 def categories():
-    all_themes1 = db_firestore.collection("categories").stream()
-    all_themes2 = all_themes1
-    return render_template('all_categories.html', all_themes=all_themes1, error=None)
+    all_categories = db_firestore.collection("categories").stream()
 
-# db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
-# https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
+    return render_template('all_categories.html', all_categories=all_categories, error=None)
 
 
 
@@ -155,15 +152,20 @@ def search():
             TODO: Use regex to get tags from the format #tag1#tag2#tag3
             '''
             #Get data
-            posts = db_firestore.collection("posts")
-            return render_template('results.html', filterType=filterType, filterValue=filterValue, posts=posts)
-        #elif 'category' in request.form:
-            #filterType = 'category'
-            #filterValue = request.form['value']
+            dataStream = db_firestore.collection(u'posts').stream()
+            data = []
+            for doc in dataStream:
+                data.append(doc.to_dict())
 
-        return render_template('results.html', filterType=filterType, error=None)
+            return render_template('results.html', filterType=filterType, filterValue=filterValue, data=data)
+            
+        elif 'category' in request.form:
+            filterType = 'category'
+            filterValue = request.form['category']
 
+            return render_template('results.html', filterType=filterType, filterValue=filterValue, error=None)
 
+    return render_template('results.html', error=None)
 
 if __name__ == "__main__":
     app.run(debug=True)

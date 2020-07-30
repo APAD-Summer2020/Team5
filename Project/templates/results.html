@@ -5,32 +5,43 @@
 {% endblock %}
 
 {% block body %}
-  <h1>SAMPLE BODY HEADER</h1>
+  <h1>Results</h1>
   <div class="container">
     <div class="row">
 
       <h3 id="heading"></h3>
+      <p id="testPara"></p>
       <!--#doc.to_dict().name-->
-      <p>{{ filterValue }}</p>
       
       <script>
-        var type = {{ filterType|tojson }};
+        
         var tags = "tags";
         var category = "category";
-        
+
+        var type = {{ filterType|tojson }};
+        var category = '';
+
+        data = {{data|tojson}}
+
         
         if (type == tags) {
-          document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterType }};
+          document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterValue }};
 
           /*GET THE DATA*/
 
-        }/*
-        else if (filterType == 'category') {
+        }
+        /*if (type == 'category') {
+          document.getElementById('heading').innerHTML = "Categories with the tags: " + {{ filterValue }};
+
+
+        }*/
+        
+        /*
+        else if (type == 'category') {
           <h3>Posts with the tag ___</h3>
         }*/
 
       </script>
-      
     </div>
 
 
