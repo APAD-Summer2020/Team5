@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Post Reports</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+               <div class="col">
+<h1>Create New Post</h1>
+<hr>
+               <br>
+
+    <form method = "POST" action = "/createP">
+        <div>
+            <label for="theme" >Category</label><br>
+            <select class="form-control" name="p-category">
+
+                <option value="th1" >test1</option>
+                <option value="th1" >test2</option>
+                <option value="th1" >test3</option>
+
+            </select><br>
+            <label >Post Title</label><br>
+            <input class="form-control" type="text" id="p-title" name="p-title" placeholder="insert a report title"><br>
+            <label for="p-descri" id ="p-descri" name="p-content">Post Content</label><br>
+            <textarea class="form-control" id="post-description" name="post-content" rows="4" cols="50"></textarea><br>
+            <label for="p-tag">Post Tags</label><br>
+            <input class="form-control" type="text" id="p-tag" name="p-tag" placeholder="insert report tags" ><br>
+            <label for="p-image">Post Image</label><br>
+            <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
+
+            <div class="btn-group">
+
+            <input class="form-control btn btn-primary" type="submit" name="Submit" value="Submit">
+
+            <input class="form-control btn btn-default" type="reset" name="Cancel" value="Cancel">
+            </div>
+        </div>
+
+    </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+

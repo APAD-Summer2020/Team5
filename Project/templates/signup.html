@@ -7,8 +7,12 @@
     <title>Create Account</title>
 </head>
 <body>
+
   <div class="signupbox">
     <form method = "POST" action = "/signup">
+        {% if message %}
+        {{ message }}
+        {% endif %}
         <h3>Create a New Account</h3>
         <p>Username:</p>
         <input type="text" name="username" placeholder="Enter Username">
@@ -24,6 +28,8 @@
         <br>
         <br>
         <input type="submit" name="register" value="Register">
+        <br><br>
+        <a href="/">Back to Login</a>
     </form>
   </div>
 </body>

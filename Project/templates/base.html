@@ -12,35 +12,64 @@
 </head>
 <body>
     <div class="jumbotron text-center" style="margin-bottom:0;">
-        <h1>Covid cuisine</h1>
-        <p>Honestly, just dont come out and eat during covid</p>
+        <h1>COVID-19 Cuisine</h1>
+        <p>Honestly, just dont go out to eat during covid</p>
       </div>
-      
-      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <a class="navbar-brand" href="/manage">Home</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+
+      <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <a class="navbar-brand" href="/manage">COVID-19 Cuisine</a>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-          <ul class="navbar-nav">
+        <div class="collapse navbar-collapse" id="navbarMenu">
+          <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/create">Create</a>
+              <a class="nav-link" href="/manage">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/all_themes">Themes</a>
+              <a class="nav-link" href="/createP">Create Posts</a>
             </li>
+            <div class = "create-theme" id="create-theme">
+              <li class="nav-item">
+              <a class="nav-link" href="/createT">Create Theme</a>
+            </li>
+            </div>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/all_themes">All Themes</a>
+            </li>
+            <form class="form-inline" action="one_theme" method="POST">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="category">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
           </ul>
-          <form class="form-inline my-2 my-lg-0" action="/one_theme" method="POST">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>  
+          <ul class="navbar-nav ml-auto">
+            <form class="form-inline" action="one_theme" method="POST">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+            </form>
+          </ul>
+        </div>
+
       </nav>
-      
+
+<script>
+    document.getElementById("create-theme").style.display ="none";
+    var username = {{ usertype|tojson }};
+    if (username == 'commercial'){
+        document.getElementById("create-theme").style.display = "block";
+    }
+
+</script>
+
       <div class="container" style="margin-top:30px">
         <div class="row">
           {% block body %}{% endblock %}
         </div>
       </div>
+
+      <!--Bootstrap JS-->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
