@@ -19,6 +19,8 @@ db_firestore = firestore.client()
 app = Flask(__name__)
 app.secret_key = "hello"
 
+#test
+
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -79,8 +81,8 @@ def signup():
 
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
-
-    return render_template('manage.html')
+    db_usertype = session['db_usertype']
+    return render_template('manage.html',usertype = db_usertype)
 
 """
 To update data for an existing entry use the update() method.
@@ -108,14 +110,21 @@ def createP():
     db_usertype = session['db_usertype']
 
     if request.method == 'POST':
+        postid = ObjectId()
+        pritn(postid)
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
         posttag = request.form['p-tag']
+        getCategory = db_firestore.collection(u'categories').stream()
+
+   #     for doc in getCategory:
+   #         print(f'{doc.id}')
 
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
+            u'id': postid,
             u'title': posttitle,
             u'category': postcategory,
             u'content': postcontent,
