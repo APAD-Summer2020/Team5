@@ -159,7 +159,7 @@ def search():
             filterValue = request.form['category']
 
             #GET DATA STREAM
-            
+            posts = db_firestore.collection("posts").where("category", "==", filterValue)
 
             return render_template('results.html', type='category', filterValue=filterValue)
 
