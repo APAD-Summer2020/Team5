@@ -159,32 +159,37 @@ def createT():
 
 @app.route('/all_categories', methods=['POST', 'GET'])
 def categories():
-    all_themes1 = db_firestore.collection("categories").stream()
-    return render_template('all_categories.html', all_themes=all_themes1, error=None)
+    all_categories = db_firestore.collection("categories").stream()
 
-
-# db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
-# https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
+    return render_template('all_categories.html', all_categories=all_categories, error=None)
 
 
 @app.route('/results', methods=['POST', 'GET'])
 def search():
     if request.method == 'POST':
         '''
-        TODO: Check if POST is coming from tags or categories.
+        TODO: Get elif for categories to work.
         '''
 
         if 'tags' in request.form:
-            filterType = 'tags'
-            #filterValue = request.form['value']
-            return render_template('results.html', filterType=filterType)
-        #elif request.form['name'] == 'categories':
-            #filterType = 'categories'
-            #filterValue = request.form['value']
+            searchInput = request.form['filterValue']
+            tags = searchInput.split("#")
 
-        return render_template('results.html', filterType=filterType, error=None)
+            #GET DATA STREAM
+            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tags).stream()
+            
 
+            return render_template('results.html', type='tags', tags=tags, posts=posts)
+            
+        elif 'category' in request.form:
+            filterValue = request.form['category']
 
+            #GET DATA STREAM
+            posts = db_firestore.collection("posts").where("category", "==", filterValue)
+
+            return render_template('results.html', type='category', filterValue=filterValue)
+
+    return render_template('results.html', error=None)
 
 if __name__ == "__main__":
     app.run(debug=True)

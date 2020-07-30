@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block head %}
@@ -6,44 +5,27 @@
 {% endblock %}
 
 {% block body %}
-
-  <h1>SAMPLE BODY HEADER</h1>
+  <h1>Results</h1>
   <div class="container">
     <div class="row">
-
-      <h3 id="heading"></h3>
       
-      <script>
-        var type = {{ filterType|tojson }};
-        var tags = "tags";
-        var category = "category";
+      <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+      {% if type == "tags" %}
+        <h5>Showing posts for the tags: {{ '#'.join(tags) }}</h5>
         
-        if (type == tags) {
-          document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterType }};
-        }/*
-        else if (filterType == 'category') {
-          <h3>Posts with the tag ___</h3>
-        }*/
+        {%for post in posts%}
+          <p>{{post.to_dict().tags}}</p>
+        {%endfor%}
+      {% endif %}
 
-      </script>
+      <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
+      {% if type == "category" %}
+        <p>Showing posts in the category: {{ filterValue }}</p>
+        {%for post in posts%}
+          <p>{{post.to_dict().tags}}</p>
+        {%endfor%}
+      {% endif %}
       
     </div>
-
-
-
-
-    <!--
-    <div class = "onetheme-theme-res">
-        <h3 id = "onetheme-res-name"></h3>
-        <h4 id = "onetheme-res-date"></h4>
-        
-        <img id = "onetheme-res-img" src="img_girl.jpg" alt="Item Image"></img>
-        
-        <div class="onetheme-res-tags">
-          <a id = "onetheme-res-tag" href = ""></a>
-        </div>
-        
-        <p id = "onetheme-res-desc"></p>
-    </div>-->
   </div>
 {% endblock %}
