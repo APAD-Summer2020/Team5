@@ -19,6 +19,8 @@ db_firestore = firestore.client()
 app = Flask(__name__)
 app.secret_key = "hello"
 
+#test
+
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -42,7 +44,8 @@ def login():
                 db_username = doc.get('username')
                 db_email = doc.get('email')
                 db_usertype = doc.get('usertype')
-                session['usertype'] = doc.get('usertype')
+                session['db_usertype'] = db_usertype
+
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
 
     return render_template('login.html')
@@ -80,7 +83,10 @@ def signup():
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
 
-    return render_template('manage.html', error=None)
+    db_usertype = session['db_usertype']
+    return render_template('manage.html',usertype = db_usertype)
+
+
 
 """
 To update data for an existing entry use the update() method.
@@ -103,16 +109,19 @@ https://github.com/thisbejim/Pyrebase
 
 
 
-@app.route('/create', methods=['POST', 'GET'])
-def create():
+@app.route('/createP', methods=['POST', 'GET'])
+def createP():
+    db_usertype = session['db_usertype']
 
-    user = session["usertype"]
     if request.method == 'POST':
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
         posttag = request.form['p-tag']
+ #   getCategory = db_firestore.collection(u'categories').stream()
 
+   #     for doc in getCategory:
+   #         print(f'{doc.id}')
 
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'posts').document(posttitle)
@@ -121,13 +130,31 @@ def create():
             u'category': postcategory,
             u'content': postcontent,
             u'tags': posttag
-
         })
-        return redirect(url_for('create', username=user))
+        return redirect(url_for('createP',usertype = db_usertype))
+
+    return render_template('createP.html',usertype = db_usertype)
 
 
-    return render_template('create.html', username=user)
+@app.route('/createT', methods=['POST', 'GET'])
+def createT():
+    db_usertype = session['db_usertype']
+    if request.method == 'POST':
+        catename = request.form['c-name']
+        catedescription = request.form['c-descri']
+        cateimage = request.form['img']
 
+        # NEW CODE USING FIRESTORE
+        doc_ref = db_firestore.collection(u'categories').document(catename)
+        doc_ref.set({
+            u'name': catename,
+            u'description': catedescription,
+            u'image': cateimage
+        })
+
+        return redirect(url_for('createP',usertype = db_usertype))
+
+    return render_template('createP.html',usertype = db_usertype)
 
 
 @app.route('/all_categories', methods=['POST', 'GET'])
@@ -135,7 +162,6 @@ def categories():
     all_categories = db_firestore.collection("categories").stream()
 
     return render_template('all_categories.html', all_categories=all_categories, error=None)
-
 
 
 @app.route('/results', methods=['POST', 'GET'])
