@@ -156,10 +156,12 @@ def search():
             return render_template('results.html', type='tags', tags=tags, posts=posts)
             
         elif 'category' in request.form:
-        #else:
             filterValue = request.form['category']
 
-            return render_template('results.html', type='category')
+            #GET DATA STREAM
+            
+
+            return render_template('results.html', type='category', filterValue=filterValue)
 
     return render_template('results.html', error=None)
 

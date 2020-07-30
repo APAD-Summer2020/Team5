@@ -9,13 +9,15 @@
 
   <div class="allthemes-container">
     <form class="allthemes-form" action="results" method="POST">
-    {% for doc in all_categories %}
-
-      <div class="all-themes-theme">
-        <input type='image' name="category" id= "alltheme-theme-img" src="" alt="Image for category: {{doc.to_dict().name}}" value="{{doc.to_dict().name}}">
-          <label for="alltheme-theme-img" name="category" alt="Submit" value="{{doc.to_dict().name}}"> {{doc.to_dict().name}} </label>
-      </div>
-    {% endfor %}
+      
+      {% for doc in all_categories %}
+        <div class="all-themes-theme">
+          <button for="alltheme-theme-img" name="category" alt="Submit" value="{{doc.to_dict().name}}" style="background: none; border: none;">
+            <img src="" alt="Image for category: {{doc.to_dict().name}}">
+            {{doc.to_dict().name}} 
+          </button>
+        </div>
+      {% endfor %}
     
     </form>
   </div>

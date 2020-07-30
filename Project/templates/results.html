@@ -11,7 +11,8 @@
       
       <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
       {% if type == "tags" %}
-      <p>Showing posts for the tags: {{ '#'.join(tags) }}</p>
+        <h5>Showing posts for the tags: {{ '#'.join(tags) }}</h5>
+        
         {%for post in posts%}
           <p>{{post.to_dict().tags}}</p>
         {%endfor%}
@@ -19,7 +20,7 @@
 
       <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
       {% if type == "category" %}
-        <p>Showing posts in the category: _____</p>
+        <p>Showing posts in the category: {{ filterValue }}</p>
         {%for post in posts%}
           <p>{{post.to_dict().tags}}</p>
         {%endfor%}
