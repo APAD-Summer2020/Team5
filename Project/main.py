@@ -112,7 +112,7 @@ https://github.com/thisbejim/Pyrebase
 @app.route('/createP', methods=['POST', 'GET'])
 def createP():
     db_usertype = session['db_usertype']
-
+    all_themes1 = db_firestore.collection("categories").stream()
     if request.method == 'POST':
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
@@ -133,7 +133,7 @@ def createP():
         })
         return redirect(url_for('createP',usertype = db_usertype))
 
-    return render_template('createP.html',usertype = db_usertype)
+    return render_template('createP.html',usertype = db_usertype, all_themes=all_themes1)
 
 
 @app.route('/createT', methods=['POST', 'GET'])
@@ -152,9 +152,9 @@ def createT():
             u'image': cateimage
         })
 
-        return redirect(url_for('createP',usertype = db_usertype))
+        return redirect(url_for('createT',usertype = db_usertype))
 
-    return render_template('createP.html',usertype = db_usertype)
+    return render_template('createT.html',usertype = db_usertype)
 
 
 @app.route('/all_categories', methods=['POST', 'GET'])
