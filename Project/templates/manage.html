@@ -5,18 +5,25 @@
 {% endblock%}
 
 {% block body %}
+<div class="container">
+
 <h1>Manage your content</h1>
 <hr>
 <br>
+     <div class="row">
+          <div class="col">
 <h2>Your reports</h2>
 
 <div>
+    <img src="" alt="image1"><br>
+
     <button type="button"> Prev Report</button>
-    <img src="" alt="image1">
+
     <button type="button"> Next Report</button>
 </div>
-
+          </div>
 <hr>
+         <div class="col">
 <h3> Subscribed themes</h3>
 <div>
     <a href = "#"> Theme 1</a>
@@ -24,8 +31,11 @@
     <img src="" alt="image2">
     <br>
     <button type="button">unsubscribe</button>
-
-
+</div>
+           </div>
+</div>
+         </div>
+    </div>
 </div>
 {%endblock%}
 
