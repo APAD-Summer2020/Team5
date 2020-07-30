@@ -110,8 +110,6 @@ def createP():
     db_usertype = session['db_usertype']
 
     if request.method == 'POST':
-        postid = ObjectId()
-        pritn(postid)
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
@@ -124,7 +122,6 @@ def createP():
         # NEW CODE USING FIRESTORE
         doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
-            u'id': postid,
             u'title': posttitle,
             u'category': postcategory,
             u'content': postcontent,
