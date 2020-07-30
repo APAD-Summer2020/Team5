@@ -1,21 +1,31 @@
 {% extends 'base.html' %}
 
 {% block head %}
-  <title>View</title>
+  <title>Categories</title>
 {% endblock %}
 
 {% block body %}
-  <h1>View All Themes</h1>
+  <h1>View Categories</h1>
 
   <div class="allthemes-container">
-    {% for doc in all_themes %}
-    <div class="all-themes-theme">
-      <h4 id="alltheme-theme-name"> {{doc.to_dict().name}} </h4>
-      <a href="">
-        <img id= "alltheme-theme-img" src="" alt="{{doc.to_dict().name}}">
-      </a>
-    </div>
-    {% endfor %}
+    <form class="allthemes-form" action="results" method="POST">
+      
+      {% for doc in all_categories %}
+        <div class="all-themes-theme">
+          <button for="alltheme-theme-img" name="category" alt="Submit" value="{{doc.to_dict().name}}" style="background: none; border: none;">
+            <img src="" alt="Image for category: {{doc.to_dict().name}}">
+            {{doc.to_dict().name}} 
+          </button>
+        </div>
+      {% endfor %}
+    
+    </form>
   </div>
+
+
+
+
+
+
 
 {% endblock %}
