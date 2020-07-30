@@ -159,13 +159,15 @@ def createT():
 
 @app.route('/all_categories', methods=['POST', 'GET'])
 def categories():
+    db_usertype = session['db_usertype']
     all_categories = db_firestore.collection("categories").stream()
 
-    return render_template('all_categories.html', all_categories=all_categories, error=None)
+    return render_template('all_categories.html', all_categories=all_categories, usertype = db_usertype,error=None)
 
 
 @app.route('/results', methods=['POST', 'GET'])
 def search():
+    db_usertype = session['db_usertype']
     if request.method == 'POST':
         '''
         TODO: Get elif for categories to work.
@@ -179,7 +181,7 @@ def search():
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tags).stream()
             
 
-            return render_template('results.html', type='tags', tags=tags, posts=posts)
+            return render_template('results.html', type='tags', tags=tags, posts=posts,usertype = db_usertype)
             
         elif 'category' in request.form:
             filterValue = request.form['category']
@@ -187,7 +189,7 @@ def search():
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("category", "==", filterValue)
 
-            return render_template('results.html', type='category', filterValue=filterValue)
+            return render_template('results.html', type='category', filterValue=filterValue,usertype = db_usertype)
 
     return render_template('results.html', error=None)
 
