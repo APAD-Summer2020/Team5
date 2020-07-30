@@ -142,13 +142,18 @@ def search():
         '''
         TODO: Check if POST is coming from tags or categories.
         '''
-
+        
         if 'tags' in request.form:
             filterType = 'tags'
-            #filterValue = request.form['value']
-            return render_template('results.html', filterType=filterType)
-        #elif request.form['name'] == 'categories':
-            #filterType = 'categories'
+            filterValue = request.form['filterValue']
+            '''
+            TODO: Use regex to get tags from the format #tag1#tag2#tag3
+            '''
+            #Get data
+            posts = db_firestore.collection("posts")
+            return render_template('results.html', filterType=filterType, filterValue=filterValue, posts=posts)
+        #elif 'category' in request.form:
+            #filterType = 'category'
             #filterValue = request.form['value']
 
         return render_template('results.html', filterType=filterType, error=None)

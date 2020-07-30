@@ -10,14 +10,20 @@
     <div class="row">
 
       <h3 id="heading"></h3>
+      <!--#doc.to_dict().name-->
+      <p>{{ filterValue }}</p>
       
       <script>
         var type = {{ filterType|tojson }};
         var tags = "tags";
         var category = "category";
         
+        
         if (type == tags) {
           document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterType }};
+
+          /*GET THE DATA*/
+
         }/*
         else if (filterType == 'category') {
           <h3>Posts with the tag ___</h3>
