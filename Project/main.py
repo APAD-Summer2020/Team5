@@ -107,6 +107,7 @@ https://github.com/thisbejim/Pyrebase
 def create():
 
     user = session["usertype"]
+    all_themes1 = db_firestore.collection("categories").stream()
     if request.method == 'POST':
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
@@ -126,14 +127,13 @@ def create():
         return redirect(url_for('create', username=user))
 
 
-    return render_template('create.html', username=user)
+    return render_template('create.html', all_themes=all_themes1, username=user, error=None)
 
 
 
 @app.route('/all_categories', methods=['POST', 'GET'])
 def categories():
     all_themes1 = db_firestore.collection("categories").stream()
-    all_themes2 = all_themes1
     return render_template('all_categories.html', all_themes=all_themes1, error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()

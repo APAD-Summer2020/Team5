@@ -16,11 +16,9 @@
         <div>
             <label for="theme" >Category</label><br>
             <select class="form-control" name="p-category">
-
-                <option value="th1" >test1</option>
-                <option value="th1" >test2</option>
-                <option value="th1" >test3</option>
-
+              {% for doc in all_themes %}
+                <option value="{{doc.to_dict().name}}" >{{doc.to_dict().name}}</option>
+              {% endfor %}
             </select><br>
             <label >Post Title</label><br>
             <input class="form-control" type="text" id="p-title" name="p-title" placeholder="insert a report title"><br>
@@ -89,5 +87,3 @@
 
 </script>
 {% endblock %}
-
-
