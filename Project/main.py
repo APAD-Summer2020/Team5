@@ -27,6 +27,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+
         #Get the document with the entered username
         doc_ref = db_firestore.collection(u'users').document(username)
         doc = doc_ref.get()
@@ -43,7 +44,7 @@ def login():
                 db_usertype = doc.get('usertype')
                 session['usertype'] = doc.get('usertype')
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
-        
+
     return render_template('login.html')
 
 
@@ -51,7 +52,7 @@ def login():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     '''
-    TODO: 
+    TODO:
     - Add validation to check if user already exists in the database.
     - Alert to let them know their account was successfully created.
     '''
@@ -70,6 +71,7 @@ def signup():
             u'password': password,
             u'usertype': usertype
         })
+        return render_template('login.html', error=None)
 
     return render_template('signup.html', error=None)
 
@@ -106,21 +108,23 @@ def create():
 
     user = session["usertype"]
     if request.method == 'POST':
-        themename = request.form['t-name']
-        themedes = request.form['theme-description']
+        postcategory = request.form['p-category']
+        posttitle = request.form['p-title']
+        postcontent = request.form['post-content']
+        posttag = request.form['p-tag']
+
+
         # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'themes').document(themename)
+        doc_ref = db_firestore.collection(u'posts').document(posttitle)
         doc_ref.set({
-            u'theme-description': themedes
+            u'title': posttitle,
+            u'category': postcategory,
+            u'content': postcontent,
+            u'tags': posttag
 
         })
-        return redirect(url_for('create'))
-    #theme = request.form['theme']
-    #reportname = request.form['r-title']
-    #reportdes = request.form['report-description']
-    #reporttag = request.form['r-tag']
-    #data = {"report-description": reportdes, "report-tags":reporttag}
-    #db.child("themes").child(theme).child(reportname).set(data)
+        return redirect(url_for('create', username=user))
+
 
     return render_template('create.html', username=user)
 
@@ -128,8 +132,9 @@ def create():
 
 @app.route('/all_categories', methods=['POST', 'GET'])
 def categories():
-    all_categories = db.child("themes").get()
-    return render_template('all_categories.html', all_categories=all_categories.val(), error=None)
+    all_themes1 = db_firestore.collection("categories").stream()
+    all_themes2 = all_themes1
+    return render_template('all_categories.html', all_themes=all_themes1, error=None)
 
 # db.child("companies/data").order_by_child("id").equal_to(company_id).limit_to_first(1).get()
 # https://stackoverflow.com/questions/50893423/how-to-get-single-item-in-pyrebase
