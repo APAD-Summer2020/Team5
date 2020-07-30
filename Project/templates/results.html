@@ -8,40 +8,36 @@
   <h1>Results</h1>
   <div class="container">
     <div class="row">
-
-      <h3 id="heading"></h3>
-      <p id="testPara"></p>
-      <!--#doc.to_dict().name-->
       
-      <script>
-        
-        var tags = "tags";
-        var category = "category";
+      <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+      {% if type == "tags" %}
+      <p>Showing posts for the tags: {{ '#'.join(tags) }}</p>
+        {%for post in posts%}
+          <p>{{post.to_dict().tags}}</p>
+        {%endfor%}
+      {% endif %}
 
-        var type = {{ filterType|tojson }};
-        var category = '';
+      <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
+      {% if type == "category" %}
+        <p>Showing posts in the category: _____</p>
+        {%for post in posts%}
+          <p>{{post.to_dict().tags}}</p>
+        {%endfor%}
+      {% endif %}
 
-        data = {{data|tojson}}
+      <!--
+      {% for doc in posts %}
+        <p>{{doc.to_dict()}}</p>
 
-        
-        if (type == tags) {
-          document.getElementById('heading').innerHTML = "Posts with the tags: " + {{ filterValue }};
-
-          /*GET THE DATA*/
-
-        }
-        /*if (type == 'category') {
-          document.getElementById('heading').innerHTML = "Categories with the tags: " + {{ filterValue }};
+      {%endfor%}
+      -->
 
 
-        }*/
-        
-        /*
-        else if (type == 'category') {
-          <h3>Posts with the tag ___</h3>
-        }*/
-
-      </script>
+      {% for doc in posts %}
+        <!--PRINT DATA-->
+        <p>{{doc.to_dict().title}}</p>
+      {% endfor %}
+      
     </div>
 
 

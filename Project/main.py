@@ -142,28 +142,24 @@ def categories():
 def search():
     if request.method == 'POST':
         '''
-        TODO: Check if POST is coming from tags or categories.
+        TODO: Get elif for categories to work.
         '''
-        
-        if 'tags' in request.form:
-            filterType = 'tags'
-            filterValue = request.form['filterValue']
-            '''
-            TODO: Use regex to get tags from the format #tag1#tag2#tag3
-            '''
-            #Get data
-            dataStream = db_firestore.collection(u'posts').stream()
-            data = []
-            for doc in dataStream:
-                data.append(doc.to_dict())
 
-            return render_template('results.html', filterType=filterType, filterValue=filterValue, data=data)
+        if 'tags' in request.form:
+            searchInput = request.form['filterValue']
+            tags = searchInput.split("#")
+
+            #GET DATA STREAM
+            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tags).stream()
+            
+
+            return render_template('results.html', type='tags', tags=tags, posts=posts)
             
         elif 'category' in request.form:
-            filterType = 'category'
+        #else:
             filterValue = request.form['category']
 
-            return render_template('results.html', filterType=filterType, filterValue=filterValue, error=None)
+            return render_template('results.html', type='category')
 
     return render_template('results.html', error=None)
 
