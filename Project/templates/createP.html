@@ -19,7 +19,7 @@
             <select class="form-control" name="p-category">
 
               {% for doc in all_themes %}
-                <option value="{{doc.to_dict().name}}" >{{doc.to_dict().name}}</option>
+                <option value="{{doc.to_dict().name}}" >{{doc.to_dict().name.capitalize()}}</option>
               {% endfor %}
 
             </select><br>
