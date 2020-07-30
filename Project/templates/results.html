@@ -24,37 +24,7 @@
           <p>{{post.to_dict().tags}}</p>
         {%endfor%}
       {% endif %}
-
-      <!--
-      {% for doc in posts %}
-        <p>{{doc.to_dict()}}</p>
-
-      {%endfor%}
-      -->
-
-
-      {% for doc in posts %}
-        <!--PRINT DATA-->
-        <p>{{doc.to_dict().title}}</p>
-      {% endfor %}
       
     </div>
-
-
-
-
-    <!--
-    <div class = "onetheme-theme-res">
-        <h3 id = "onetheme-res-name"></h3>
-        <h4 id = "onetheme-res-date"></h4>
-        
-        <img id = "onetheme-res-img" src="img_girl.jpg" alt="Item Image"></img>
-        
-        <div class="onetheme-res-tags">
-          <a id = "onetheme-res-tag" href = ""></a>
-        </div>
-        
-        <p id = "onetheme-res-desc"></p>
-    </div>-->
   </div>
 {% endblock %}
