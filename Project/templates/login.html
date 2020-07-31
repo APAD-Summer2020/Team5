@@ -1,25 +1,39 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
 <title>Login</title>
 
 <body>
+
     <div class="loginbox">
-        {% if message %}
-            {{message}}
-        {% endif %}
-        <h4></h4>
         <h1>Login</h1>
+
         <form method = "POST" action = "/">
+
+            {% if message %}
+            <div class="alert alert-danger" style="padding:2px"  role="alert">
+
+            {{message}}
+            </div>
+            {% endif %}
+
+            <br>
+
             <p>Username</p>
             <input type="text" name="username" placeholder="Enter Username">
+
+
             <p>Password</p>
             <input type="password" name="password" placeholder="Enter Password">
             <br><br>
+
             <input type="submit" name="login" value="Login">
+
         </form>
 
-        <a href="/signup">Sign Up</a>
+        <a href="/signup" style="font-size:18px">Sign Up</a>
 
     </div>
 
