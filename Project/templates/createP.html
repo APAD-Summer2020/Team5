@@ -2,7 +2,9 @@
 
 {% block head %}
 <title>Post Reports</title>
+
 {% endblock %}
+
 
 {% block body %}
 <div class="container">
@@ -10,7 +12,14 @@
                <div class="col">
 <h1>Create New Post</h1>
 <hr>
-               <br>
+<br>
+{% if message %}
+<div class="alert alert-danger" style="padding:2px"  role="alert">
+
+{{message}}
+</div>
+{% endif %}
+
 
     <form method = "POST" action = "/createP">
         <div>

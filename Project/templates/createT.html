@@ -9,7 +9,14 @@
 
     <div class="row"><div class="col">
     <h1>Create New Category</h1>
+
     <hr><br>
+        {% if message %}
+        <div class="alert alert-danger" style="padding:2px"  role="alert">
+
+        {{message}}
+        </div>
+        {% endif %}
 
 
     <form method = "POST" action = "/createT">
