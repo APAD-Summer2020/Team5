@@ -5,29 +5,49 @@
 {% endblock %}
 
 {% block body %}
-  <h1>Results</h1>
-  <div class="container">
-    <div class="row">
-      
-      <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
-      {% if type == "tags" %}
-        <h5>Showing posts for the tags: {{ '#'.join(tags) }}</h5>
-        
-        {%for post in posts%}
-          <p>{{post.to_dict().tags}}</p>
-        {%endfor%}
-      {% endif %}
-
-      <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
-      {% if type == "category" %}
-        <h5>Showing posts in the category: {{ filterValue }}</h5>
-        
-        {%for post in posts%}
-          <p>{{post.to_dict().title}}</p>
-          <p>{{post.to_dict().author}}</p>
-        {%endfor%}
-      {% endif %}
-      
+  
+  <div class="container my-container">
+    <div class="row my-row">
+      <h1>Results</h1>
     </div>
+    <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+    {% if type == "tags" %}
+      <div class="row my-row">
+        <h5>Showing posts for the tags: {{tags}}</h5>
+      </div>
+      {% for post in posts %}
+        <div class="row my-row p-3">
+          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+          <div class="my-col col-md-8 col-lg-9">
+            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+            <p>{{post.to_dict().content}}</p>
+            <p>Category: {{post.to_dict().category.title()}}</p>
+            <p>Tags: {{tags}}</p>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
+    {% if type == "category" %}
+      <div class="row my-row">
+        <h5>Showing posts in the category: {{ filterValue.title() }}</h5>
+      </div>
+      {% for post in posts %}
+        <div class="row my-row p-3">
+          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+          <div class="my-col col-md-8 col-lg-9">
+            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+            <p>{{post.to_dict().content}}</p>
+            <p>Category: {{post.to_dict().category.title()}}</p>
+            <p>Tags: {{tags}}</p>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+
+
+    
   </div>
 {% endblock %}
