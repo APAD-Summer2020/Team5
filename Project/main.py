@@ -29,7 +29,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-
         #Get the document with the entered username
         doc_ref = db_firestore.collection(u'users').document(username)
         doc = doc_ref.get()
@@ -45,6 +44,7 @@ def login():
                 db_email = doc.get('email')
                 db_usertype = doc.get('usertype')
                 session['db_usertype'] = db_usertype
+                session['db_username'] = db_username
 
                 return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
 
@@ -112,6 +112,7 @@ https://github.com/thisbejim/Pyrebase
 @app.route('/createP', methods=['POST', 'GET'])
 def createP():
     db_usertype = session['db_usertype']
+    db_username = session['db_username']
     all_themes1 = db_firestore.collection("categories").stream()
     if request.method == 'POST':
         postcategory = request.form['p-category']
@@ -130,7 +131,8 @@ def createP():
             u'title': posttitle,
             u'category': postcategory,
             u'content': postcontent,
-            u'tags': posttags
+            u'tags': posttags,
+            u'author': db_username
         })
         return redirect(url_for('createP',usertype = db_usertype))
 
