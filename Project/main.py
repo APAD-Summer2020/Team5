@@ -117,7 +117,8 @@ def createP():
         postcategory = request.form['p-category']
         posttitle = request.form['p-title']
         postcontent = request.form['post-content']
-        posttag = request.form['p-tag']
+        posttaginput = request.form['p-tag']
+        posttags = posttaginput.split(", ")
  #   getCategory = db_firestore.collection(u'categories').stream()
 
    #     for doc in getCategory:
@@ -129,7 +130,7 @@ def createP():
             u'title': posttitle,
             u'category': postcategory,
             u'content': postcontent,
-            u'tags': posttag
+            u'tags': posttags
         })
         return redirect(url_for('createP',usertype = db_usertype))
 
