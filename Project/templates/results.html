@@ -13,12 +13,17 @@
     <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
     {% if type == "tags" %}
       <div class="row my-row">
-        <h5>Showing posts for the tags: {{ '#'.join(tags) }}</h5>
+        <h5>Showing posts for the tags: {{tags}}</h5>
       </div>
       {% for post in posts %}
-        <div class="row my-row">
-          <div class="col my-col">{{post.to_dict().image}}</div>
-          <div class="col my-col">{{post.to_dict().tags}}</div>
+        <div class="row my-row p-3">
+          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+          <div class="my-col col-md-8 col-lg-9">
+            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+            <p>{{post.to_dict().content}}</p>
+            <p>Category: {{post.to_dict().category.title()}}</p>
+            <p>Tags: {{tags}}</p>
+          </div>
         </div>
       {% endfor %}
     {% endif %}
@@ -26,12 +31,17 @@
     <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
     {% if type == "category" %}
       <div class="row my-row">
-        <h5>Showing posts in the category: {{ filterValue.capitalize() }}</h5>
+        <h5>Showing posts in the category: {{ filterValue.title() }}</h5>
       </div>
       {% for post in posts %}
-        <div class="row my-row">
-          <div class="col my-col">{{post.to_dict()}}</div>
-          <div class="col my-col">{{post.to_dict()}}</div>
+        <div class="row my-row p-3">
+          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+          <div class="my-col col-md-8 col-lg-9">
+            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+            <p>{{post.to_dict().content}}</p>
+            <p>Category: {{post.to_dict().category.title()}}</p>
+            <p>Tags: {{tags}}</p>
+          </div>
         </div>
       {% endfor %}
     {% endif %}

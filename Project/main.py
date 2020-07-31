@@ -170,7 +170,7 @@ def categories():
 
 
 @app.route('/results', methods=['POST', 'GET'])
-def search():
+def results():
     db_usertype = session['db_usertype']
     if request.method == 'POST':
         '''
@@ -178,11 +178,11 @@ def search():
         '''
 
         if 'tags' in request.form:
-            searchInput = request.form['filterValue']
-            tags = searchInput.split("#")
+            tags = request.form['filterValue']
+            tagsSplit = tags.split("#")
 
             #GET DATA STREAM
-            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tags).stream()
+            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
             
 
             return render_template('results.html', type='tags', tags=tags, posts=posts, usertype=db_usertype)
