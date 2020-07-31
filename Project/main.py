@@ -182,15 +182,15 @@ def search():
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tags).stream()
             
 
-            return render_template('results.html', type='tags', tags=tags, posts=posts,usertype = db_usertype)
+            return render_template('results.html', type='tags', tags=tags, posts=posts, usertype=db_usertype)
             
         elif 'category' in request.form:
             filterValue = request.form['category']
-
+            
             #GET DATA STREAM
-            posts = db_firestore.collection("posts").where("category", "==", filterValue)
+            posts = db_firestore.collection("posts").where("category", "==", filterValue).stream()
 
-            return render_template('results.html', type='category', filterValue=filterValue,usertype = db_usertype)
+            return render_template('results.html', type='category', posts=posts, filterValue=filterValue, usertype=db_usertype)
 
     return render_template('results.html', error=None)
 
