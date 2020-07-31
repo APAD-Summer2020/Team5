@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
     <title>Create Account</title>
 </head>
 <body>
 
   <div class="signupbox">
-    <form method = "POST" action = "/signup">
-        {% if message %}
-        {{ message }}
-        {% endif %}
         <h3>Create a New Account</h3>
+    <form method = "POST" action = "/signup">
+
+          {% if message %}
+            <div class="alert alert-danger" style="padding:2px"  role="alert">
+
+            {{message}}
+            </div>
+                {% endif%}
         <p>Username:</p>
         <input type="text" name="username" placeholder="Enter Username">
         <p>Email:</p>
@@ -28,8 +34,8 @@
         <br>
         <br>
         <input type="submit" name="register" value="Register">
-        <br><br>
-        <a href="/">Back to Login</a>
+
+        <a href="/" style="font-size:18px;">Back to Login</a>
     </form>
   </div>
 </body>
