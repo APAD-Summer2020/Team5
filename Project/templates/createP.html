@@ -49,4 +49,14 @@
     </div>
 </div>
 
+<script>
+{
+    var error = {{ error|tojson }};
+    if (error == '1'){
+        alert("I am an alert box!");;
+    }
+
+}
+</script>
+
 {% endblock %}
