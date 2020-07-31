@@ -118,7 +118,6 @@ https://github.com/thisbejim/Pyrebase
 def createP():
     db_usertype = session['db_usertype']
     db_username = session['db_username']
-    error = None
     all_themes1 = db_firestore.collection("categories").stream()
     if request.method == 'POST':
         postcategory = request.form['p-category']
@@ -131,18 +130,30 @@ def createP():
    #     for doc in getCategory:
    #         print(f'{doc.id}')
 
-        # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'posts').document(posttitle)
-        doc_ref.set({
-            u'title': posttitle,
-            u'category': postcategory,
-            u'content': postcontent,
-            u'tags': posttags,
-            u'author': db_username
-        })
-        return redirect(url_for('createP',usertype = db_usertype,error = error))
+        if posttitle == "":
+            message = "post title is empty"
+            return render_template('createP.html', message=message, usertype=db_usertype, all_themes=all_themes1)
+            # Check if there is a document with the same name
+        else:
+            doc_ref = db_firestore.collection(u'posts').document(posttitle)
+            doc = doc_ref.get()
+            if doc.exists:
+                message = "post title exists"
+                return render_template('createP.html', message=message, usertype = db_usertype, all_themes= all_themes1)
 
-    return render_template('createP.html',usertype = db_usertype, all_themes=all_themes1,error = error)
+            # if not in the document, add it.
+            else:
+                message = "post created successfully"
+                doc_ref.set({
+                    u'title': posttitle,
+                    u'category': postcategory,
+                    u'content': postcontent,
+                    u'tags': posttags,
+                    u'author': db_username
+                })
+            return redirect(url_for('createP',usertype = db_usertype,message = message))
+
+    return render_template('createP.html',usertype = db_usertype, all_themes=all_themes1)
 
 
 @app.route('/createT', methods=['POST', 'GET'])
@@ -153,15 +164,24 @@ def createT():
         catedescription = request.form['c-descri']
         cateimage = request.form['img']
 
-        # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'categories').document(catename)
-        doc_ref.set({
-            u'name': catename,
-            u'description': catedescription,
-            u'image': cateimage
-        })
+        if catename =="":
+            message = "category name is empty"
+            return render_template('createT.html', message=message, usertype=db_usertype)
+        else:
+            doc_ref = db_firestore.collection(u'categories').document(catename)
+            doc = doc_ref.get()
+            if doc.exists:
+                message = "category name already exists"
+                return render_template('createT.html', message=message, usertype=db_usertype)
+            else:
+                message = "category created successfully"
+                doc_ref.set({
+                    u'name': catename,
+                    u'description': catedescription,
+                    u'image': cateimage
+                })
 
-        return redirect(url_for('createT',usertype = db_usertype))
+                return redirect(url_for('createT',usertype = db_usertype, message = message))
 
     return render_template('createT.html',usertype = db_usertype)
 
