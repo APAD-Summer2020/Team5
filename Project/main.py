@@ -132,7 +132,8 @@ def createP():
             u'category': postcategory,
             u'content': postcontent,
             u'tags': posttags,
-            u'author': db_username
+            u'author': db_username,
+            u'image': ''
         })
         return redirect(url_for('createP',usertype = db_usertype))
 
