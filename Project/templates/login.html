@@ -19,6 +19,14 @@
             </div>
             {% endif %}
 
+            {% if successmessage %}
+            <div class="alert alert-success" style="padding:2px"  role="alert">
+
+            {{successmessage}}
+            </div>
+            {% endif %}
+
+
             <br>
 
             <p>Username</p>
@@ -33,7 +41,7 @@
 
         </form>
 
-        <a href="/signup" style="font-size:18px">Sign Up</a>
+        <a href="/signup" style="font-size:18px;" >Sign Up</a>
 
     </div>
 

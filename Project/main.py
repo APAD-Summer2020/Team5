@@ -70,17 +70,32 @@ def signup():
         email = request.form['email']
         password = request.form['password']
         usertype = request.form['usertype']
-
-        # NEW CODE USING FIRESTORE
-        doc_ref = db_firestore.collection(u'users').document(username)
-        doc_ref.set({
-            u'username': username,
-            u'email': email,
-            u'password': password,
-            u'usertype': usertype
-        })
-        return render_template('login.html', error=None)
-
+        try:
+            # NEW CODE USING FIRESTORE
+            doc_ref = db_firestore.collection(u'users').document(username)
+            doc = doc_ref.get()
+            if doc.exists:
+                # If there is, check if the passwords match
+                db_pass = doc.get('password')
+                if db_pass == password:
+                    message = "This account already exists"
+                    return render_template('signup.html', message=message)
+            else:
+                if username != "" and email != "" and password != "":
+                    doc_ref.set({
+                        u'username': username,
+                        u'email': email,
+                        u'password': password,
+                        u'usertype': usertype
+                    })
+                    successmessage="Account Successfully Created"
+                    return render_template('login.html', error=None, successmessage=successmessage)
+                else:
+                    message = "An Error Occurred When Signing Up"
+                    return render_template('signup.html', message=message)
+        except:
+            message = "An Error Occurred When Signing Up"
+            return render_template('signup.html', message=message)
     return render_template('signup.html', error=None)
 
 
