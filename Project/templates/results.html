@@ -20,9 +20,11 @@
 
       <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
       {% if type == "category" %}
-        <p>Showing posts in the category: {{ filterValue }}</p>
+        <h5>Showing posts in the category: {{ filterValue }}</h5>
+        
         {%for post in posts%}
-          <p>{{post.to_dict().tags}}</p>
+          <p>{{post.to_dict().title}}</p>
+          <p>{{post.to_dict().author}}</p>
         {%endfor%}
       {% endif %}
       
