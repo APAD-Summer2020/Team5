@@ -28,26 +28,31 @@ def login():
 
         username = request.form['username']
         password = request.form['password']
+        try:
+            #Get the document with the entered username
+            doc_ref = db_firestore.collection(u'users').document(username)
+            doc = doc_ref.get()
 
-        #Get the document with the entered username
-        doc_ref = db_firestore.collection(u'users').document(username)
-        doc = doc_ref.get()
+            #Check if there is a document with that username in the database
+            if doc.exists:
+                #If there is, check if the passwords match
+                db_pass = doc.get('password')
+                if db_pass == password:
+                    #If passwords match, log in.
+                    #Send all user information to template.
+                    db_username = doc.get('username')
+                    db_email = doc.get('email')
+                    db_usertype = doc.get('usertype')
+                    session['db_usertype'] = db_usertype
+                    session['db_username'] = db_username
 
-        #Check if there is a document with that username in the database
-        if doc.exists:
-            #If there is, check if the passwords match
-            db_pass = doc.get('password')
-            if db_pass == password:
-                #If passwords match, log in.
-                #Send all user information to template.
-                db_username = doc.get('username')
-                db_email = doc.get('email')
-                db_usertype = doc.get('usertype')
-                session['db_usertype'] = db_usertype
-                session['db_username'] = db_username
-
-                return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
-
+                    return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
+            else:
+                message = "Login Info is incorrect"
+                return render_template('login.html', message=message)
+        except:
+            message = "An Error Occured When logging in"
+            return render_template('login.html', message=message)
     return render_template('login.html')
 
 
