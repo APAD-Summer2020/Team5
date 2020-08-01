@@ -7,46 +7,72 @@
 {% block body %}
   
   <div class="container my-container">
+    
     <div class="row my-row">
       <h1>Results</h1>
     </div>
-    <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+    
     {% if type == "tags" %}
       <div class="row my-row">
         <h5>Showing posts for the tags: {{tags}}</h5>
       </div>
-      {% for post in posts %}
-        <div class="row my-row p-3">
-          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
-          <div class="my-col col-md-8 col-lg-9">
-            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
-            <p>{{post.to_dict().content}}</p>
-            <p>Category: {{post.to_dict().category.title()}}</p>
-            <p>Tags: {{tags}}</p>
-          </div>
-        </div>
-      {% endfor %}
-    {% endif %}
+    {%endif%}
 
-    <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
     {% if type == "category" %}
       <div class="row my-row">
         <h5>Showing posts in the category: {{ filterValue.title() }}</h5>
       </div>
-      {% for post in posts %}
-        <div class="row my-row p-3">
-          <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
-          <div class="my-col col-md-8 col-lg-9">
-            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
-            <p>{{post.to_dict().content}}</p>
-            <p>Category: {{post.to_dict().category.title()}}</p>
-            <p>Tags: {{tags}}</p>
-          </div>
-        </div>
-      {% endfor %}
-    {% endif %}
+    {%endif%}
+    
+    <div class="container">
+      <ul class="nav">
+        <li class="active">
+          <a  href="#1" data-toggle="tab">List</a>
+        </li>
+        <li>
+          <a href="#2" data-toggle="tab">Map</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="1">
+          <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+          {% if type == "tags" %}
+            {% for post in posts %}
+              <div class="row my-row p-3">
+                <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+                <div class="my-col col-md-8 col-lg-9">
+                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+                  <p>{{post.to_dict().content}}</p>
+                  <p>Category: {{post.to_dict().category.title()}}</p>
+                  <p>Tags: {{tags}}</p>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
+          {% if type == "category" %}
+            {% for post in posts %}
+              <div class="row my-row p-3">
+                <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+                <div class="my-col col-md-8 col-lg-9">
+                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+                  <p>{{post.to_dict().content}}</p>
+                  <p>Category: {{post.to_dict().category.title()}}</p>
+                  <p>Tags: {{tags}}</p>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+				</div>
+				<div class="tab-pane" id="2">
+          <!--ADD MAP VIEW HERE-->
+				</div>
+      </div>
 
 
+    </div>
 
     
   </div>
