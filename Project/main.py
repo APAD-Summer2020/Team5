@@ -3,6 +3,7 @@ from collections import OrderedDict
 #import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
+import random
 
 '''
 Firestore documentation:
@@ -162,12 +163,19 @@ def createP():
             # if not in the document, add it.
             else:
                 message = "post created successfully"
+
+                #RANDOM LOCATION
+                lat = random.uniform(-180, 180)
+                long = random.uniform(-90,90)
+                location = [round(lat, 2), round(long, 2)]
+
                 doc_ref.set({
                     u'title': posttitle,
                     u'category': postcategory,
                     u'content': postcontent,
                     u'tags': posttags,
-                    u'author': db_username
+                    u'author': db_username,
+                    u'location': location
                 })
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
@@ -218,11 +226,12 @@ def results():
     if request.method == 'POST':
         '''
         TODO: Get elif for categories to work.
+        To get geopoint from Firestore: "location = firestore.GeoPoint(latitude, longitude)"
         '''
 
         if 'tags' in request.form:
             tags = request.form['filterValue']
-            tagsSplit = tags.split("#")
+            tagsSplit = tags.split(", ")
 
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
