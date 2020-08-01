@@ -47,6 +47,9 @@ def login():
                     session['db_username'] = db_username
 
                     return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
+                else:
+                    message = "Password is Incorrect"
+                    return render_template('login.html', message=message)
             else:
                 message = "Login Info is incorrect"
                 return render_template('login.html', message=message)
