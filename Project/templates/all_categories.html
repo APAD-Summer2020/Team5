@@ -2,6 +2,73 @@
 
 {% block head %}
   <title>Categories</title>
+
+  <!--CSS from: https://www.w3schools.com/howto/howto_css_portfolio_gallery.asp-->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: #f1f1f1;
+      padding: 20px;
+      font-family: Arial;
+    }
+    
+    /* Center website */
+    .main {
+      max-width: 1000px;
+      margin: auto;
+    }
+    
+    h1 {
+      font-size: 50px;
+      word-break: break-all;
+    }
+    
+    .row {
+      margin: 8px -16px;
+    }
+    
+    /* Add padding BETWEEN each column */
+    .row,
+    .row > .column {
+      padding: 8px;
+    }
+    
+    /* Create four equal columns that floats next to each other */
+    .column {
+      float: left;
+      width: 25%;
+    }
+    
+    /* Clear floats after rows */ 
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    
+    /* Content */
+    .content {
+      background-color: white;
+      padding: 10px;
+    }
+    
+    /* Responsive layout - makes a two column-layout instead of four columns */
+    @media screen and (max-width: 900px) {
+      .column {
+        width: 50%;
+      }
+    }
+    
+    /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+    @media screen and (max-width: 600px) {
+      .column {
+        width: 100%;
+      }
+    }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -9,23 +76,19 @@
 
   <div class="allthemes-container">
     <form class="allthemes-form" action="results" method="POST">
-      
+      <div class="row">
       {% for doc in all_categories %}
-        <div class="all-themes-theme">
-          <button for="alltheme-theme-img" name="category" alt="Submit" value="{{doc.to_dict().name}}" style="background: none; border: none;">
-            <img src="" alt="Image for category: {{doc.to_dict().name}}">
-            {{doc.to_dict().name}} 
-          </button>
+        <div class="column">
+          <div class="content">
+            <button for="alltheme-theme-img" name="category" alt="Submit" value="{{doc.to_dict().name}}" style="background: none; border: none;">
+              <img src="" alt="Image for category: {{doc.to_dict().name}}">
+              <h3>{{doc.to_dict().name}}</h3>
+            </button>
+          </div>
         </div>
       {% endfor %}
+      </div><!--END ROW-->
     
     </form>
-  </div>
-
-
-
-
-
-
 
 {% endblock %}
