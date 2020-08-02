@@ -167,7 +167,7 @@ def createP():
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
-                location = [round(lat, 2), round(long, 2)]
+                location = [round(lat, 4), round(long, 4)]
 
                 doc_ref.set({
                     u'title': posttitle,
