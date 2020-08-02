@@ -3,12 +3,12 @@
 {% block head %}
   <title>View</title>
   <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA03QZ0mnq5LSurSiSyzCWowGi0_R85mPc&callback=initMap"defer></script>
 
   <style>
     #map {
       height: 400px;
-      width: 100%;
+      width: 80%;
+      margin: 25px;
     }
 
     /* Optional: Makes the sample page fill the window. */
@@ -80,19 +80,66 @@
         {% endif %}
       </div>
       <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <script>console.log(</script> <p>test</p> <script>)</script>
+        
         <div id="map"></div>
 
         <script>
-          let map;
 
           function initMap() {
-            map = new google.maps.Map(document.getElementById("map"), {
-              center: { lat: -34.397, lng: 150.644 },
+            //MAP OPTIONS
+            var options = {
+              center: {lat:30.2672, lng:-97.7431},
               zoom: 8
-            });
-          }
+            }
+
+            //NEW MAP
+            var map = new google.maps.Map(document.getElementById('map'), options);
+
+            //ADD MARKER
+            var markers = [
+              {
+                coords:{lat:30.2672, lng:-97.7431},
+                content:'<h5>Austin</h5>'
+              },
+              {
+                coords:{lat:32.7767, lng:-96.7970},
+                content:'<h5>Dallas</h5>'
+              }
+            ];
+
+            //LOOP THROUGH MARKERS
+            for(var i = 0; i < markers.length; i++) {
+              addMarker(markers[i])
+            }
+
+            function addMarker(props) {
+              var marker = new google.maps.Marker({
+                position: props.coords,
+                map: map
+              });
+
+              if (props.content) {
+                var infoWindow = new google.maps.InfoWindow({
+                  content: props.content
+                });
+              }
+
+              marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+              });
+
+
+
+
+            }
+
+
+
+          } //END INITMAP()
         </script>
       </div>
     </div><!--END CONTENT-->
   </div><!--END CONTAINER-->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA03QZ0mnq5LSurSiSyzCWowGi0_R85mPc&callback=initMap"defer></script>
 {% endblock %}
