@@ -2,6 +2,23 @@
 
 {% block head %}
   <title>View</title>
+  <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc&callback=initMap"defer></script>
+
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
@@ -63,7 +80,18 @@
         {% endif %}
       </div>
       <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-        <!--ADD MAP VIEW HERE-->
+        <div id="map"></div>
+
+        <script>
+          let map;
+
+          function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+              center: { lat: -34.397, lng: 150.644 },
+              zoom: 8
+            });
+          }
+        </script>
       </div>
     </div><!--END CONTENT-->
   </div><!--END CONTAINER-->
