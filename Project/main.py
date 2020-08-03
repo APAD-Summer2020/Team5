@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from collections import OrderedDict
-#import pyrebase
+import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
 import random
@@ -131,6 +131,23 @@ Source:
 https://github.com/thisbejim/Pyrebase
 """
 
+def uploadImage(imgPath):
+    config = {
+    "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
+    "authDomain": "apad-team5.firebaseapp.com",
+    "databaseURL": "https://apad-team5.firebaseio.com",
+    "projectId": "apad-team5",
+    "storageBucket": "apad-team5.appspot.com",
+    "messagingSenderId": "311004038430",
+    "appId": "1:311004038430:web:e70bcb7c84b0e96075750f",
+    "measurementId": "G-FSQ5JBDS95"
+    }
+
+    firebase = pyrebase.initialize_app(config)
+    storage = firebase.storage()
+    storage.child("images/test3.jpg").put(imgPath)
+
+
 
 
 @app.route('/createP', methods=['POST', 'GET'])
@@ -148,6 +165,11 @@ def createP():
 
    #     for doc in getCategory:
    #         print(f'{doc.id}')
+
+        image = request.files['img']
+        print(image)
+        uploadImage(image)
+
 
         if posttitle == "":
             message = "post title is empty"
@@ -168,6 +190,8 @@ def createP():
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
                 location = [round(lat, 2), round(long, 2)]
+
+
 
                 doc_ref.set({
                     u'title': posttitle,
