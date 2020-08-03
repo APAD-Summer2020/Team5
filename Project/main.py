@@ -240,30 +240,25 @@ def results():
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
 
+            temp_markers = []
+
+            for mapitem in posts:
+                temp_markers.append(
+                {
+                'lat': 37.4419,
+                'lng': 122.1419,
+                'infobox': "<b>" + "Post Name" + "</b>" + "<img src=\'" + "https://www.google.com/logos/doodles/2020/celebrating-vicki-draves-6753651837108710-l.png" + "\'></img>"
+                }
+
+
+                )
+
             map = Map(
                 identifier="sndmap",
                 lat=37.4419,
                 lng=-122.1419,
-                markers=[
-                  {
+                markers=temp_markers
 
-                     'lat': 37.4419,
-                     'lng': -122.1419,
-                     'infobox': "<b>Hello World</b>"
-                  },
-                  {
-
-                     'lat': 37.4419,
-                     'lng': -122.1410,
-                     'infobox': "<b>Hello World</b>"
-                  },
-                  {
-
-                     'lat': 37.4300,
-                     'lng': -122.1400,
-                     'infobox': "<b>Hello World from other place</b>"
-                  }
-                ]
             )
 
             return render_template('results.html', type='tags', posts=posts, map=map, usertype=db_usertype)
