@@ -183,10 +183,12 @@ def createP():
             # if not in the document, add it.
             else:
                 message = "post created successfully"
-                image = request.files['img']
 
+                #upload image
+                image = request.files['img']
                 imageName = image.filename
                 uploadImage(imageName, image)
+
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
@@ -213,7 +215,6 @@ def createT():
     if request.method == 'POST':
         catename = request.form['c-name']
         catedescription = request.form['c-descri']
-        cateimage = request.form['img']
 
         if catename =="":
             message = "category name is empty"
@@ -225,15 +226,16 @@ def createT():
                 message = "category name already exists"
                 return render_template('createT.html', message=message, usertype=db_usertype)
             else:
-
+                message = "category created successfully"
+                #upload image
                 image = request.files['img']
+                print(image)
                 imageName = image.filename
                 uploadImage(imageName, image)
-                message = "category created successfully"
+
                 doc_ref.set({
                     u'name': catename,
                     u'description': catedescription,
-                    u'image': cateimage
                 })
 
                 return redirect(url_for('createT',usertype = db_usertype, message = message))

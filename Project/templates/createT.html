@@ -19,7 +19,7 @@
         {% endif %}
 
 
-    <form method = "POST" action = "/createT">
+    <form method = "POST" action = "/createT" enctype="multipart/form-data">
         <div>
             <label for="c-name">Category Name</label><br>
             <input class="form-control" type="text" id="c-name" name="c-name" ><br>
@@ -27,17 +27,8 @@
             <textarea class="form-control" id="c-descri" name="c-descri" rows="4" cols="50"></textarea><br>
             <label for="t-name">Category Image</label><br>
             <input class="form-control" placeholder="Select new image" type="file" id="img" name="img" accept="image/*"><br>
-            <label for="or">OR</label><br>
-            <label for="or">Choose from Existing Image</label><br>
-            <select class="form-control">
-                <option value="img1">img1</option>
-                <option value="img2">img2</option>
-                <option value="img3">img3</option>
-                <option value="img4">img4</option>
-                <option value="img5">img5</option>
-            </select>
             <br>
-                        <div class="btn-group">
+            <div class="btn-group">
 
        <input class="form-control btn btn-primary" type="submit" name="Submit" value="Submit">
 
