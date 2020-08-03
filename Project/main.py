@@ -228,30 +228,18 @@ def categories():
 def results():
     db_usertype = session['db_usertype']
     if request.method == 'POST':
-        '''
-        TODO: Get elif for categories to work.
-        To get geopoint from Firestore: "location = firestore.GeoPoint(latitude, longitude)"
-        '''
-
-        if 'tags' in request.form:
-            tags = request.form['filterValue']
-            tagsSplit = tags.split(", ")
-
-            #GET DATA STREAM
-            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
-
+        
+        def createMap(posts):
             temp_markers = []
             temp_posts = []
 
             for mapitem in posts:
                 temp_markers.append(
-                {
-                'lat': 37.4419,
-                'lng': 122.1419,
-                'infobox': "<b>" + "Post Name" + "</b>" + "<img src=\'" + "https://www.google.com/logos/doodles/2020/celebrating-vicki-draves-6753651837108710-l.png" + "\'></img>"
-                }
-
-
+                    {
+                    'lat': 37.4419,
+                    'lng': 122.1419,
+                    'infobox': "<b>" + "Post Name" + "</b>" + "<img src=\'" + "https://www.google.com/logos/doodles/2020/celebrating-vicki-draves-6753651837108710-l.png" + "\'></img>"
+                    }
                 )
                 temp_posts.append(mapitem)
 
@@ -260,10 +248,20 @@ def results():
                 lat=37.4419,
                 lng=-122.1419,
                 markers=temp_markers
-
             )
 
-            return render_template('results.html', type='tags', tags=tags, posts=temp_posts, map=map, usertype=db_usertype)
+            return [map, temp_posts]
+
+        if 'tags' in request.form:
+            tags = request.form['filterValue']
+            tagsSplit = tags.split(", ")
+
+            #GET DATA STREAM
+            posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
+
+            ourContent = createMap(posts)
+
+            return render_template('results.html', type='tags', tags=tags, posts=ourContent[1], map=ourContent[0], usertype=db_usertype)
 
         elif 'category' in request.form:
             filterValue = request.form['category']
@@ -271,9 +269,11 @@ def results():
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("category", "==", filterValue).stream()
 
-            return render_template('results.html', type='category', posts=posts, filterValue=filterValue, usertype=db_usertype)
+            ourContent = createMap(posts)
 
-    return render_template('results.html', error=None)
+            return render_template('results.html', type='category', posts=ourContent[1], map=ourContent[0], filterValue=filterValue, usertype=db_usertype)
+            
+    return render_template('results.html' ,error=None)
 
 @app.route("/map")
 def mapview():
