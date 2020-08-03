@@ -146,7 +146,8 @@ def uploadImage(imgName, imgPath):
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
     storage.child(f"images/{imgName}").put(imgPath)
-
+    imageurl = storage.child(f"images/{imgName}").get_url(None)
+    return imageurl
 
 
 
@@ -167,9 +168,6 @@ def createP():
    #     for doc in getCategory:
    #         print(f'{doc.id}')
 
-        image = request.files['img']
-        imageName = image.filename
-        uploadImage(imageName,image)
 
 
         if posttitle == "":
@@ -186,6 +184,10 @@ def createP():
             # if not in the document, add it.
             else:
                 message = "post created successfully"
+                image = request.files['img']
+                imageName = image.filename
+                imageURL = uploadImage(imageName, image)
+                print(imageURL)
 
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
