@@ -3,6 +3,7 @@ from collections import OrderedDict
 #import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
+from flask_googlemaps import GoogleMaps, Map
 import random
 
 '''
@@ -19,9 +20,12 @@ db_firestore = firestore.client()
 
 app = Flask(__name__)
 app.secret_key = "hello"
+# you can set key as config
+app.config['GOOGLEMAPS_KEY'] = "AIzaSyA03QZ0mnq5LSurSiSyzCWowGi0_R85mPc"
 
 #test
-
+# Initialize the extension
+GoogleMaps(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -235,19 +239,49 @@ def results():
 
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
-            
+
 
             return render_template('results.html', type='tags', tags=tags, posts=posts, usertype=db_usertype)
-            
+
         elif 'category' in request.form:
             filterValue = request.form['category']
-            
+
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("category", "==", filterValue).stream()
 
             return render_template('results.html', type='category', posts=posts, filterValue=filterValue, usertype=db_usertype)
 
     return render_template('results.html', error=None)
+
+@app.route("/map")
+def mapview():
+    # creating a map in the view
+    mymap = Map(
+        identifier="view-side",
+        lat=37.4419,
+        lng=-122.1419,
+        markers=[(37.4419, -122.1419)]
+    )
+    sndmap = Map(
+        identifier="sndmap",
+        lat=37.4419,
+        lng=-122.1419,
+        markers=[
+          {
+             'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+             'lat': 37.4419,
+             'lng': -122.1419,
+             'infobox': "<b>Hello World</b>"
+          },
+          {
+             'icon': 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+             'lat': 37.4300,
+             'lng': -122.1400,
+             'infobox': "<b>Hello World from other place</b>"
+          }
+        ]
+    )
+    return render_template('map.html', mymap=mymap, sndmap=sndmap)
 
 if __name__ == "__main__":
     app.run(debug=True)
