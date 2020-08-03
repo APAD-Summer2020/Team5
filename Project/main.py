@@ -261,7 +261,7 @@ def results():
 
             )
 
-            return render_template('results.html', type='tags', posts=posts, map=map, usertype=db_usertype)
+            return render_template('results.html', type='tags', tags=tags,, posts=posts, map=map, usertype=db_usertype)
 
         elif 'category' in request.form:
             filterValue = request.form['category']
