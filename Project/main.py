@@ -145,7 +145,7 @@ def uploadImage(imgPath):
 
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
-    storage.child("images/test3.jpg").put(imgPath)
+    storage.child("images/test3").put(imgPath)
 
 
 
@@ -168,7 +168,9 @@ def createP():
 
         image = request.files['img']
         print(image)
+        #imgName =
         uploadImage(image)
+
 
 
         if posttitle == "":
