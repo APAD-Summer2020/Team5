@@ -152,6 +152,7 @@ def uploadImage(imgName, imgPath):
 
 
 
+
 @app.route('/createP', methods=['POST', 'GET'])
 def createP():
     db_usertype = session['db_usertype']
@@ -167,6 +168,7 @@ def createP():
 
    #     for doc in getCategory:
    #         print(f'{doc.id}')
+
 
 
         if posttitle == "":
@@ -186,11 +188,7 @@ def createP():
                 image = request.files['img']
                 imageName = image.filename
                 imageURL = uploadImage(imageName, image)
-                print(imageURL)
 
-
-                imageName = image.filename
-                uploadImage(imageName, image)
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
@@ -204,7 +202,8 @@ def createP():
                     u'content': postcontent,
                     u'tags': posttags,
                     u'author': db_username,
-                    u'location': location
+                    u'location': location,
+                    u'imgURL': imageURL
                 })
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
@@ -217,7 +216,7 @@ def createT():
     if request.method == 'POST':
         catename = request.form['c-name']
         catedescription = request.form['c-descri']
-        cateimage = request.form['img']
+
 
         if catename =="":
             message = "category name is empty"
@@ -232,12 +231,12 @@ def createT():
 
                 image = request.files['img']
                 imageName = image.filename
-                uploadImage(imageName, image)
+                imageURL = uploadImage(imageName, image)
                 message = "category created successfully"
                 doc_ref.set({
                     u'name': catename,
                     u'description': catedescription,
-                    u'image': cateimage
+                    u'imgURL': imageURL
                 })
 
                 return redirect(url_for('createT',usertype = db_usertype, message = message))
