@@ -131,7 +131,7 @@ Source:
 https://github.com/thisbejim/Pyrebase
 """
 
-def uploadImage(imgPath):
+def uploadImage(imgName, imgPath):
     config = {
     "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
     "authDomain": "apad-team5.firebaseapp.com",
@@ -145,7 +145,8 @@ def uploadImage(imgPath):
 
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
-    storage.child("images/test3.jpg").put(imgPath)
+    storage.child(f"images/{imgName}").put(imgPath)
+
 
 
 
@@ -167,8 +168,8 @@ def createP():
    #         print(f'{doc.id}')
 
         image = request.files['img']
-        print(image)
-        uploadImage(image)
+        imageName = image.filename
+        uploadImage(imageName,image)
 
 
         if posttitle == "":
