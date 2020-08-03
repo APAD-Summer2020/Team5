@@ -1,3 +1,4 @@
 # Team5
-12:30 PM Tuesday Thursday
-10:00 AM Saturday Sunday
+pip3 install flask
+pip3 install firebase-admin
+pip3 install flask-googlemaps
