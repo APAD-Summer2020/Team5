@@ -131,7 +131,7 @@ Source:
 https://github.com/thisbejim/Pyrebase
 """
 
-def uploadImage(imgPath):
+def uploadImage(imgName, imgPath):
     config = {
     "apiKey": "AIzaSyBSuBwrJF_Z76sjL0bcUzPXloEOPHFQ5bc",
     "authDomain": "apad-team5.firebaseapp.com",
@@ -145,7 +145,9 @@ def uploadImage(imgPath):
 
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
-    storage.child("images/test3").put(imgPath)
+
+    storage.child(f"images/{imgName}").put(imgPath)
+
 
 
 
@@ -166,12 +168,6 @@ def createP():
    #     for doc in getCategory:
    #         print(f'{doc.id}')
 
-        image = request.files['img']
-        print(image)
-        #imgName =
-        uploadImage(image)
-
-
 
         if posttitle == "":
             message = "post title is empty"
@@ -187,7 +183,10 @@ def createP():
             # if not in the document, add it.
             else:
                 message = "post created successfully"
+                image = request.files['img']
 
+                imageName = image.filename
+                uploadImage(imageName, image)
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
@@ -226,6 +225,10 @@ def createT():
                 message = "category name already exists"
                 return render_template('createT.html', message=message, usertype=db_usertype)
             else:
+
+                image = request.files['img']
+                imageName = image.filename
+                uploadImage(imageName, image)
                 message = "category created successfully"
                 doc_ref.set({
                     u'name': catename,
