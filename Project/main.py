@@ -241,6 +241,7 @@ def results():
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
 
             temp_markers = []
+            temp_posts = []
 
             for mapitem in posts:
                 temp_markers.append(
@@ -252,6 +253,7 @@ def results():
 
 
                 )
+                temp_posts.append(mapitem)
 
             map = Map(
                 identifier="sndmap",
@@ -261,7 +263,7 @@ def results():
 
             )
 
-            return render_template('results.html', type='tags', tags=tags, posts=posts, map=map, usertype=db_usertype)
+            return render_template('results.html', type='tags', tags=tags, posts=temp_posts, map=map, usertype=db_usertype)
 
         elif 'category' in request.form:
             filterValue = request.form['category']
