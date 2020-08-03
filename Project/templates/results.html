@@ -58,7 +58,7 @@
                 <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
                 <p>{{post.to_dict().content}}</p>
                 <p>Category: {{post.to_dict().category.title()}}</p>
-                <p>Tags: {{tags}}</p>
+                <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
               </div>
             </div>
           {% endfor %}
@@ -73,7 +73,7 @@
                 <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
                 <p>{{post.to_dict().content}}</p>
                 <p>Category: {{post.to_dict().category.title()}}</p>
-                <p>Tags: {{tags}}</p>
+                <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
               </div>
             </div>
           {% endfor %}
