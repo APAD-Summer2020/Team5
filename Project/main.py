@@ -150,6 +150,8 @@ def uploadImage(imgName, imgPath):
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
     storage.child(f"images/{imgName}").put(imgPath)
+    imageurl = storage.child(f"images/{imgName}").get_url(None)
+    return imageurl
 
 
 
@@ -171,9 +173,6 @@ def createP():
    #     for doc in getCategory:
    #         print(f'{doc.id}')
 
-        image = request.files['img']
-        imageName = image.filename
-        uploadImage(imageName,image)
 
 
         if posttitle == "":
@@ -190,6 +189,9 @@ def createP():
             # if not in the document, add it.
             else:
                 message = "post created successfully"
+                image = request.files['img']
+                imageName = image.filename
+                imageURL = uploadImage(imageName, image)
 
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
@@ -204,7 +206,8 @@ def createP():
                     u'content': postcontent,
                     u'tags': posttags,
                     u'author': db_username,
-                    u'location': location
+                    u'location': location,
+                    u'imgURL': imageURL
                 })
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
@@ -217,7 +220,7 @@ def createT():
     if request.method == 'POST':
         catename = request.form['c-name']
         catedescription = request.form['c-descri']
-        cateimage = request.form['img']
+
 
         if catename =="":
             message = "category name is empty"
@@ -229,11 +232,15 @@ def createT():
                 message = "category name already exists"
                 return render_template('createT.html', message=message, usertype=db_usertype)
             else:
+
+                image = request.files['img']
+                imageName = image.filename
+                imageURL = uploadImage(imageName, image)
                 message = "category created successfully"
                 doc_ref.set({
                     u'name': catename,
                     u'description': catedescription,
-                    u'image': cateimage
+                    u'imgURL': imageURL
                 })
 
                 return redirect(url_for('createT',usertype = db_usertype, message = message))
