@@ -230,23 +230,28 @@ def results():
     if request.method == 'POST':
         
         def createMap(posts):
+            
             temp_markers = []
             temp_posts = []
 
             for mapitem in posts:
+                temp_location = []
+                for point in mapitem.to_dict()["location"]:
+                    temp_location.append(point)
+
                 temp_markers.append(
                     {
-                    'lat': 37.4419,
-                    'lng': 122.1419,
-                    'infobox': "<b>" + "Post Name" + "</b>" + "<img src=\'" + "https://www.google.com/logos/doodles/2020/celebrating-vicki-draves-6753651837108710-l.png" + "\'></img>"
+                    'lat': temp_location[0],
+                    'lng': temp_location[1],
+                    'infobox': "<b>" + str(mapitem.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(mapitem.to_dict()["imgURL"]) + "\'></img>"
                     }
                 )
                 temp_posts.append(mapitem)
 
             map = Map(
                 identifier="sndmap",
-                lat=37.4419,
-                lng=-122.1419,
+                lat=30.2672,
+                lng=-97.7431,
                 markers=temp_markers
             )
 
@@ -275,34 +280,7 @@ def results():
             
     return render_template('results.html' ,error=None)
 
-@app.route("/map")
-def mapview():
-    sndmap = Map(
-        identifier="sndmap",
-        lat=37.4419,
-        lng=-122.1419,
-        markers=[
-          {
-             'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-             'lat': 37.4419,
-             'lng': -122.1419,
-             'infobox': "<b>Hello World</b>"
-          },
-          {
-             'icon': 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-             'lat': 37.4419,
-             'lng': -122.1410,
-             'infobox': "<b>Hello World</b>"
-          },
-          {
-             'icon': 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-             'lat': 37.4300,
-             'lng': -122.1400,
-             'infobox': "<b>Hello World from other place</b>"
-          }
-        ]
-    )
-    return render_template('map.html', sndmap=sndmap)
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
