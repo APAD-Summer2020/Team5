@@ -263,28 +263,28 @@ def results():
         
         def createMap(posts):
             
-            temp_markers = []
+            markers = []
             temp_posts = []
 
-            for mapitem in posts:
-                temp_location = []
-                for point in mapitem.to_dict()["location"]:
-                    temp_location.append(point)
+            for post in posts:
+                coords = []
+                for point in post.to_dict()["location"]:
+                    coords.append(point)
 
-                temp_markers.append(
+                markers.append(
                     {
-                    'lat': temp_location[0],
-                    'lng': temp_location[1],
-                    'infobox': "<b>" + str(mapitem.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(mapitem.to_dict()["imgURL"]) + "\'></img>"
+                    'lat': coords[0],
+                    'lng': coords[1],
+                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"
                     }
                 )
-                temp_posts.append(mapitem)
+                temp_posts.append(post)
 
             map = Map(
                 identifier="sndmap",
                 lat=30.2672,
                 lng=-97.7431,
-                markers=temp_markers
+                markers=markers
             )
 
             return [map, temp_posts]
