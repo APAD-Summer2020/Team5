@@ -3,6 +3,7 @@ from collections import OrderedDict
 import pyrebase
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
+from flask_googlemaps import GoogleMaps, Map
 import random
 
 '''
@@ -19,9 +20,12 @@ db_firestore = firestore.client()
 
 app = Flask(__name__)
 app.secret_key = "hello"
+# you can set key as config
+app.config['GOOGLEMAPS_KEY'] = "AIzaSyA03QZ0mnq5LSurSiSyzCWowGi0_R85mPc"
 
 #test
-
+# Initialize the extension
+GoogleMaps(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -190,7 +194,7 @@ def createP():
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
                 long = random.uniform(-90,90)
-                location = [round(lat, 2), round(long, 2)]
+                location = [round(lat, 4), round(long, 4)]
 
 
 
@@ -249,10 +253,34 @@ def categories():
 def results():
     db_usertype = session['db_usertype']
     if request.method == 'POST':
-        '''
-        TODO: Get elif for categories to work.
-        To get geopoint from Firestore: "location = firestore.GeoPoint(latitude, longitude)"
-        '''
+        
+        def createMap(posts):
+            
+            temp_markers = []
+            temp_posts = []
+
+            for mapitem in posts:
+                temp_location = []
+                for point in mapitem.to_dict()["location"]:
+                    temp_location.append(point)
+
+                temp_markers.append(
+                    {
+                    'lat': temp_location[0],
+                    'lng': temp_location[1],
+                    'infobox': "<b>" + str(mapitem.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(mapitem.to_dict()["imgURL"]) + "\'></img>"
+                    }
+                )
+                temp_posts.append(mapitem)
+
+            map = Map(
+                identifier="sndmap",
+                lat=30.2672,
+                lng=-97.7431,
+                markers=temp_markers
+            )
+
+            return [map, temp_posts]
 
         if 'tags' in request.form:
             tags = request.form['filterValue']
@@ -260,19 +288,24 @@ def results():
 
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("tags", "array_contains_any", tagsSplit).stream()
-            
 
-            return render_template('results.html', type='tags', tags=tags, posts=posts, usertype=db_usertype)
-            
+            ourContent = createMap(posts)
+
+            return render_template('results.html', type='tags', tags=tags, posts=ourContent[1], map=ourContent[0], usertype=db_usertype)
+
         elif 'category' in request.form:
             filterValue = request.form['category']
-            
+
             #GET DATA STREAM
             posts = db_firestore.collection("posts").where("category", "==", filterValue).stream()
 
-            return render_template('results.html', type='category', posts=posts, filterValue=filterValue, usertype=db_usertype)
+            ourContent = createMap(posts)
 
-    return render_template('results.html', error=None)
+            return render_template('results.html', type='category', posts=ourContent[1], map=ourContent[0], filterValue=filterValue, usertype=db_usertype)
+            
+    return render_template('results.html' ,error=None)
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

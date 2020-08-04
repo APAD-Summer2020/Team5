@@ -1,70 +1,143 @@
 {% extends 'base.html' %}
 
-{% block head %}
-  <title>View</title>
-{% endblock %}
+  {% block head %}
+    <title>View</title>
+    <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
+  ​ {{map.js}}
+    <style>
+      #sndmap.map {
+        height: 400px;
+        width: 80%;
+        margin: 25px;
+      }
+  ​
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  {% endblock %}
+  ​
+  {% block body %}
 
-{% block body %}
-  
-  <div class="container my-container">
-    
-    <div class="row my-row">
-      <h1>Results</h1>
-    </div>
-    
-    {% if type == "tags" %}
+    <div class="container my-container">
+
       <div class="row my-row">
-        <h5>Showing posts for the tags: {{tags}}</h5>
+        <h1>Results</h1>
       </div>
-    {%endif%}
 
-    {% if type == "category" %}
-      <div class="row my-row">
-        <h5>Showing posts in the category: {{ filterValue.title() }}</h5>
-      </div>
-    {%endif%}
-    
-    <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">List</a>
-        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Map</a>
-      </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-        <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
-        {% if type == "tags" %}
-          {% for post in posts %}
-            <div class="row my-row p-3">
-              <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
-              <div class="my-col col-md-8 col-lg-9">
-                <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
-                <p>{{post.to_dict().content}}</p>
-                <p>Category: {{post.to_dict().category.title()}}</p>
-                <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
-              </div>
-            </div>
-          {% endfor %}
-        {% endif %}
+      {% if type == "tags" %}
+        <div class="row my-row">
+          <h5>Showing posts for the tags: {{tags}}</h5>
+        </div>
+      {%endif%}
+  ​
+      {% if type == "category" %}
+        <div class="row my-row">
+          <h5>Showing posts in the category: {{ filterValue.title() }}</h5>
+        </div>
+      {%endif%}
 
-        <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
-        {% if type == "category" %}
-          {% for post in posts %}
-            <div class="row my-row p-3">
-              <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
-              <div class="my-col col-md-8 col-lg-9">
-                <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
-                <p>{{post.to_dict().content}}</p>
-                <p>Category: {{post.to_dict().category.title()}}</p>
-                <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">List</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Map</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          <!--IF COMING TO THIS PAGE FROM THE SEARCH BUTTON-->
+          {% if type == "tags" %}
+            {% for post in posts %}
+              <div class="row my-row p-3">
+                <!--<div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>-->
+                <img src="{{post.to_dict().imgURL}}" alt="Post image">
+                <div class="my-col col-md-8 col-lg-9">
+                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+                  <p>{{post.to_dict().content}}</p>
+                  <p>Category: {{post.to_dict().category.title()}}</p>
+                  <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
+                </div>
               </div>
-            </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-        <!--ADD MAP VIEW HERE-->
-      </div>
-    </div><!--END CONTENT-->
-  </div><!--END CONTAINER-->
-{% endblock %}
+            {% endfor %}
+          {% endif %}
+  ​
+          <!--IF COMING TO THIS PAGE FROM THE ALL CATEGORIES PAGE-->
+          {% if type == "category" %}
+            {% for post in posts %}
+              <div class="row my-row p-3">
+                <div class="my-col col-md-4 col-lg-3">{{post.to_dict().image}}</div>
+                <div class="my-col col-md-8 col-lg-9">
+                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+                  <p>{{post.to_dict().content}}</p>
+                  <p>Category: {{post.to_dict().category.title()}}</p>
+                  <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+
+          
+
+
+          <div id="map">{{map.html}}</div>
+  ​<!--
+          <script>
+  ​
+            function initMap() {
+              //MAP OPTIONS
+              var options = {
+                center: {lat:30.2672, lng:-97.7431},
+                zoom: 8
+              }
+  ​
+              //NEW MAP
+              var map = new google.maps.Map(document.getElementById('map'), options);
+  ​
+              //ADD MARKER
+              var markers = [
+                {
+                  coords:{lat:30.2672, lng:-97.7431},
+                  content:'<h5>Austin</h5>'
+                },
+                {
+                  coords:{lat:32.7767, lng:-96.7970},
+                  content:'<h5>Dallas</h5>'
+                }
+              ];
+  ​
+              //LOOP THROUGH MARKERS
+              for(var i = 0; i < markers.length; i++) {
+                addMarker(markers[i])
+              }
+  ​
+              function addMarker(props) {
+                var marker = new google.maps.Marker({
+                  position: props.coords,
+                  map: map
+                });
+  ​
+                if (props.content) {
+                  var infoWindow = new google.maps.InfoWindow({
+                    content: props.content
+                  });
+                }
+  ​
+                marker.addListener('click', function() {
+                  infoWindow.open(map, marker);
+                });
+              }
+  ​
+            } //END INITMAP()
+          </script>-->
+        </div>
+      </div><!--END CONTENT-->
+    </div><!--END CONTAINER-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA03QZ0mnq5LSurSiSyzCWowGi0_R85mPc&callback=initMap"defer></script>
+  {% endblock %}
