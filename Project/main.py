@@ -285,7 +285,8 @@ def results():
                 lat=30.2672,
                 lng=-97.7431,
                 markers=markers,
-                cluster=True
+                cluster=True,
+                cluster_imagepath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m"
             )
 
             return [map, temp_posts]
