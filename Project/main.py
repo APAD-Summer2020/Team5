@@ -65,7 +65,7 @@ def login():
                             ]
                             return jsonify(json_list)
 
-                    return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
+                    return redirect(url_for('manage'))
                 else:
                     message = "Password is Incorrect"
                     return render_template('login.html', message=message)
