@@ -8,60 +8,60 @@
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       background-color: #f1f1f1;
       padding: 20px;
       font-family: Arial;
     }
-    
+
     /* Center website */
     .main {
       max-width: 1000px;
       margin: auto;
     }
-    
+
     h1 {
       font-size: 50px;
       word-break: break-all;
     }
-    
+
     .row {
       margin: 8px -16px;
     }
-    
+
     /* Add padding BETWEEN each column */
     .row,
     .row > .column {
       padding: 8px;
     }
-    
+
     /* Create four equal columns that floats next to each other */
     .column {
       float: left;
       width: 25%;
     }
-    
-    /* Clear floats after rows */ 
+
+    /* Clear floats after rows */
     .row:after {
       content: "";
       display: table;
       clear: both;
     }
-    
+
     /* Content */
     .content {
       background-color: white;
       padding: 10px;
     }
-    
+
     /* Responsive layout - makes a two column-layout instead of four columns */
     @media screen and (max-width: 900px) {
       .column {
         width: 50%;
       }
     }
-    
+
     /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
     @media screen and (max-width: 600px) {
       .column {
@@ -84,11 +84,14 @@
               <img src="{{doc.to_dict().imgURL}}" alt="Image for category: {{doc.to_dict().name}}">
               <h3>{{doc.to_dict().name.title()}}</h3>
             </button>
+            <button for="alltheme-sub" name="category-Sub" alt="Submit-Sub" value="{{doc.to_dict().name}}" style="background: none; border: none;">
+              <h5>Subscribe to {{doc.to_dict().name.title()}}</h5>
+            </button>
           </div>
         </div>
       {% endfor %}
       </div><!--END ROW-->
-    
+
     </form>
 
 {% endblock %}
