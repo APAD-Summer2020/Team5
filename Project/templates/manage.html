@@ -7,64 +7,70 @@
 {% block body %}
 <div class="container">
 
-<h1>Manage your content</h1>
-<hr>
-<br>
-     <div class="row">
-          <div class="col">
-<h2>Your Posts</h2>
+  <h1>Manage your content</h1>
+  <hr>
+  <br>
+  <div class="row">
+    <div class="col">
+      <h2>Your Posts</h2>
 
-<div>
-    {% if posts %}
-          {% for post in posts %}
-              <div class="row my-row p-3">
-                <img  width=60px height=60px src="{{post.to_dict().imgURL}}" alt="Post image">
-                <div class="my-col col-md-8 col-lg-9">
-                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
-                  <p>{{post.to_dict().content}}</p>
-                  <p>Category: {{post.to_dict().category.title()}}</p>
-                  <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
-                </div>
-              </div>
-          {% endfor %}
-    {% else %}
-    <h5>No Posts</h5>
-    {% endif %}
-    <br>
-    <button type="button" id="prevButton"> Prev Post</button>
-
-    <button type="button" id="nextButton"> Next Post</button>
-</div>
+      <div>
+        {% if posts %}
+        {% for post in posts %}
+        <div class="row my-row p-3">
+          <img  width=60px height=60px src="{{post.to_dict().imgURL}}" alt="Post image">
+          <div class="my-col col-md-8 col-lg-9">
+            <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+            <p>{{post.to_dict().content}}</p>
+            <p>Category: {{post.to_dict().category.title()}}</p>
+            <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
           </div>
-<hr>
-         <div class="col">
-<h3> Subscribed Categories</h3>
-<div>
-    {% if categories %}
-          {% for cate in categories %}
-              <div class="row my-row p-3">
+        </div>
+        {% endfor %}
+        {% else %}
+        <h5>No Posts</h5>
+        {% endif %}
+        <br>
+        <button type="button" id="prevButton"> Prev Post</button>
+
+        <button type="button" id="nextButton"> Next Post</button>
+      </div>
+    </div>
+    <hr>
+    <div class="col">
+      <h3> Subscribed Categories</h3>
+      <div>
+        {% if categories %}
+        <div class="allthemes-container">
+          <form class="allthemes-form" action="results" method="POST">
+            {% for cate in categories %}
+            <div class="row my-row p-3">
+              <button for="alltheme-theme-img" name="category" alt="Submit" value="{{cate.to_dict().name}}" style="background: none; border: none;">
                 <img  width=60px height=60px src="{{cate.to_dict().imgURL}}" alt="Post image">
                 <div class="my-col col-md-8 col-lg-9">
                   <p><b>{{cate.to_dict().name.title()}}</b>
-                </div>
+                  </div>
+                </button>
+                <br>
+                <button for="alltheme-sub" name="category-Unsub" alt="Submit-Unsub" value="{{cate.to_dict().name}}" style="background: none; border: none;">
+                  <h5>Unsubscribe from {{cate.to_dict().name.title()}}</h5>
+                </button>
+
               </div>
-          {% endfor %}
-    {% else %}
-    <h5>No Posts</h5>
-    {% endif %}
-    <br>
-    <button type="button" id="unsubscribe"> unsubscribe</button>
 
-</div>
+              {% endfor %}
+              {% else %}
+              <h5>No Posts</h5>
+              {% endif %}
 
+            </div>
 
 
 
 
-           </div>
-</div>
-         </div>
+
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-{%endblock%}
-
+    {%endblock%}

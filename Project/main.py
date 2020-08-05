@@ -56,7 +56,7 @@ def login():
                         'email': doc.get('email'),
                         'usertype': doc.get('usertype')
                     }
-                    
+
                     '''
                     if 'Content-Type' in request.headers:
                         if 'application/json' in request.headers['Content-Type']:
@@ -121,7 +121,7 @@ def signup():
                     json_post = {
                         'message': message
                     }
-                    
+
                     return render_template('signup.html', message=message)
             else:
                 if username != "" and email != "" and password != "":
@@ -140,11 +140,11 @@ def signup():
                     return render_template('login.html', error=None, successmessage=successmessage)
                 else:
                     message = "An Error Occurred When Signing Up"
-                    
+
                     json_post = {
                         'message': message
                     }
-                    
+
                     return render_template('signup.html', message=message)
         except:
             message = "An Error Occurred When Signing Up"
@@ -267,7 +267,7 @@ def createP():
                     'usertype': db_usertype,
                     'message': message,
                 }
-                
+
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
     json_post = {
@@ -455,6 +455,24 @@ def results():
             #        coords.append(point)
 
             doc_ref.update({u'subscriptions': firestore.ArrayUnion([subscription])})
+            # If not add it
+
+            #return to the manage page
+            return redirect(url_for('manage'))
+
+        elif 'category-Unsub' in request.form:
+            subscription = request.form['category-Unsub']
+            # Find the current db_username
+            db_username = session['db_username']
+            #Check if the subscription is already in the subscription List
+            doc_ref = db_firestore.collection(u'users').document(db_username)
+            #doc_ref = db_firestore.collection(u'users').where("username", "==", db_username).stream()
+            #for post in posts:
+            #    coords = []
+            #    for point in post.to_dict()["location"]:
+            #        coords.append(point)
+
+            doc_ref.update({u'subscriptions': firestore.ArrayRemove([subscription])})
             # If not add it
 
             #return to the manage page
