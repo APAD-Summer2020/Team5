@@ -58,22 +58,39 @@ def login():
                         'usertype': doc.get('usertype')
                     }
                     
+                    '''
                     if 'Content-Type' in request.headers:
                         if 'application/json' in request.headers['Content-Type']:
                             json_list = [
                                 {'posts': [json_post]}
                             ]
                             return jsonify(json_list)
+                    '''
 
                     return redirect(url_for('manage'))
                 else:
                     message = "Password is Incorrect"
+
+                    json_post = {
+                        'message': message
+                    }
+
                     return render_template('login.html', message=message)
             else:
                 message = "Login Info is incorrect"
+
+                json_post = {
+                    'message': message
+                }
+
                 return render_template('login.html', message=message)
         except:
             message = "An Error Occured When logging in"
+
+            json_post = {
+                'message': message
+            }
+
             return render_template('login.html', message=message)
     return render_template('login.html')
 
@@ -101,6 +118,11 @@ def signup():
                 db_pass = doc.get('password')
                 if db_pass == password:
                     message = "This account already exists"
+
+                    json_post = {
+                        'message': message
+                    }
+                    
                     return render_template('signup.html', message=message)
             else:
                 if username != "" and email != "" and password != "":
@@ -111,17 +133,29 @@ def signup():
                         u'usertype': usertype
                     })
                     successmessage="Account Successfully Created"
+
+                    json_post = {
+                        'successmessage': successmessage
+                    }
+
                     return render_template('login.html', error=None, successmessage=successmessage)
                 else:
                     message = "An Error Occurred When Signing Up"
+                    
+                    json_post = {
+                        'message': message
+                    }
+                    
                     return render_template('signup.html', message=message)
         except:
             message = "An Error Occurred When Signing Up"
+
+            json_post = {
+                'message': message
+            }
+
             return render_template('signup.html', message=message)
     return render_template('signup.html', error=None)
-
-
-
 
 
 
@@ -131,28 +165,15 @@ def manage():
     db_usertype = session['db_usertype']
     posts = db_firestore.collection('posts').where('author', '==', db_username).stream()
     #categories = db_firestore.collection('posts').where('author', '==', db_username).where('category', '==', True).stream()
+
+    json_post = {
+        'usertype': db_usertype,
+        'posts': posts
+    }
+    
     return render_template('manage.html',usertype=db_usertype, posts=posts)
 
 
-
-"""
-To update data for an existing entry use the update() method.
-db.child("users").child("Morty").update({"name": "Mortiest Morty"})
-
-To create your own keys use the set() method. The key in the example below is "Morty".
-
-data = {"name": "Mortimer 'Morty' Smith"}
-db.child("users").child("Morty").set(data)
-
-push
-To save data with a unique, auto-generated, timestamp-based key, use the push() method.
-
-data = {"name": "Mortimer 'Morty' Smith"}
-db.child("users").push(data)
-
-Source:
-https://github.com/thisbejim/Pyrebase
-"""
 
 def uploadImage(imgName, imgPath):
     config = {
@@ -174,8 +195,6 @@ def uploadImage(imgName, imgPath):
 
 
 
-
-
 @app.route('/createP', methods=['POST', 'GET'])
 def createP():
     db_usertype = session['db_usertype']
@@ -187,15 +206,16 @@ def createP():
         postcontent = request.form['post-content']
         posttaginput = request.form['p-tag']
         posttags = posttaginput.split(", ")
- #   getCategory = db_firestore.collection(u'categories').stream()
-
-   #     for doc in getCategory:
-   #         print(f'{doc.id}')
-
-
 
         if posttitle == "":
             message = "post title is empty"
+
+            json_post = {
+                'usertype': db_usertype,
+                'message': message,
+                'all_themes': all_themes1
+            }
+
             return render_template('createP.html', message=message, usertype=db_usertype, all_themes=all_themes1)
             # Check if there is a document with the same name
         else:
@@ -203,6 +223,13 @@ def createP():
             doc = doc_ref.get()
             if doc.exists:
                 message = "post title exists"
+
+                json_post = {
+                    'usertype': db_usertype,
+                    'message': message,
+                    'all_themes': all_themes1
+                }
+
                 return render_template('createP.html', message=message, usertype = db_usertype, all_themes= all_themes1)
 
             # if not in the document, add it.
@@ -217,8 +244,6 @@ def createP():
                 long = random.uniform(-180, 180)
                 location = [round(lat, 15), round(long, 15)]
 
-
-
                 doc_ref.set({
                     u'title': posttitle,
                     u'category': postcategory,
@@ -228,9 +253,21 @@ def createP():
                     u'location': location,
                     u'imgURL': imageURL
                 })
+
+                json_post = {
+                    'usertype': db_usertype,
+                    'message': message,
+                }
+                
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
+    json_post = {
+        'usertype': db_usertype,
+        'all_themes': all_themes1
+    }
+
     return render_template('createP.html',usertype = db_usertype, all_themes=all_themes1)
+
 
 
 @app.route('/createT', methods=['POST', 'GET'])
@@ -240,18 +277,29 @@ def createT():
         catename = request.form['c-name']
         catedescription = request.form['c-descri']
 
-
         if catename =="":
             message = "category name is empty"
+
+            json_post = {
+                'usertype': db_usertype,
+                'message': message
+            }
+
             return render_template('createT.html', message=message, usertype=db_usertype)
         else:
             doc_ref = db_firestore.collection(u'categories').document(catename)
             doc = doc_ref.get()
+
             if doc.exists:
                 message = "category name already exists"
+
+                json_post = {
+                    'usertype': db_usertype,
+                    'message': message
+                }
+
                 return render_template('createT.html', message=message, usertype=db_usertype)
             else:
-
                 image = request.files['img']
                 imageName = image.filename
                 imageURL = uploadImage(imageName, image)
@@ -262,9 +310,19 @@ def createT():
                     u'imgURL': imageURL
                 })
 
-                return redirect(url_for('createT',usertype = db_usertype, message = message))
+                json_post = {
+                    'usertype': db_usertype,
+                    'message': message
+                }
 
-    return render_template('createT.html',usertype = db_usertype)
+                return redirect(url_for('createT', usertype=db_usertype, message=message))
+
+    json_post = {
+        'usertype': db_usertype
+    }
+
+    return render_template('createT.html', usertype=db_usertype)
+
 
 
 @app.route('/all_categories', methods=['POST', 'GET'])
@@ -272,7 +330,13 @@ def categories():
     db_usertype = session['db_usertype']
     all_categories = db_firestore.collection("categories").stream()
 
+    json_post = {
+        'all_categories': all_categories,
+        'usertype': db_usertype
+    }
+
     return render_template('all_categories.html', all_categories=all_categories, usertype = db_usertype,error=None)
+
 
 
 @app.route('/results', methods=['POST', 'GET'])
@@ -319,6 +383,23 @@ def results():
 
             ourContent = createMap(posts)
 
+            json_post = {
+                'type': 'tags',
+                'tags': tags,
+                'posts': ourContent[1],
+                'map': ourContent[0],
+                'usertype': db_usertype
+            }
+
+            '''
+            if 'Content-Type' in request.headers:
+                if 'application/json' in request.headers['Content-Type']:
+                    json_list = [
+                        {'posts': [json_post]}
+                    ]
+                    return jsonify(json_list)
+            '''
+
             return render_template('results.html', type='tags', tags=tags, posts=ourContent[1], map=ourContent[0], usertype=db_usertype)
 
         elif 'category' in request.form:
@@ -328,6 +409,23 @@ def results():
             posts = db_firestore.collection("posts").where("category", "==", filterValue).stream()
 
             ourContent = createMap(posts)
+
+            json_post = {
+                'type': 'category',
+                'posts': ourContent[1],
+                'map': ourContent[0],
+                'filterValue': filterValue,
+                'usertype': db_usertype
+            }
+
+            '''
+            if 'Content-Type' in request.headers:
+                if 'application/json' in request.headers['Content-Type']:
+                    json_list = [
+                        {'posts': [json_post]}
+                    ]
+                    return jsonify(json_list)
+            '''
 
             return render_template('results.html', type='category', posts=ourContent[1], map=ourContent[0], filterValue=filterValue, usertype=db_usertype)
             
