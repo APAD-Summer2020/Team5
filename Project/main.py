@@ -129,9 +129,22 @@ def signup():
 def manage():
     db_username = session['db_username']
     db_usertype = session['db_usertype']
+    #stream all posts linked with the author
     posts = db_firestore.collection('posts').where('author', '==', db_username).stream()
+
+    #get the document of current user
+    subscription = db_firestore.collection('users').document(db_username).get()
+    #if document exist, get the subscription field data
+    if subscription.exists:
+        subscription_dic = subscription.to_dict()
+        user_sub = subscription_dic['subscriptions']
+        print(f'document data:',user_sub)
+        categories = db_firestore.collection("categories").where("name",'in',user_sub).get()
+
+
+
     #categories = db_firestore.collection('posts').where('author', '==', db_username).where('category', '==', True).stream()
-    return render_template('manage.html',usertype=db_usertype, posts=posts)
+    return render_template('manage.html',usertype=db_usertype, posts=posts, categories=categories)
 
 
 
@@ -187,11 +200,6 @@ def createP():
         postcontent = request.form['post-content']
         posttaginput = request.form['p-tag']
         posttags = posttaginput.split(", ")
- #   getCategory = db_firestore.collection(u'categories').stream()
-
-   #     for doc in getCategory:
-   #         print(f'{doc.id}')
-
 
 
         if posttitle == "":
