@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from collections import OrderedDict
 import pyrebase
 import firebase_admin
@@ -45,11 +45,25 @@ def login():
                 if db_pass == password:
                     #If passwords match, log in.
                     #Send all user information to template.
+
                     db_username = doc.get('username')
                     db_email = doc.get('email')
                     db_usertype = doc.get('usertype')
                     session['db_usertype'] = db_usertype
                     session['db_username'] = db_username
+
+                    json_post = {
+                        'username': doc.get('username'),
+                        'email': doc.get('email'),
+                        'usertype': doc.get('usertype')
+                    }
+                    
+                    if 'Content-Type' in request.headers:
+                        if 'application/json' in request.headers['Content-Type']:
+                            json_list = [
+                                {'posts': [json_post]}
+                            ]
+                            return jsonify(json_list)
 
                     return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
                 else:
