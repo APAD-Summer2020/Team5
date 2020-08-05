@@ -45,7 +45,6 @@ def login():
                 if db_pass == password:
                     #If passwords match, log in.
                     #Send all user information to template.
-
                     db_username = doc.get('username')
                     db_email = doc.get('email')
                     db_usertype = doc.get('usertype')
@@ -57,7 +56,7 @@ def login():
                         'email': doc.get('email'),
                         'usertype': doc.get('usertype')
                     }
-                    
+
                     if 'Content-Type' in request.headers:
                         if 'application/json' in request.headers['Content-Type']:
                             json_list = [
@@ -65,7 +64,7 @@ def login():
                             ]
                             return jsonify(json_list)
 
-                    return redirect(url_for('manage'))
+                    return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
                 else:
                     message = "Password is Incorrect"
                     return render_template('login.html', message=message)
@@ -279,9 +278,9 @@ def categories():
 def results():
     db_usertype = session['db_usertype']
     if request.method == 'POST':
-        
+
         def createMap(posts):
-            
+
             markers = []
             temp_posts = []
 
@@ -294,7 +293,7 @@ def results():
                     {
                     'lat': coords[0],
                     'lng': coords[1],
-                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"
+                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"+ "\'></img>"
                     }
                 )
                 temp_posts.append(post)
@@ -330,10 +329,10 @@ def results():
             ourContent = createMap(posts)
 
             return render_template('results.html', type='category', posts=ourContent[1], map=ourContent[0], filterValue=filterValue, usertype=db_usertype)
-            
+
     return render_template('results.html' ,error=None)
 
-    
+
 
 if __name__ == "__main__":
     app.run(debug=True)
