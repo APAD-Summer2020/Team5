@@ -129,7 +129,8 @@ def signup():
                         u'username': username,
                         u'email': email,
                         u'password': password,
-                        u'usertype': usertype
+                        u'usertype': usertype,
+                        u'subscriptions': [""]
                     })
                     successmessage="Account Successfully Created"
 
