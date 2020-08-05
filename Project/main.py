@@ -194,9 +194,9 @@ def createP():
                 imageURL = uploadImage(imageName, image)
 
                 #RANDOM LOCATION
-                lat = random.uniform(-180, 180)
-                long = random.uniform(-90,90)
-                location = [round(lat, 4), round(long, 4)]
+                lat = random.uniform(-90,90)
+                long = random.uniform(-180, 180)
+                location = [round(lat, 15), round(long, 15)]
 
 
 
