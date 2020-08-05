@@ -284,7 +284,8 @@ def results():
                 identifier="sndmap",
                 lat=30.2672,
                 lng=-97.7431,
-                markers=markers
+                markers=markers,
+                cluster=True
             )
 
             return [map, temp_posts]
