@@ -108,11 +108,16 @@ def signup():
 
 
 
+
+
+
 @app.route('/manage', methods=['POST', 'GET'])
 def manage():
-
+    db_username = session['db_username']
     db_usertype = session['db_usertype']
-    return render_template('manage.html',usertype = db_usertype)
+    posts = db_firestore.collection('posts').where('author', '==', db_username).stream()
+    #categories = db_firestore.collection('posts').where('author', '==', db_username).where('category', '==', True).stream()
+    return render_template('manage.html',usertype=db_usertype, posts=posts)
 
 
 
