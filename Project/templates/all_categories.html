@@ -84,6 +84,9 @@
               <img src="{{doc.to_dict().imgURL}}" alt="Image for category: {{doc.to_dict().name}}">
               <h3>{{doc.to_dict().name.title()}}</h3>
             </button>
+            <button for="alltheme-sub" name="category-Sub" alt="Submit-Sub" value="{{doc.to_dict().name}}" style="background: none; border: none;">
+              <h5>Subscribe to {{doc.to_dict().name.title()}}</h5>
+            </button>
           </div>
         </div>
       {% endfor %}

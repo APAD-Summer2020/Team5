@@ -330,7 +330,28 @@ def results():
 
             return render_template('results.html', type='category', posts=ourContent[1], map=ourContent[0], filterValue=filterValue, usertype=db_usertype)
 
-    return render_template('results.html' ,error=None)
+        elif 'category-Sub' in request.form:
+            subscription = request.form['category-Sub']
+            # Find the current db_username
+            db_username = session['db_username']
+            #Check if the subscription is already in the subscription List
+            doc_ref = db_firestore.collection(u'users').document(db_username)
+            doc = doc_ref.get()
+            for sub in doc.to_dict()['subscriptions']:
+                if sub == subscription:
+                    return redirect(url_for('manage'))
+            #doc_ref = db_firestore.collection(u'users').where("username", "==", db_username).stream()
+            #for post in posts:
+            #    coords = []
+            #    for point in post.to_dict()["location"]:
+            #        coords.append(point)
+
+            doc_ref.update({u'subscriptions': firestore.ArrayUnion([subscription])})
+            # If not add it
+
+            #return to the manage page
+            return redirect(url_for('manage'))
+    return render_template('results.html', error=None)
 
 
 
