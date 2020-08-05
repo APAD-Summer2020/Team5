@@ -145,8 +145,9 @@ def uploadImage(imgName, imgPath):
 
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
-
     storage.child(f"images/{imgName}").put(imgPath)
+    imageurl = storage.child(f"images/{imgName}").get_url(None)
+    return imageurl
 
 
 
@@ -169,6 +170,7 @@ def createP():
    #         print(f'{doc.id}')
 
 
+
         if posttitle == "":
             message = "post title is empty"
             return render_template('createP.html', message=message, usertype=db_usertype, all_themes=all_themes1)
@@ -184,10 +186,10 @@ def createP():
             else:
                 message = "post created successfully"
 
-                #upload image
                 image = request.files['img']
                 imageName = image.filename
-                uploadImage(imageName, image)
+                imageURL = uploadImage(imageName, image)
+
 
                 #RANDOM LOCATION
                 lat = random.uniform(-180, 180)
@@ -202,7 +204,8 @@ def createP():
                     u'content': postcontent,
                     u'tags': posttags,
                     u'author': db_username,
-                    u'location': location
+                    u'location': location,
+                    u'imgURL': imageURL
                 })
             return redirect(url_for('createP',usertype = db_usertype,message = message))
 
@@ -231,11 +234,13 @@ def createT():
                 image = request.files['img']
                 print(image)
                 imageName = image.filename
-                uploadImage(imageName, image)
 
+                imageURL = uploadImage(imageName, image)
+                message = "category created successfully"
                 doc_ref.set({
                     u'name': catename,
                     u'description': catedescription,
+                    u'imgURL': imageURL
                 })
 
                 return redirect(url_for('createT',usertype = db_usertype, message = message))
