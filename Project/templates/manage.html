@@ -12,24 +12,45 @@
 <br>
      <div class="row">
           <div class="col">
-<h2>Your reports</h2>
+<h2>Your Posts</h2>
 
 <div>
-    <img src="" alt="image1"><br>
+    {% if posts %}
+          {% for post in posts %}
+              <div class="row my-row p-3">
+                <img  width=60px height=60px src="{{post.to_dict().imgURL}}" alt="Post image">
+                <div class="my-col col-md-8 col-lg-9">
+                  <p><b>{{post.to_dict().title.title()}}</b> By: {{post.to_dict().author.title()}}</p>
+                  <p>{{post.to_dict().content}}</p>
+                  <p>Category: {{post.to_dict().category.title()}}</p>
+                  <p>Tags: {{post.to_dict().tags|join(", ")}}</p>
+                </div>
+              </div>
+            {% endfor %}
+    {% else %}
+    <h5>No Posts</h5>
+    {% endif %}
+    <br>
+    <button type="button"> Prev Post</button>
 
-    <button type="button"> Prev Report</button>
-
-    <button type="button"> Next Report</button>
+    <button type="button"> Next Post</button>
 </div>
           </div>
 <hr>
          <div class="col">
-<h3> Subscribed themes</h3>
+<h3> Subscribed Categories</h3>
 <div>
-    <a href = "#"> Theme 1</a>
-    <br>
-    <img src="" alt="image2">
-    <br>
+<!--      {% if categories %}-->
+<!--          {% for category in categories %}-->
+<!--                <div class="my-col col-md-8 col-lg-9">-->
+<!--                    <p>{{category.to_dict().category.title()}}</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            {% endfor %}-->
+
+<!--    {% else %}-->
+<!--    <h3>No Categories</h3>-->
+<!--    {% endif %}-->
     <button type="button">unsubscribe</button>
 </div>
            </div>
