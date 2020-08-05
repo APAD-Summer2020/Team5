@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from collections import OrderedDict
 import pyrebase
 import firebase_admin
@@ -45,11 +45,25 @@ def login():
                 if db_pass == password:
                     #If passwords match, log in.
                     #Send all user information to template.
+
                     db_username = doc.get('username')
                     db_email = doc.get('email')
                     db_usertype = doc.get('usertype')
                     session['db_usertype'] = db_usertype
                     session['db_username'] = db_username
+
+                    json_post = {
+                        'username': doc.get('username'),
+                        'email': doc.get('email'),
+                        'usertype': doc.get('usertype')
+                    }
+                    
+                    if 'Content-Type' in request.headers:
+                        if 'application/json' in request.headers['Content-Type']:
+                            json_list = [
+                                {'posts': [json_post]}
+                            ]
+                            return jsonify(json_list)
 
                     return render_template('manage.html', username=db_username, email=db_email, usertype=db_usertype)
                 else:
@@ -199,9 +213,9 @@ def createP():
                 imageURL = uploadImage(imageName, image)
 
                 #RANDOM LOCATION
-                lat = random.uniform(-180, 180)
-                long = random.uniform(-90,90)
-                location = [round(lat, 4), round(long, 4)]
+                lat = random.uniform(-90,90)
+                long = random.uniform(-180, 180)
+                location = [round(lat, 15), round(long, 15)]
 
 
 
@@ -268,28 +282,30 @@ def results():
         
         def createMap(posts):
             
-            temp_markers = []
+            markers = []
             temp_posts = []
 
-            for mapitem in posts:
-                temp_location = []
-                for point in mapitem.to_dict()["location"]:
-                    temp_location.append(point)
+            for post in posts:
+                coords = []
+                for point in post.to_dict()["location"]:
+                    coords.append(point)
 
-                temp_markers.append(
+                markers.append(
                     {
-                    'lat': temp_location[0],
-                    'lng': temp_location[1],
-                    'infobox': "<b>" + str(mapitem.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(mapitem.to_dict()["imgURL"]) + "\'></img>"
+                    'lat': coords[0],
+                    'lng': coords[1],
+                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"
                     }
                 )
-                temp_posts.append(mapitem)
+                temp_posts.append(post)
 
             map = Map(
                 identifier="sndmap",
                 lat=30.2672,
                 lng=-97.7431,
-                markers=temp_markers
+                markers=markers,
+                cluster=True,
+                cluster_imagepath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m"
             )
 
             return [map, temp_posts]
