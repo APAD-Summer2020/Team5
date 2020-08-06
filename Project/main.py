@@ -368,7 +368,7 @@ def results():
                     {
                     'lat': coords[0],
                     'lng': coords[1],
-                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"+ "\'></img>"
+                    'infobox': "<b>" + str(post.to_dict()["title"]) + "</b>" + "<br><img width=50px height=50px src=\'" + str(post.to_dict()["imgURL"]) + "\'></img>"
                     }
                 )
                 temp_posts.append(post)
