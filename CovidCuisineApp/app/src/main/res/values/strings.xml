@@ -10,10 +10,23 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="usernameHint">Please enter your username…</string>
+    <string name="create_post">Create Post</string>
+    <string name="categories">Categories</string>
+    <string name="post_title">Post Title</string>
+    <string name="post_content">Post Content</string>
+    <string name="select_photo_from_library">Select Photo from Library</string>
+    <string name="or">Or</string>
+    <string name="use_camera">Use Camera</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
 
 
     <string-array name="userType">
         <item>Personal</item>
         <item>Commercial</item>
+    </string-array>
+    <string-array name="select_categories">
+        <item>American</item>
+        <item>Mexican</item>
     </string-array>
 </resources>
