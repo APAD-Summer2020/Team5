@@ -10,8 +10,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".Results"
+            android:label="@string/title_activity_results"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        
+        <activity
+            android:name=".viewAllCategories"
+            android:exported="true" />
         <activity android:name=".createPost" android:exported="true"></activity>
-        <activity android:name=".viewAllCategories" />
         <activity android:name=".SpinnerActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
