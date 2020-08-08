@@ -24,6 +24,8 @@ class createPost : AppCompatActivity() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
+
+        
     }
 
 }
