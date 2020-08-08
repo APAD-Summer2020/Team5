@@ -1,7 +1,6 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 import android.app.Activity
-import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -16,7 +15,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 
-import com.example.covidcuisine.R
+import com.apadteam5.covidcuisine.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {

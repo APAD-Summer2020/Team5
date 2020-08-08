@@ -1,4 +1,4 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 /**
  * Data validation state of the login form.

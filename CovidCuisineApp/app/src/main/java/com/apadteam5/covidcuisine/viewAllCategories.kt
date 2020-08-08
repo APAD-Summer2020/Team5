@@ -1,11 +1,11 @@
-package com.example.covidcuisine
+package com.apadteam5.covidcuisine
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class Results : AppCompatActivity() {
+class viewAllCategories : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_results)
+        setContentView(R.layout.activity_view_all_categories)
     }
 }

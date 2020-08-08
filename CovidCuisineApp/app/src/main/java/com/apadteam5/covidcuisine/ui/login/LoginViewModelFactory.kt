@@ -1,9 +1,9 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.covidcuisine.data.LoginDataSource
-import com.example.covidcuisine.data.LoginRepository
+import com.apadteam5.covidcuisine.data.LoginDataSource
+import com.apadteam5.covidcuisine.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

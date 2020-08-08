@@ -1,4 +1,4 @@
-package com.example.covidcuisine
+package com.apadteam5.covidcuisine
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,6 +24,8 @@ class createPost : AppCompatActivity() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
+
+        
     }
 
 }
