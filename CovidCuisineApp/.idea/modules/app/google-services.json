@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "311004038430",
+    "firebase_url": "https://apad-team5.firebaseio.com",
+    "project_id": "apad-team5",
+    "storage_bucket": "apad-team5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311004038430:android:5b83c2d0fedc0ca575750f",
+        "android_client_info": {
+          "package_name": "com.apadteam5.covidcuisine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311004038430-fg5kgob4v17h8gb64q2uggd64mjs7qrs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apadteam5.covidcuisine",
+            "certificate_hash": "814f54e4ed8d81e9c66011ffb79eda5e445be735"
+          }
+        },
+        {
+          "client_id": "311004038430-o8uu9fort85a7i5k97uljehc94v3mo96.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVs1VmE4-HM21hzLgsYkhhExVWpcKbN5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311004038430-o8uu9fort85a7i5k97uljehc94v3mo96.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
