@@ -1,6 +1,6 @@
-package com.example.covidcuisine.data
+package com.apadteam5.covidcuisine.data
 
-import com.example.covidcuisine.data.model.LoggedInUser
+import com.apadteam5.covidcuisine.data.model.LoggedInUser
 import java.io.IOException
 
 /**

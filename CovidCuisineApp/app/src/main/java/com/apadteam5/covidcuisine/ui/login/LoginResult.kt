@@ -1,4 +1,4 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 /**
  * Authentication result : success (user details) or error message.

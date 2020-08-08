@@ -1,13 +1,13 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import com.example.covidcuisine.data.LoginRepository
-import com.example.covidcuisine.data.Result
+import com.apadteam5.covidcuisine.data.LoginRepository
+import com.apadteam5.covidcuisine.data.Result
 
-import com.example.covidcuisine.R
+import com.apadteam5.covidcuisine.R
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 

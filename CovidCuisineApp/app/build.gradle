@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "com.example.covidcuisine"
+        applicationId "com.apadteam5.covidcuisine"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1

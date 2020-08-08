@@ -1,4 +1,4 @@
-package com.example.covidcuisine.data
+package com.apadteam5.covidcuisine.data
 
 /**
  * A generic class that holds a value with its loading status.

@@ -1,4 +1,4 @@
-package com.example.covidcuisine.data.model
+package com.apadteam5.covidcuisine.data.model
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

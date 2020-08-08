@@ -1,4 +1,4 @@
-package com.example.covidcuisine
+package com.apadteam5.covidcuisine
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

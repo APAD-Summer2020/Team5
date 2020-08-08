@@ -1,4 +1,4 @@
-package com.example.covidcuisine.ui.login
+package com.apadteam5.covidcuisine.ui.login
 
 /**
  * User details post authentication that is exposed to the UI
