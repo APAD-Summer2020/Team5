@@ -53,6 +53,12 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         }
 
+        //cancel button listener
+        val cancelButton = findViewById<Button>(R.id.cancel)
+        cancelButton.setOnClickListener{
+            performCancel()
+        }
+
     }
 
     //check for upload
@@ -79,10 +85,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val title = postTitle.text
         val content = postContent.text
         val category = "American"
-        Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
-        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
-        val imgUrl = uploadImageToFirebaseStorage()
 
+        uploadImageToFirebaseStorage(title.toString())
 
         val data = hashMapOf(
             "author" to username,
@@ -90,20 +94,30 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             "content" to content.toString(),
             "title" to title.toString()
         )
-        println(data)
-
 
         db.collection("posts").document(title.toString()).set(data)
 
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
+        Toast.makeText(this,"Post posted successfully",Toast.LENGTH_LONG).show()
+        post_title.text.clear()
+        post_content.text.clear()
+
     }
+
+    //cancel function
+    private fun performCancel(){
+        post_title.text.clear()
+        post_content.text.clear()
+
+    }
+
     //upload image function
-    private fun uploadImageToFirebaseStorage(){
+    private fun uploadImageToFirebaseStorage(title:String) {
         if (selectedPhotoUri == null) return
         val filename = UUID.randomUUID().toString()
-
+        val title = title
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
@@ -111,12 +125,20 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
                 ref.downloadUrl.addOnSuccessListener {
                     Log.d("Upload", "File Location: $it")
-
+                    saveImagetoDatabase(title, it.toString())
                 }
 
             }
     }
 
+    private fun saveImagetoDatabase(title:String, imgURL:String){
+        val db = Firebase.firestore
+
+        db.collection("posts").document(title.toString()).update("imgURL",imgURL)
+            .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
+            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+
+    }
     override fun onNothingSelected(parent: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
     }
