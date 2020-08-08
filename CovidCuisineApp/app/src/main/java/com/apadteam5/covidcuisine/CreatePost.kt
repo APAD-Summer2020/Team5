@@ -96,14 +96,13 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             "title" to title
         )
         println(data)
-/*
+
         db.collection("posts").document("test").set(data)
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
 
 
- */
     }
     //upload image function
     private fun uploadImageToFirebaseStorage() {
