@@ -18,7 +18,7 @@
             android:id="@+id/category_textview_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Category Line1"
+            android:text="@string/category_line"
             android:layout_toEndOf="@+id/category_imageview"
             android:layout_toRightOf="@+id/category_imageview" />
     </RelativeLayout>
