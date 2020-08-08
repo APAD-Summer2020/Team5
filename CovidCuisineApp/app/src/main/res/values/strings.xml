@@ -29,9 +29,5 @@
     <string name="title_activity_results">Results</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
-  
-    <string-array name="select_categories">
-        <item>American</item>
-        <item>Mexican</item>
-    </string-array>
+
 </resources>
