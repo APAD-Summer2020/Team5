@@ -71,11 +71,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //submit function
     private fun performSubmit() {
         //initializing firebase
-        /*
-        lateinit var db = DocumentReference
-        db = FirebaseFirestore.getInstance().document("posts")
-
-         */
 
         val db = Firebase.firestore
         val username = "test"
@@ -86,8 +81,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val category = "American"
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
         Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
-        uploadImageToFirebaseStorage()
-        println("test: $username$title$content$category")
+        val imgUrl = uploadImageToFirebaseStorage()
 
 
         val data = hashMapOf(
@@ -106,7 +100,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     }
     //upload image function
-    private fun uploadImageToFirebaseStorage() {
+    private fun uploadImageToFirebaseStorage(){
         if (selectedPhotoUri == null) return
         val filename = UUID.randomUUID().toString()
 
