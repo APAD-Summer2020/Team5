@@ -76,6 +76,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         db = FirebaseFirestore.getInstance().document("posts")
 
          */
+
         val db = Firebase.firestore
         val username = "test"
         val postTitle = findViewById<EditText>(R.id.post_title)
@@ -85,25 +86,25 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val category = "American"
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
         Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
-
+        uploadImageToFirebaseStorage()
         println("test: $username$title$content$category")
 
 
         val data = hashMapOf(
             "author" to username,
             "category" to category,
-            "content" to content,
-            "title" to title
+            "content" to content.toString(),
+            "title" to title.toString()
         )
         println(data)
-/*
-        db.collection("posts").document("test").set(data)
+
+        db.collection("posts").document(title.toString()).set(data)
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
 
 
- */
+
     }
     //upload image function
     private fun uploadImageToFirebaseStorage() {
