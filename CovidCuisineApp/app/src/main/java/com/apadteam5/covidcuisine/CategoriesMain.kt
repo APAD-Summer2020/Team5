@@ -4,17 +4,19 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import android.widget.Adapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
-import java.io.InputStream
 
+val adapterList_global = ArrayList<CategoryAdapter>()
+val categoryItemList_global = ArrayList<List<CategoryItem>>()
 
 class CategoriesMain : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +40,13 @@ class CategoriesMain : AppCompatActivity() {
                     categories_images.add(cat.get("imgURL") as String)
                 }
 
-                val categoryList = generateCategoriesList(categories_names, categories_descriptions, categories_images)
+                categoryItemList_global.add(generateCategoriesList(categories_names, categories_descriptions, categories_images))
+                val categoryList = categoryItemList_global[0]
+                // val categoryList = generateCategoriesList(categories_names, categories_descriptions, categories_images)
+                adapterList_global.add(CategoryAdapter(categoryList))
+                recycler_view_categories.adapter = adapterList_global[0]
+                //recycler_view_categories.adapter = CategoryAdapter(categoryList)
 
-                recycler_view_categories.adapter = CategoryAdapter(categoryList)
                 recycler_view_categories.layoutManager = LinearLayoutManager(this)
                 recycler_view_categories.setHasFixedSize(true)
             }
