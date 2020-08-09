@@ -42,34 +42,42 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
         val email = findViewById<EditText>(R.id.email).text.toString()
         val password = findViewById<EditText>(R.id.pass_word).text.toString()
         val subscriptions = arrayListOf("")
-       // val existUser = db.collection("users").get()
-        if (username == "" ) {
-            Toast.makeText(this, "Please enter a username", Toast.LENGTH_LONG).show()
 
+        if (username == "") {
+            Toast.makeText(this, "Please enter a username", Toast.LENGTH_LONG).show()
         } else if (email == "") {
             Toast.makeText(this, "Please enter a email", Toast.LENGTH_LONG).show()
         } else if (password == "") {
             Toast.makeText(this, "Please enter a password", Toast.LENGTH_LONG).show()
         } else {
-            val data = hashMapOf(
-                "username" to username,
-                "email" to email,
-                "password" to password,
-                "subscriptions" to subscriptions,
-                "usertype" to usertypeSelected
-            )
+            db.collection("users").document(username).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        Toast.makeText(this, "Username already exist", Toast.LENGTH_LONG).show()
+                    } else {
+                        val data = hashMapOf(
+                            "username" to username,
+                            "email" to email,
+                            "password" to password,
+                            "subscriptions" to subscriptions,
+                            "usertype" to usertypeSelected
+                        )
 
-            db.collection("users").document(username).set(data)
+                        db.collection("users").document(username).set(data)
 
-                .addOnSuccessListener {
-                    Toast.makeText(this, "user created successfully", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, CreatePost::class.java)
-                    intent.putExtra("username", username)
-                    startActivity(intent)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "user created successfully", Toast.LENGTH_LONG)
+                                    .show()
+                                val intent = Intent(this, CreatePost::class.java)
+                                intent.putExtra("username", username)
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
+                    }
                 }
-                .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
         }
     }
+
     override fun onNothingSelected(p0: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
     }
