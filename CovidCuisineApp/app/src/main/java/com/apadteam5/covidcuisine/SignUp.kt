@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
     private var usertypeSelected:String = ""
     val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -21,21 +22,23 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
         //initializing spinner
         var spinner: Spinner? = null
         var arrayAdapter: ArrayAdapter<String>? = null
-
         //in order to display options on the spinner, it has to initialize with an empty string,Why!?
         val usertype = arrayListOf("Personal","Commercial")
-
         spinner = findViewById(R.id.usertype)
         arrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, usertype)
         spinner?.adapter = arrayAdapter
         spinner?.onItemSelectedListener = this
 
+
+        //on signup
         val signupButton = findViewById<Button>(R.id.signup)
         signupButton.setOnClickListener {
             performSignup(usertypeSelected)
         }
 
     }
+
+
     private fun performSignup(usertypeSelected:String){
         val username = findViewById<EditText>(R.id.username).text.toString()
         val email = findViewById<EditText>(R.id.email).text.toString()
