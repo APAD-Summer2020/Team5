@@ -24,8 +24,8 @@ class CategoryAdapter(
         val currentItem_cat = categoryList[position]
 
         holder.imageView.setImageResource(currentItem_cat.imageResource)
-        holder.textView1.text = currentItem_cat.text1
-        holder.textView2.text = currentItem_cat.text2
+        holder.textView1.text = currentItem_cat.categoryName
+        holder.textView2.text = currentItem_cat.categoryDesc
     }
 
     override fun getItemCount() = categoryList.size
