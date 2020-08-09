@@ -6,7 +6,6 @@ import android.os.StrictMode
 import android.util.Log
 import android.widget.Adapter
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +27,6 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         val categories_images = arrayListOf<String>()
 
         val db = Firebase.firestore
-        //val db = FirebaseFirestore.getInstance()
         db.collection("categories").get()
             .addOnSuccessListener { result ->
                 for (cat in result) {
@@ -37,9 +35,14 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
                     categories_images.add(cat.get("imgURL") as String)
                 }
 
-                categoryItemList_global.add(generateCategoriesList(categories_names, categories_descriptions, categories_images))
+                categoryItemList_global.add(
+                    generateCategoriesList(
+                        categories_names,
+                        categories_descriptions,
+                        categories_images
+                    )
+                )
                 val categoryList = categoryItemList_global[0]
-                // val categoryList = generateCategoriesList(categories_names, categories_descriptions, categories_images)
                 adapterList_global.add(CategoryAdapter(categoryList))
                 recycler_view_categories.adapter = adapterList_global[0]
                 //recycler_view_categories.adapter = CategoryAdapter(categoryList)
@@ -50,34 +53,35 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
             .addOnFailureListener { exception ->
                 Log.w("catError", "Error getting documents: ", exception)
             }
-
-            override fun onItemClick(position: Int) {
-                Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
-                val clickedItem = categoryList[position]
-                adapter.notifyItemChanged(position)
-            }
     }
 
-    private fun generateCategoriesList(categories_names : ArrayList<String>, categories_descriptions : ArrayList<String>, categories_images : ArrayList<String>): List<CategoryItem> {
-      val list = ArrayList<CategoryItem>()
-      for (cat in 0 until categories_names.size) {
-          val drawable = R.drawable.ic_android
-          //val textObj1 = "Hello"
-          val textObj1 = categories_names[cat]
-          val textObj2 = categories_descriptions[cat]
-          //val textObj1: String = cat.get("name") as String
-          //val textObj2: String = cat.get("description") as String
-          //val imageObj1: String = cat.get("imgURL") as String
-          val imgObj1 = categories_images[cat]
+    private fun generateCategoriesList(
+        categories_names: ArrayList<String>,
+        categories_descriptions: ArrayList<String>,
+        categories_images: ArrayList<String>
+    ): List<CategoryItem> {
+        val list = ArrayList<CategoryItem>()
+        for (cat in 0 until categories_names.size) {
+            val drawable = R.drawable.ic_android
+            //val textObj1 = "Hello"
+            val textObj1 = categories_names[cat]
+            val textObj2 = categories_descriptions[cat]
+            //val textObj1: String = cat.get("name") as String
+            //val textObj2: String = cat.get("description") as String
+            //val imageObj1: String = cat.get("imgURL") as String
+            val imgObj1 = categories_images[cat]
 
-          val item = CategoryItem(imgObj1, textObj1, textObj2)
-          list += item
-      }
-      return list
+            val item = CategoryItem(imgObj1, textObj1, textObj2)
+            list += item
+        }
+        return list
     }
 
     override fun onItemClick(position: Int) {
+        val categoryList = categoryItemList_global[0]
+        val adapter = adapterList_global[0]
         Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
     }
+}
