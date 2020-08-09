@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.view.get
+import com.google.common.io.Files.append
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -22,7 +23,7 @@ import java.util.*
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private var categorySelected:String = ""
-
+    val db = Firebase.firestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_post)
@@ -30,7 +31,20 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         //initializing spinner
         var spinner:Spinner? = null
         var arrayAdapter: ArrayAdapter<String>? = null
-        val categories = arrayOf("American","Mexican","Asian")
+
+        //in order to display options on the spinner, it has to initialize with an empty string,Why!?
+        val categories = arrayListOf("")
+
+        db.collection("categories").get()
+            .addOnSuccessListener { result->
+                for (category in result){
+                    //Log.d("tag", "${category.id} => $ ${category.data}") }
+               categories.add(category.id)
+            }
+            println(categories)
+
+                Log.d("post", "Post successfully uploaded") }
+            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
         spinner = findViewById(R.id.select_categories)
         arrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categories)
@@ -79,7 +93,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
 
-        val db = Firebase.firestore
+
         val username = "test"
         val postTitle = findViewById<EditText>(R.id.post_title)
         val postContent = findViewById<EditText>(R.id.post_content)
@@ -97,12 +111,15 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         db.collection("posts").document(title.toString()).set(data)
 
-            .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
+            .addOnSuccessListener {
+                Toast.makeText(this,"Post posted successfully",Toast.LENGTH_LONG).show()
+                post_title.text.clear()
+                post_content.text.clear()
+                Log.d("post", "Post successfully uploaded") }
+
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
-        Toast.makeText(this,"Post posted successfully",Toast.LENGTH_LONG).show()
-        post_title.text.clear()
-        post_content.text.clear()
+
 
     }
 

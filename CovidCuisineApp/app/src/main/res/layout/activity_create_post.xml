@@ -55,22 +55,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/post_title"
-        app:layout_constraintBottom_toTopOf="@+id/post_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_categories" />
 
     <EditText
         android:id="@+id/post_title"
-        android:layout_width="357dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="164dp"
+        android:layout_width="370dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.39"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView4"
