@@ -21,10 +21,11 @@ import java.util.*
 
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
+    private var categorySelected:String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_post)
-
 
         //initializing spinner
         var spinner:Spinner? = null
@@ -49,7 +50,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         //submit button listener
         val submitButton = findViewById<Button>(R.id.submit)
         submitButton.setOnClickListener {
-            performSubmit()
+            performSubmit(categorySelected)
 
         }
 
@@ -75,7 +76,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //submit function
-    private fun performSubmit() {
+    private fun performSubmit(categorySelected:String) {
         //initializing firebase
 
         val db = Firebase.firestore
@@ -90,7 +91,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         val data = hashMapOf(
             "author" to username,
-            "category" to category,
+            "category" to categorySelected,
             "content" to content.toString(),
             "title" to title.toString()
         )
@@ -147,6 +148,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         var items:String = parent?.getItemAtPosition(position) as String
         println(items)
         Toast.makeText(applicationContext,"$items",Toast.LENGTH_LONG).show()
-
+        categorySelected = items
     }
 }
