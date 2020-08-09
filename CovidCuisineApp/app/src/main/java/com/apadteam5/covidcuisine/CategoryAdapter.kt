@@ -21,20 +21,20 @@ class CategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val currentItem_cat = categoryList[position]
+        val currentItem = categoryList[position]
 
-        holder.imageView.setImageResource(currentItem_cat.imageResource)
-        holder.textView1.text = currentItem_cat.text1
-        holder.textView2.text = currentItem_cat.text2
+        holder.imageView.setImageResource(currentItem.imageResource)
+        holder.categoryName.text = currentItem.categoryName
+        holder.categoryDesc.text = currentItem.categoryDesc
     }
 
     override fun getItemCount() = categoryList.size
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
-        val imageView: ImageView = itemView.image_view_cat
-        val textView1: TextView = itemView.text_view_1_cat
-        val textView2: TextView = itemView.text_view_2_cat
+        val imageView: ImageView = itemView.categoryImage
+        val categoryName: TextView = itemView.categoryName
+        val categoryDesc: TextView = itemView.categoryDesc
 
         init {
             itemView.setOnClickListener(this)

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_categories_main.*
 
 class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
-    private val categoryList = generateDummyList(100)
+    private val categoryList = generateDummyList(5)
     private val adapter = CategoryAdapter(categoryList, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
     private fun generateDummyList(size: Int): List<CategoryItem> {
         val list = ArrayList<CategoryItem>()
         for (i in 0 until size) {
-            val drawable = when (i % 3) {
+            val drawable = when (i % 1) {
                 0 -> R.drawable.ic_android
                 1 -> R.drawable.ic_baseline_map
                 else -> R.drawable.ic_baseline_category
