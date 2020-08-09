@@ -16,6 +16,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
+import kotlinx.android.synthetic.main.activity_login.*
 import org.w3c.dom.Text
 import java.util.*
 
@@ -93,8 +94,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
 
-
-        val username = "test"
+        val username = intent.getStringExtra("username")
         val postTitle = findViewById<EditText>(R.id.post_title)
         val postContent = findViewById<EditText>(R.id.post_content)
         val title = postTitle.text
