@@ -3,21 +3,16 @@ package com.apadteam5.covidcuisine
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.core.view.get
-import com.google.common.io.Files.append
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
-import kotlinx.android.synthetic.main.activity_login.*
-import org.w3c.dom.Text
+import java.lang.IllegalArgumentException
 import java.util.*
 
 
@@ -97,27 +92,40 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val username = intent.getStringExtra("username")
         val postTitle = findViewById<EditText>(R.id.post_title)
         val postContent = findViewById<EditText>(R.id.post_content)
-        val title = postTitle.text
-        val content = postContent.text
+        val title = postTitle.text.toString()
+        val content = postContent.text.toString()
 
-        uploadImageToFirebaseStorage(title.toString())
+        if(title == ""){
+            Toast.makeText(this,"Please enter a title",Toast.LENGTH_LONG).show()
+        }
+        else if(categorySelected == ""){
+            Toast.makeText(this,"Please select a category",Toast.LENGTH_LONG).show()
+        }
+        else {
+            uploadImageToFirebaseStorage(title.toString())
 
-        val data = hashMapOf(
-            "author" to username,
-            "category" to categorySelected,
-            "content" to content.toString(),
-            "title" to title.toString()
-        )
+            val data = hashMapOf(
+                "author" to username,
+                "category" to categorySelected,
+                "content" to content,
+                "title" to title
+            )
 
-        db.collection("posts").document(title.toString()).set(data)
+            db.collection("posts").document(title.toString()).set(data)
 
-            .addOnSuccessListener {
-                Toast.makeText(this,"Post posted successfully",Toast.LENGTH_LONG).show()
-                post_title.text.clear()
-                post_content.text.clear()
-                Log.d("post", "Post successfully uploaded") }
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Post posted successfully", Toast.LENGTH_LONG).show()
+                    post_title.text.clear()
+                    post_content.text.clear()
+                    Log.d("post", "Post successfully uploaded")
+                }
 
-            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+                .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
+
+        }
+
+
+
 
 
 
@@ -162,8 +170,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         var items:String = parent?.getItemAtPosition(position) as String
-        println(items)
-        Toast.makeText(applicationContext,"$items",Toast.LENGTH_LONG).show()
         categorySelected = items
     }
 }

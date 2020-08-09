@@ -9,8 +9,11 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_create_post.*
+import kotlinx.android.synthetic.main.activity_login.*
 
 class Login : AppCompatActivity() {
+
     val db = Firebase.firestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +36,8 @@ class Login : AppCompatActivity() {
 
     private fun performLogin(){
 
-        val username = findViewById<EditText>(R.id.username).text.toString()
-        val password = findViewById<EditText>(R.id.password).text.toString()
+        val username = findViewById<EditText>(R.id.user_name).text.toString()
+        val password = findViewById<EditText>(R.id.pass_word).text.toString()
         db.collection("users").document(username).get()
             .addOnSuccessListener { result ->
                 val correct_pass = result.getString("password")
@@ -42,15 +45,19 @@ class Login : AppCompatActivity() {
 
                 if(result == null){
                     Toast.makeText(this,"Wrong Username or Password",Toast.LENGTH_LONG).show()
+                    user_name.text.clear()
+                    pass_word.text.clear()
+
                 }
                 else if(correct_pass != password){
                     Toast.makeText(this,"Wrong Username or Password",Toast.LENGTH_LONG).show()
+                    user_name.text.clear()
+                    pass_word.text.clear()
                 }
                 else{
                     val intent = Intent(this,CreatePost::class.java)
                     intent.putExtra("username",username)
                     startActivity(intent)
-                    Toast.makeText(this,"logged in!",Toast.LENGTH_LONG).show()
                 }
 
             }
