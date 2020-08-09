@@ -11,28 +11,28 @@
         android:padding="8dp">
 
         <ImageView
-            android:id="@+id/image_view_cat"
+            android:id="@+id/categoryImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_android" />
 
         <TextView
-            android:id="@+id/text_view_1_cat"
+            android:id="@+id/categoryName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/image_view_cat"
+            android:layout_toEndOf="@id/categoryImage"
             android:text="Line1"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/text_view_2_cat"
+            android:id="@+id/categoryDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_view_1_cat"
-            android:layout_toEndOf="@id/image_view_cat"
+            android:layout_below="@id/categoryName"
+            android:layout_toEndOf="@id/categoryImage"
             android:text="Line2"
             android:textSize="16sp" />
     </RelativeLayout>

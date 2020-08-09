@@ -6,6 +6,8 @@ import android.os.StrictMode
 import android.util.Log
 import android.widget.Adapter
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,15 +18,10 @@ import kotlinx.android.synthetic.main.activity_categories_main.*
 val adapterList_global = ArrayList<CategoryAdapter>()
 val categoryItemList_global = ArrayList<List<CategoryItem>>()
 
-class CategoriesMain : AppCompatActivity() {
-
+class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories_main)
-
-        //val categoryList = generateCategoriesList()
-
-
 
         val categories_names = arrayListOf<String>()
         val categories_descriptions = arrayListOf<String>()
@@ -54,30 +51,33 @@ class CategoriesMain : AppCompatActivity() {
                 Log.w("catError", "Error getting documents: ", exception)
             }
 
-
+            override fun onItemClick(position: Int) {
+                Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
+                val clickedItem = categoryList[position]
+                adapter.notifyItemChanged(position)
+            }
     }
 
     private fun generateCategoriesList(categories_names : ArrayList<String>, categories_descriptions : ArrayList<String>, categories_images : ArrayList<String>): List<CategoryItem> {
+      val list = ArrayList<CategoryItem>()
+      for (cat in 0 until categories_names.size) {
+          val drawable = R.drawable.ic_android
+          //val textObj1 = "Hello"
+          val textObj1 = categories_names[cat]
+          val textObj2 = categories_descriptions[cat]
+          //val textObj1: String = cat.get("name") as String
+          //val textObj2: String = cat.get("description") as String
+          //val imageObj1: String = cat.get("imgURL") as String
+          val imgObj1 = categories_images[cat]
 
-
-        val list = ArrayList<CategoryItem>()
-        for (cat in 0 until categories_names.size) {
-            val drawable = R.drawable.ic_android
-            //val textObj1 = "Hello"
-            val textObj1 = categories_names[cat]
-            val textObj2 = categories_descriptions[cat]
-            //val textObj1: String = cat.get("name") as String
-            //val textObj2: String = cat.get("description") as String
-            //val imageObj1: String = cat.get("imgURL") as String
-            val imgObj1 = categories_images[cat]
-
-
-
-
-            val item = CategoryItem(imgObj1, textObj1, textObj2)
-            list += item
-
-        }
-        return list
+          val item = CategoryItem(imgObj1, textObj1, textObj2)
+          list += item
+      }
+      return list
     }
-}
+
+    override fun onItemClick(position: Int) {
+        Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
+        val clickedItem = categoryList[position]
+        adapter.notifyItemChanged(position)
+    }
