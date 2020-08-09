@@ -28,7 +28,6 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
     override fun onItemClick(position: Int) {
         //Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
-        clickedItem.text1 = "Clicked"
         adapter.notifyItemChanged(position)
 
         Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
