@@ -1,28 +1,20 @@
 package com.apadteam5.covidcuisine
 
-import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import com.apadteam5.covidcuisine.ui.main.SectionsPagerAdapter
+import android.os.Bundle
+import android.widget.TextView
 
 class Results : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_results)
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(viewPager)
-        val fab: FloatingActionButton = findViewById(R.id.fab)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        // Get the Intent that started this activity and extract the string
+        val message = intent.getStringExtra(EXTRA_MESSAGE)
+
+        // Capture the layout's TextView and set the string as its text
+        val textView = findViewById<TextView>(R.id.textView).apply {
+            text = message
         }
     }
 }

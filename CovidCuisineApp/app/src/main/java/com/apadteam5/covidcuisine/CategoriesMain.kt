@@ -1,13 +1,18 @@
 package com.apadteam5.covidcuisine
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_categories_main.*
 
+const val EXTRA_MESSAGE = "com.apadteam5.covidcuisine.MESSAGE"
+
 class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
-    private val categoryList = generateDummyList(100)
+    private val categoryList = generateDummyList(5)
     private val adapter = CategoryAdapter(categoryList, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,17 +24,33 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         recycler_view_categories.setHasFixedSize(true)
     }
 
+    /*FUNCTION onItemClick POTENTIALLY NOT BEING USED*/
     override fun onItemClick(position: Int) {
-        Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
         clickedItem.text1 = "Clicked"
         adapter.notifyItemChanged(position)
+
+        Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
     }
+
+    /*
+    fun passInfo(view: View) {
+        // Do something
+        val categoryName = findViewById<TextView>(R.id.categoryName)  //THIS IS NOT GETTING THE CORRECT INFO, ALWAYS RETURNS "Item 0"
+        val message = categoryName.text.toString()
+        Toast.makeText(this, "$message", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, Results::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+
+        startActivity(intent)
+    }*/
 
     private fun generateDummyList(size: Int): List<CategoryItem> {
         val list = ArrayList<CategoryItem>()
         for (i in 0 until size) {
-            val drawable = when (i % 3) {
+            val drawable = when (i % 1) {
                 0 -> R.drawable.ic_android
                 1 -> R.drawable.ic_baseline_map
                 else -> R.drawable.ic_baseline_category
