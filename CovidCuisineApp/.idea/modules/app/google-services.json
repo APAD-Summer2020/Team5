@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "311004038430-e2ptnobvmo9i1nq0n5ae8rpodk4p50hc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apadteam5.covidcuisine",
+            "certificate_hash": "ce1b778a49412f588a976e26edb98cbda4c16396"
+          }
+        },
+        {
           "client_id": "311004038430-fg5kgob4v17h8gb64q2uggd64mjs7qrs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
