@@ -32,9 +32,9 @@ class CategoryAdapter(
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
-        val imageView: ImageView = itemView.categoryImage
-        val textView1: TextView = itemView.categoryName
-        val textView2: TextView = itemView.categoryDesc
+        val imageView: ImageView = itemView.image_view_cat
+        val textView1: TextView = itemView.text_view_1_cat
+        val textView2: TextView = itemView.text_view_2_cat
 
         init {
             itemView.setOnClickListener(this)
