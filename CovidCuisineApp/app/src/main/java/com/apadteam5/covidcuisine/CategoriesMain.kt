@@ -34,19 +34,6 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
     }
 
-    /*
-    fun passInfo(view: View) {
-        // Do something
-        val categoryName = findViewById<TextView>(R.id.categoryName)  //THIS IS NOT GETTING THE CORRECT INFO, ALWAYS RETURNS "Item 0"
-        val message = categoryName.text.toString()
-        Toast.makeText(this, "$message", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, Results::class.java).apply {
-            putExtra(EXTRA_MESSAGE, message)
-        }
-
-        startActivity(intent)
-    }*/
-
     private fun generateDummyList(size: Int): List<CategoryItem> {
         val list = ArrayList<CategoryItem>()
         for (i in 0 until size) {
