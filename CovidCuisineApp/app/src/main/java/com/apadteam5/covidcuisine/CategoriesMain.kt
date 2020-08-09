@@ -52,25 +52,7 @@ class CategoriesMain : AppCompatActivity() {
     }
 
     private fun generateCategoriesList(categories_names : ArrayList<String>, categories_descriptions : ArrayList<String>, categories_images : ArrayList<String>): List<CategoryItem> {
-        //val categories_names = arrayListOf("")
 
-
-
-
-        /*
-        db.collection("categories")
-            .get()
-            .addOnSuccessListener { result ->
-                for (cat in result) {
-                    cat.getString("name")?.let { categories_names.add(it) }
-                }
-            }
-
-         */
-
-        //categories_names.add("Number One")
-        //categories_names.add("Number two")
-        //categories_names.add("Number Three")
 
         val list = ArrayList<CategoryItem>()
         for (cat in 0 until categories_names.size) {
@@ -81,33 +63,15 @@ class CategoriesMain : AppCompatActivity() {
             //val textObj1: String = cat.get("name") as String
             //val textObj2: String = cat.get("description") as String
             //val imageObj1: String = cat.get("imgURL") as String
-            val drawable2 = categories_images[cat]
+            val imgObj1 = categories_images[cat]
 
 
 
 
-            val item = CategoryItem(drawable, textObj1, textObj2)
+            val item = CategoryItem(imgObj1, textObj1, textObj2)
             list += item
 
         }
         return list
     }
 }
-
-
-/*
-
-val list = ArrayList<CategoryItem>()
-val size = 5
-for (i in 0 until size) {
-    val drawable = when (i % 3) {
-        0 -> R.drawable.ic_android
-        1 -> R.drawable.ic_baseline_map
-        else -> R.drawable.ic_baseline_category
-    }
-    val item = CategoryItem(drawable, "Item $i", "Line 2")
-    list += item
-}
-return list
-
-}*/
