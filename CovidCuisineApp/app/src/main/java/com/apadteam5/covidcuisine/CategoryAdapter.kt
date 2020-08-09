@@ -8,10 +8,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.category_item.view.*
 
-class CategoryAdapter(private val categoryList: List<CategoryItem>) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(
+    private val categoryList: List<CategoryItem>,
+    private val listener: OnItemClickListener
+) :
+    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
         return CategoryViewHolder(itemView)
     }
 
@@ -25,11 +30,26 @@ class CategoryAdapter(private val categoryList: List<CategoryItem>) : RecyclerVi
 
     override fun getItemCount() = categoryList.size
 
-    class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    View.OnClickListener {
         val imageView: ImageView = itemView.image_view_cat
         val textView1: TextView = itemView.text_view_1_cat
         val textView2: TextView = itemView.text_view_2_cat
 
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position)
+            }
+        }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 
 }

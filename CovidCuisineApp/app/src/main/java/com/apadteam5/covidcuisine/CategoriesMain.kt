@@ -2,19 +2,28 @@ package com.apadteam5.covidcuisine
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_categories_main.*
 
-class CategoriesMain : AppCompatActivity() {
+class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
+    private val categoryList = generateDummyList(100)
+    private val adapter = CategoryAdapter(categoryList, this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories_main)
 
-        val categoryList = generateDummyList(500)
-
-        recycler_view_categories.adapter = CategoryAdapter(categoryList)
+        recycler_view_categories.adapter = adapter
         recycler_view_categories.layoutManager = LinearLayoutManager(this)
         recycler_view_categories.setHasFixedSize(true)
+    }
+
+    override fun onItemClick(position: Int) {
+        Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
+        val clickedItem = categoryList[position]
+        clickedItem.text1 = "Clicked"
+        adapter.notifyItemChanged(position)
     }
 
     private fun generateDummyList(size: Int): List<CategoryItem> {
