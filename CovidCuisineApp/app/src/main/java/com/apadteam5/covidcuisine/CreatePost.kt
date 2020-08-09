@@ -85,7 +85,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val postContent = findViewById<EditText>(R.id.post_content)
         val title = postTitle.text
         val content = postContent.text
-        val category = "American"
 
         uploadImageToFirebaseStorage(title.toString())
 
