@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.annotation.GlideModule
 import kotlinx.android.synthetic.main.category_item.view.*
 
@@ -27,8 +28,13 @@ class CategoryAdapter(
 
         //holder.imageView.setImageResource(currentItem_cat.imgObj1)
         //holder.imageView.setImageBitmap()
-        holder.categoryName.text = currentItem.categoryName
-        holder.categoryDesc.text = currentItem.categoryDesc
+        if (currentItem.imgObj1 !== null) {
+            Glide.with(holder.imageView)
+                .load(currentItem.imgObj1)
+                .into(holder.imageView)
+        }
+        holder.categoryName.text = currentItem_cat.categoryName
+        holder.categoryDesc.text = currentItem_cat.categoryDesc
         //GlideApp.with(this).load(imgObj1).into(holder.imageView)
     }
 

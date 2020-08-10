@@ -1,6 +1,5 @@
 package com.apadteam5.covidcuisine
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
