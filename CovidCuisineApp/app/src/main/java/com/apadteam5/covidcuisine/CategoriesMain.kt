@@ -1,5 +1,6 @@
 package com.apadteam5.covidcuisine
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -15,6 +16,8 @@ import kotlinx.android.synthetic.main.activity_categories_main.*
 
 val adapterList_global = ArrayList<CategoryAdapter>()
 val categoryItemList_global = ArrayList<List<CategoryItem>>()
+
+const val EXTRA_MESSAGE = "com.apadteam5.covidcuisine.MESSAGE"
 
 class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,10 +80,17 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
     }
 
     override fun onItemClick(position: Int) {
-        val categoryList = categoryItemList_global[0]
+        val categoryList = mapOf<Int,String>(0 to "American", 1 to "Asian", 2 to "European", 3 to "Mexican")
         val adapter = adapterList_global[0]
-        Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
+
+        val type = "category"
+
+        val intent = Intent(this, Results::class.java)
+        intent.putExtra("type", type)
+        intent.putExtra("position", position)
+        Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
+        startActivity(intent)
     }
 }
