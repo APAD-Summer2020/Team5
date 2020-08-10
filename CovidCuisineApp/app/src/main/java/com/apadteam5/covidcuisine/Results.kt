@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
@@ -16,34 +17,41 @@ class Results : AppCompatActivity() {
         setContentView(R.layout.activity_results_main)
 
         val arguments = requireNotNull(intent?.extras){"Meaningful message"}
-        val type: String?
-        val position: String?
+        val type: String
+        val position: String
 
+        // GET PASSED IN VARIABLES
         with(arguments) {
-            type = getString("type")
-            position = getString("position")
+            type = getString("type").toString()
+            position = getString("position").toString()
         }
+
         Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
 
-        //GET FIRESTORE DATA
+        // GET FIRESTORE DATA
         val db = Firebase.firestore
 
         if (type == "tags") {
-
+            var data = getData(db, "tags","american")
         }
         else {
-            val posts = db.collection("posts")
-                .whereEqualTo("category", "category")
-                .get()
-                .addOnSuccessListener { posts ->
-                    for (post in posts) {
-
-                    }
-                }
+            var data = getData(db, "category", "American")
         }
+    }
 
+    private fun getData(db: FirebaseFirestore, type: String, filterValue: String): Any {
+        val posts = db.collection("posts")
+            .whereEqualTo("category", "category")
+            .get()
+            .addOnSuccessListener { posts ->
+                for (post in posts) {
 
-        /*
+                }
+            }
+        return ""
+    }
+
+    /*
         val db = Firebase.firestore
         db.collection("posts").get()
             .addOnSuccessListener { posts ->
@@ -73,7 +81,4 @@ class Results : AppCompatActivity() {
             }
         */
 
-
-
-    }
 }
