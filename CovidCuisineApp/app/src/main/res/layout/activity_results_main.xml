@@ -19,7 +19,8 @@
         android:layout_marginBottom="-3dp"
         android:clipToPadding="false"
         android:padding="6dp"
-        tools:listitem="@layout/category_item" />
+        tools:listitem="@layout/results_item"
+        android:layout_alignParentLeft="true" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

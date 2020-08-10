@@ -84,7 +84,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         val adapter = adapterList_global[0]
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
-
+        
         val type = "category"
 
         val intent = Intent(this, Results::class.java)
