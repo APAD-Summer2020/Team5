@@ -84,12 +84,12 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         val adapter = adapterList_global[0]
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
-        
+
         val type = "category"
 
         val intent = Intent(this, Results::class.java)
         intent.putExtra("type", type)
-        intent.putExtra("position", position)
+        intent.putExtra("position", position.toString())
         Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
         startActivity(intent)
     }
