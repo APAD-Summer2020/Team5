@@ -33,8 +33,8 @@ class CategoryAdapter(
                 .load(currentItem.imgObj1)
                 .into(holder.imageView)
         }
-        holder.categoryName.text = currentItem_cat.categoryName
-        holder.categoryDesc.text = currentItem_cat.categoryDesc
+        holder.categoryName.text = currentItem.categoryName
+        holder.categoryDesc.text = currentItem.categoryDesc
         //GlideApp.with(this).load(imgObj1).into(holder.imageView)
     }
 
