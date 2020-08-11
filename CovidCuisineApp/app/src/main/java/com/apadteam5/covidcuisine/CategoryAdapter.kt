@@ -1,5 +1,6 @@
 package com.apadteam5.covidcuisine
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule
 import kotlinx.android.synthetic.main.category_item.view.*
 
 class CategoryAdapter(
@@ -38,9 +40,15 @@ class CategoryAdapter(
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
+<<<<<<< HEAD
         val imageView: ImageView = itemView.image
         val categoryName: TextView = itemView.name
         val categoryDesc: TextView = itemView.description
+=======
+        val imageView: ImageView = itemView.categoryImage
+        val categoryName: TextView = itemView.categoryName
+        val categoryDesc: TextView = itemView.categoryDesc
+>>>>>>> parent of 013f735... Updates
 
         init {
             itemView.setOnClickListener(this)
