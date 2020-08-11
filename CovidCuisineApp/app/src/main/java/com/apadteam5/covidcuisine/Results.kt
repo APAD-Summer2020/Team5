@@ -40,45 +40,20 @@ class Results : AppCompatActivity() {
     }
 
     private fun getData(db: FirebaseFirestore, type: String, filterValue: String): Any {
-        val posts = db.collection("posts")
-            .whereEqualTo("category", "category")
+        val posts: HashMap<String, String>
+        val query = db.collection("posts")
+            .whereEqualTo(type, filterValue)
             .get()
             .addOnSuccessListener { posts ->
                 for (post in posts) {
+                    var image = post.get("imgURL") as String
+                    var title = post.get("title") as String
+                    var description = post.get("content") as String
 
+                    // ADD TO THE HASHMAP
+                    //posts.add(image, title, description)
                 }
             }
         return ""
     }
-
-    /*
-        val db = Firebase.firestore
-        db.collection("posts").get()
-            .addOnSuccessListener { posts ->
-                for (post in posts) {
-                    categories_names.add(cat.get("name") as String)
-                    categories_descriptions.add(cat.get("description") as String)
-                    categories_images.add(cat.get("imgURL") as String)
-                }
-
-                categoryItemList_global.add(
-                    generateCategoriesList(
-                        categories_names,
-                        categories_descriptions,
-                        categories_images
-                    )
-                )
-                val categoryList = categoryItemList_global[0]
-                adapterList_global.add(CategoryAdapter(categoryList, this))
-                recycler_view_categories.adapter = adapterList_global[0]
-                //recycler_view_categories.adapter = CategoryAdapter(categoryList)
-
-                recycler_view_categories.layoutManager = LinearLayoutManager(this)
-                recycler_view_categories.setHasFixedSize(true)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("catError", "Error getting documents: ", exception)
-            }
-        */
-
 }
