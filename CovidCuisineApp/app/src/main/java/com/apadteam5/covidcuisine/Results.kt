@@ -10,6 +10,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
+import kotlinx.android.synthetic.main.activity_results_main.*
+import kotlinx.android.synthetic.main.category_item.*
 
 class Results : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,20 +42,57 @@ class Results : AppCompatActivity() {
     }
 
     private fun getData(db: FirebaseFirestore, type: String, filterValue: String): Any {
-        val posts: HashMap<String, String>
-        val query = db.collection("posts")
+
+        val images = arrayListOf<String>()
+        val names = arrayListOf<String>()
+        val descriptions = arrayListOf<String>()
+
+
+
+        db.collection("posts")
             .whereEqualTo(type, filterValue)
             .get()
-            .addOnSuccessListener { posts ->
-                for (post in posts) {
-                    var image = post.get("imgURL") as String
-                    var title = post.get("title") as String
-                    var description = post.get("content") as String
-
-                    // ADD TO THE HASHMAP
-                    //posts.add(image, title, description)
+            .addOnSuccessListener { documents ->
+                for (post in documents) {
+                    images.add(post.get("imgURL") as String)
+                    names.add(post.get("name") as String)
+                    descriptions.add(post.get("description") as String)
                 }
+                // ADD TO THE HASHMAP
+                val posts = List<ResultsItem>()
+
+                posts.add(
+                    generatedResultsList(images, names, descriptions)
+                )
+
+                recycler_view_results.adapter = ResultsAdapter(posts)
+                recycler_view_results.layoutManager = LinearLayoutManager(this)
+                recycler_view_results.setHasFixedSize(true)
+
+            }
+            .addOnFailureListener { exception ->
+                Log.w("catError", "Error getting documents: ", exception)
             }
         return ""
+        } // END FUNCTION getData
+    } // END FUNCTION onCreate
+
+    private fun generatedResultsList(
+        images: ArrayList<String>,
+        names: ArrayList<String>,
+        descriptions: ArrayList<String>
+    ) : List<ResultsItem> {
+        val list = ArrayList<ResultsItem>()
+
+        for (post in 0 until names.size) {
+            val drawable = R.drawable.ic_android
+            val image = images[post]
+            val name = names[post]
+            val description = descriptions[post]
+
+            val item = ResultsItem(image, name, description)
+            list += item
+        }
+        return list
     }
 }

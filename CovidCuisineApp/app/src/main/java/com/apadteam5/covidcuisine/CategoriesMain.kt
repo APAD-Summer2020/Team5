@@ -47,8 +47,6 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
                 val categoryList = categoryItemList_global[0]
                 adapterList_global.add(CategoryAdapter(categoryList, this))
                 recycler_view_categories.adapter = adapterList_global[0]
-                //recycler_view_categories.adapter = CategoryAdapter(categoryList)
-
                 recycler_view_categories.layoutManager = LinearLayoutManager(this)
                 recycler_view_categories.setHasFixedSize(true)
             }

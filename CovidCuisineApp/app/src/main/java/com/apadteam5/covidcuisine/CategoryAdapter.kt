@@ -24,8 +24,6 @@ class CategoryAdapter(
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val currentItem = categoryList[position]
 
-        //holder.imageView.setImageResource(currentItem_cat.imgObj1)
-        //holder.imageView.setImageBitmap()
         if (currentItem.imgObj1 !== null) {
             Glide.with(holder.imageView)
                 .load(currentItem.imgObj1)
