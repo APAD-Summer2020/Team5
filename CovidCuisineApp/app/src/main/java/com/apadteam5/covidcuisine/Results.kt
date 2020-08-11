@@ -32,6 +32,7 @@ class Results : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
+        /*
         val arguments = requireNotNull(intent?.extras){"Meaningful message"}
         val type: String
         val position: String
@@ -40,22 +41,17 @@ class Results : AppCompatActivity() {
         with(arguments) {
             type = getString("type").toString()
             position = getString("position").toString()
-        }
+        }*/
 
-        Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
+        val catName = intent.getStringExtra("catName")
+
 
         // GET FIRESTORE DATA
         val db = Firebase.firestore
-
-        if (type == "tags") {
-            var data = getData(db, "tags","american")
-        }
-        else {
-            var data = getData(db, "category", "American")
-        }
+        getData(db, catName)
     }
 
-    private fun getData(db: FirebaseFirestore, type: String, filterValue: String): Any {
+    private fun getData(db: FirebaseFirestore, catName: String?): Any {
 
         val images = arrayListOf<String>()
         val names = arrayListOf<String>()
@@ -64,7 +60,7 @@ class Results : AppCompatActivity() {
 
 
         db.collection("posts")
-            .whereEqualTo(type, filterValue)
+            .whereEqualTo("category", catName)
             .get()
             .addOnSuccessListener { documents ->
                 for (post in documents) {

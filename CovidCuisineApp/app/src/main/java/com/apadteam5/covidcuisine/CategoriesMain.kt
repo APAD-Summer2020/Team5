@@ -78,17 +78,24 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
     override fun onItemClick(position: Int) {
         val categoryList = categoryItemList_global[0]
         val adapter = adapterList_global[0]
-        Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
 
-
-        val type = "category"
+        /*
+        val intent = Intent(this,CreatePost::class.java)
+        intent.putExtra("username",username)
+        startActivity(intent)
+        */
 
         val intent = Intent(this, Results::class.java)
-        intent.putExtra("type", type)
-        intent.putExtra("position", position.toString())
-        Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
+        intent.putExtra("catName", clickedItem.categoryName)
         startActivity(intent)
+
+
+        //val intent = Intent(this, Results::class.java)
+        //intent.putExtra("type", type)
+        //intent.putExtra("position", position.toString())
+        //Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
+
     }
 }
