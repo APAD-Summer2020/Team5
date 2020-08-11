@@ -59,11 +59,7 @@ class Results : AppCompatActivity() {
                     descriptions.add(post.get("description") as String)
                 }
                 // ADD TO THE HASHMAP
-                val posts = List<ResultsItem>()
-
-                posts.add(
-                    generatedResultsList(images, names, descriptions)
-                )
+                val posts = generatedResultsList(images, names, descriptions)
 
                 recycler_view_results.adapter = ResultsAdapter(posts)
                 recycler_view_results.layoutManager = LinearLayoutManager(this)
@@ -74,8 +70,7 @@ class Results : AppCompatActivity() {
                 Log.w("catError", "Error getting documents: ", exception)
             }
         return ""
-        } // END FUNCTION getData
-    } // END FUNCTION onCreate
+    } // END FUNCTION getData
 
     private fun generatedResultsList(
         images: ArrayList<String>,
