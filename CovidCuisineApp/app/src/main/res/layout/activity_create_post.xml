@@ -147,7 +147,7 @@
         app:layout_constraintStart_toEndOf="@+id/select_photo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.709"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/textView"

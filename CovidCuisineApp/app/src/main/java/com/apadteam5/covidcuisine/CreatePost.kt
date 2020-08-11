@@ -2,6 +2,7 @@ package com.apadteam5.covidcuisine
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -21,7 +22,7 @@ import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+private const val REQUEST_CODE = 42
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private var categorySelected:String = ""
@@ -77,7 +78,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
 
-        //cancel button listener
+        //camera button listener
         val cameraButton = findViewById<Button>(R.id.camera)
         cameraButton.setOnClickListener{
             takePicture()
@@ -89,18 +90,41 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //take a photo with camera app
     private val REQUEST_IMAGE_CAPTURE =1
     private fun takePicture(){
+
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+/*
+        if (takePictureIntent.resolveActivity(this.packageManager) != null){
+            startActivityForResult(takePictureIntent, REQUEST_CODE)
+        }else{
+            Toast.makeText(this,"Unable to open camera", Toast.LENGTH_SHORT).show()
+        }
+        */
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode ==Activity.RESULT_OK){
+            val takenImage = data?.extras?.get("data") as Bitmap
+            imageView.setImageBitmap(takenImage)
+            //val imgUri = data.getData()
+
+            //println("imageinfo:" + imgUri)
+        }else{
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     //check for upload
     var selectedPhotoUri: Uri? = null
+/*
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             Log.d("createPost", "Photo was selected")
             Toast.makeText(this, "photo Selected", Toast.LENGTH_SHORT).show()
-
+            val takenImage = data?.extras?.get("data") as Bitmap
+            imageView.setImageBitmap(takenImage)
             selectedPhotoUri = data.data
             println(selectedPhotoUri)
         }
@@ -109,7 +133,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             Log.d("camera", "Picture has been taken")
         }
     }
-
+*/
     //submit function
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
@@ -148,11 +172,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
 
         }
-
-
-
-
-
 
     }
 
