@@ -1,7 +1,7 @@
 package com.apadteam5.covidcuisine
 
 import android.os.Bundle
-<<<<<<< HEAD
+
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -12,14 +12,13 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
 import kotlinx.android.synthetic.main.activity_results_main.*
 import kotlinx.android.synthetic.main.category_item.*
-=======
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import com.apadteam5.covidcuisine.ui.main.SectionsPagerAdapter
->>>>>>> parent of 013f735... Updates
 
 class Results : AppCompatActivity() {
 
@@ -33,7 +32,6 @@ class Results : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
-<<<<<<< HEAD
         val arguments = requireNotNull(intent?.extras){"Meaningful message"}
         val type: String
         val position: String
@@ -105,11 +103,5 @@ class Results : AppCompatActivity() {
             list += item
         }
         return list
-=======
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
->>>>>>> parent of 013f735... Updates
     }
 }

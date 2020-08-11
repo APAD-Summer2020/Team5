@@ -1,5 +1,6 @@
 package com.apadteam5.covidcuisine
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -42,7 +43,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
                     )
                 )
                 val categoryList = categoryItemList_global[0]
-                adapterList_global.add(CategoryAdapter(categoryList))
+                adapterList_global.add(CategoryAdapter(categoryList, this))
                 recycler_view_categories.adapter = adapterList_global[0]
                 recycler_view_categories.layoutManager = LinearLayoutManager(this)
                 recycler_view_categories.setHasFixedSize(true)
@@ -80,7 +81,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = categoryList[position]
         adapter.notifyItemChanged(position)
-<<<<<<< HEAD
+
 
         val type = "category"
 
@@ -89,7 +90,5 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         intent.putExtra("position", position.toString())
         Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
         startActivity(intent)
-=======
->>>>>>> parent of 013f735... Updates
     }
 }
