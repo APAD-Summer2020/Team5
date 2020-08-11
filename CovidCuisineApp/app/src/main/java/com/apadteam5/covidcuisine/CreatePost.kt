@@ -4,15 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
+import java.io.File
+import java.io.IOException
 import java.lang.IllegalArgumentException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -70,7 +76,23 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             performCancel()
         }
 
+
+        //cancel button listener
+        val cameraButton = findViewById<Button>(R.id.camera)
+        cameraButton.setOnClickListener{
+            takePicture()
+        }
+
+
+
     }
+    private val REQUEST_IMAGE_CAPTURE =1
+    private fun takePicture(){
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+    }
+
+
 
     //check for upload
     var selectedPhotoUri: Uri? = null
@@ -82,6 +104,10 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
             selectedPhotoUri = data.data
             println(selectedPhotoUri)
+        }
+
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null){
+            Log.d("camera", "Picture has been taken")
         }
     }
 
