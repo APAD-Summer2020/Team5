@@ -86,13 +86,12 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
     }
+    //take a photo with camera app
     private val REQUEST_IMAGE_CAPTURE =1
     private fun takePicture(){
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
-
-
 
     //check for upload
     var selectedPhotoUri: Uri? = null
