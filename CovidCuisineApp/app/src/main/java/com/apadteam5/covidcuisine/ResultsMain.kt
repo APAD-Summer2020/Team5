@@ -14,12 +14,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
 
-val adapterList_global = ArrayList<CategoryAdapter>()
-val categoryItemList_global = ArrayList<List<CategoryItem>>()
+val adapterResultsList_global = ArrayList<ResultsAdapter>()
+val resultsItemList_global = ArrayList<List<ResultsItem>>()
 
-const val EXTRA_MESSAGE = "com.apadteam5.covidcuisine.MESSAGE"
-
-class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
+class ResultsMain : AppCompatActivity(), ResultsAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories_main)
@@ -37,16 +35,16 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
                     categories_images.add(cat.get("imgURL") as String)
                 }
 
-                categoryItemList_global.add(
+                resultsItemList_global.add(
                     generateCategoriesList(
                         categories_names,
                         categories_descriptions,
                         categories_images
                     )
                 )
-                val categoryList = categoryItemList_global[0]
-                adapterList_global.add(CategoryAdapter(categoryList, this))
-                recycler_view_categories.adapter = adapterList_global[0]
+                val categoryList = resultsItemList_global[0]
+                adapterResultsList_global.add(ResultsAdapter(categoryList, this))
+                recycler_view_categories.adapter = adapterResultsList_global[0]
                 recycler_view_categories.layoutManager = LinearLayoutManager(this)
                 recycler_view_categories.setHasFixedSize(true)
             }
@@ -59,8 +57,8 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         categories_names: ArrayList<String>,
         categories_descriptions: ArrayList<String>,
         categories_images: ArrayList<String>
-    ): List<CategoryItem> {
-        val list = ArrayList<CategoryItem>()
+    ): List<ResultsItem> {
+        val list = ArrayList<ResultsItem>()
         for (cat in 0 until categories_names.size) {
             val drawable = R.drawable.ic_android
             //val textObj1 = "Hello"
@@ -71,14 +69,14 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
             //val imageObj1: String = cat.get("imgURL") as String
             val imgObj1 = categories_images[cat]
 
-            val item = CategoryItem(imgObj1, textObj1, textObj2)
+            val item = ResultsItem(imgObj1, textObj1, textObj2)
             list += item
         }
         return list
     }
 
     override fun onItemClick(position: Int) {
-        val adapter = adapterList_global[0]
+        val adapter = adapterResultsList_global[0]
         adapter.notifyItemChanged(position)
 
         val type = "category"
