@@ -1,3 +1,3 @@
 package com.apadteam5.covidcuisine
 
-data class ExampleItem(val imageResource: Int, val text1: String)
+data class CategoryItem(var imgObj1: String, var categoryName: String, var categoryDesc: String)
