@@ -16,8 +16,7 @@
             android:exported="true" />
         <activity
             android:name=".Results"
-            android:label="@string/title_activity_results"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:launchMode="singleTop" />
         <activity
             android:name=".createPost"
             android:exported="true" />

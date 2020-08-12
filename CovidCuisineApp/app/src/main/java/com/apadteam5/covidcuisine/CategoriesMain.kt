@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_categories_main.*
 val adapterList_global = ArrayList<CategoryAdapter>()
 val categoryItemList_global = ArrayList<List<CategoryItem>>()
 
-class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener {
+class CategoriesMain : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories_main)
@@ -43,7 +43,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
                     )
                 )
                 val categoryList = categoryItemList_global[0]
-                adapterList_global.add(CategoryAdapter(categoryList, this))
+                adapterList_global.add(CategoryAdapter(categoryList))
                 recycler_view_categories.adapter = adapterList_global[0]
                 recycler_view_categories.layoutManager = LinearLayoutManager(this)
                 recycler_view_categories.setHasFixedSize(true)
@@ -75,7 +75,7 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         return list
     }
 
-    override fun onItemClick(position: Int) {
+    /*override fun onItemClick(position: Int) {
         val categoryList = categoryItemList_global[0]
         val adapter = adapterList_global[0]
         val clickedItem = categoryList[position]
@@ -97,5 +97,5 @@ class CategoriesMain : AppCompatActivity(), CategoryAdapter.OnItemClickListener 
         //intent.putExtra("position", position.toString())
         //Toast.makeText(this, "$type $position", Toast.LENGTH_SHORT).show()
 
-    }
+    }*/
 }
