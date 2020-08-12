@@ -2,6 +2,7 @@ package com.apadteam5.covidcuisine
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,7 @@ class CategoryAdapter(
         }
 
         override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-            val currentItem = categoryList[position]
+            val currentItem = categoryList.get(position)
 
             if (currentItem.imgObj1 !== null) {
                 Glide.with(holder.imageView)
@@ -38,16 +39,19 @@ class CategoryAdapter(
 
         override fun getItemCount() = categoryList.size
 
-        inner class CategoryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        class CategoryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
             val imageView: ImageView = view.image
             val categoryName: TextView = view.name
             val categoryDesc: TextView = view.description
 
-
             init {
                 view.setOnClickListener {
                     val intent = Intent(view.context, Results::class.java)
+                    val catName = view.name.getText().toString()
+
+                    intent.putExtra("catName", "$catName")
+
                     view.context.startActivity(intent)
                 }
             }

@@ -34,7 +34,11 @@ class Results : AppCompatActivity() {
         setContentView(R.layout.activity_categories_main)
         recycler_view_categories.layoutManager = LinearLayoutManager(this)
         recycler_view_categories.adapter = ResultsAdapter()
+
+        val catName = intent.getStringExtra("catName")
+        supportActionBar?.title = catName
     }
+
     private class ResultsAdapter: RecyclerView.Adapter<ResultsItemViewHolder>() {
         override fun getItemCount(): Int {
             return 5
