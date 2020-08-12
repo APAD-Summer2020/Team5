@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -51,7 +53,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_post)
-
+        initLocatoinproviderClient()
+        getUserLocation()
         //initializing spinner---------------------------------------------------------------------------------------------
         var spinner:Spinner? = null
         var arrayAdapter: ArrayAdapter<String>? = null
@@ -106,7 +109,33 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
     }
+    private lateinit var fusedLocationProvider: FusedLocationProviderClient
+    private var userLatitude: Double? = null
+    private var userLongitude: Double? = null
+    private fun initLocatoinproviderClient(){
+        fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
 
+    }
+
+    private fun getUserLocation(){
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
+        }else{
+        fusedLocationProvider.lastLocation.addOnSuccessListener { location: Location? ->
+            userLatitude = location?.latitude
+            //println(userLatitude)
+            //println(location?.latitude)
+            userLongitude = location?.longitude
+            //println(location?.longitude)
+            //print(userLongitude)
+            Log.d("Latitude", "$userLatitude")
+            Log.d("Longitude", "$userLongitude")
+
+
+        }
+        }
+    }
     //BUTTONS ONCLICK CALLS-----------------------------------------------------------------------------------------
 
     //take a photo with camera app
@@ -136,8 +165,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val postContent = findViewById<EditText>(R.id.post_content)
         val title = postTitle.text.toString()
         val content = postContent.text.toString()
-        val longtitude = 1.2032
-        val latitude = 2.4123
+        val longtitude = userLongitude
+        val latitude = userLatitude
         val location = arrayListOf("Longitude: $longtitude","Latitude: $latitude")
 
 
@@ -247,6 +276,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         }
     }
+
 
     //listener for location:
     /*
