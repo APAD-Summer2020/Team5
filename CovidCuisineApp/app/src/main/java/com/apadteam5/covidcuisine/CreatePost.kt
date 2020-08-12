@@ -2,7 +2,9 @@ package com.apadteam5.covidcuisine
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -11,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,20 +25,23 @@ import java.util.*
 private const val REQUEST_CODE = 42
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    //initialize variables
+    //initialize variables---------------------------------------------------------------------------------------------
     private var categorySelected:String = ""
     val db = Firebase.firestore
     private val REQUEST_IMAGE_CAPTURE =1
+    private val REQUEST_GALLERY_CODE = 0
     val categories = arrayListOf("")
     var selectedPhotoUri: Uri? = null
     private lateinit var photoFile: File
+    val fileName = UUID.randomUUID().toString()
+    //END OF INITALIZATION---------------------------------------------------------------------------------------------
 
     //start of the function.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_post)
 
-        //initializing spinner
+        //initializing spinner---------------------------------------------------------------------------------------------
         var spinner:Spinner? = null
         var arrayAdapter: ArrayAdapter<String>? = null
 
@@ -43,8 +49,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             .addOnSuccessListener { result->
                 for (category in result){
                     //Log.d("tag", "${category.id} => $ ${category.data}") }
-               categories.add(category.id)
-            }
+                    categories.add(category.id)
+                }
                 Log.d("post", "Post successfully uploaded") }
 
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
@@ -53,15 +59,23 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         arrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categories)
         spinner?.adapter = arrayAdapter
         spinner?.onItemSelectedListener = this
+        //END OF SPINNER---------------------------------------------------------------------------------------------
 
 
 
+        //onClickListens---------------------------------------------------------------------------------------------
         //select Photo listener
         select_photo.setOnClickListener {
             Log.d("createPost", "Try to upload image")
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-            startActivityForResult(intent, 0)
+            startActivityForResult(intent, REQUEST_GALLERY_CODE)
+        }
+
+        //camera button listener
+        val cameraButton = findViewById<Button>(R.id.camera)
+        cameraButton.setOnClickListener{
+            takePicture()
         }
 
         //submit button listener
@@ -78,25 +92,23 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
 
-        //camera button listener
-        val cameraButton = findViewById<Button>(R.id.camera)
-        cameraButton.setOnClickListener{
-            takePicture()
-        }
 
+        //END OF LISTENERS---------------------------------------------------------------------------------------------
 
 
     }
-    //take a photo with camera app
 
+    //BUTTONS ONCLICK CALLS-----------------------------------------------------------------------------------------
+
+    //take a photo with camera app
     private fun takePicture(){
-        val fileName = UUID.randomUUID().toString()
+
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         photoFile = getPhotoFile(fileName)
         val fileProvider = FileProvider.getUriForFile(this, "com.apadteam5.covidcuisine.fileprovider", photoFile)
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        println(fileProvider)
+
 
 
     }
@@ -104,26 +116,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun getPhotoFile(fileName: String): File{
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName,".jpg",storageDirectory)
-    }
-
-
-    //different activity functions
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-            Log.d("createPost", "Photo was selected")
-            Toast.makeText(this, "photo Selected", Toast.LENGTH_SHORT).show()
-            selectedPhotoUri = data.data
-            //println(selectedPhotoUri)
-
-        }
-
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null){
-            Log.d("camera", "Picture has been taken")
-            //val takenImage = data?.extras?.get("data") as Bitmap
-            val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-            imageView.setImageBitmap(takenImage)
-        }
     }
 
     //submit function
@@ -174,6 +166,12 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     }
 
+    //END OF BUTTON ONCLICK CALLS-----------------------------------------------------------------------------------------
+
+
+
+    //DATA SELECTIONS-----------------------------------------------------------------------------------------
+
     //upload image function
     private fun uploadImageToFirebaseStorage(title:String) {
         if (selectedPhotoUri == null) return
@@ -186,6 +184,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
                 ref.downloadUrl.addOnSuccessListener {
                     Log.d("Upload", "File Location: $it")
+                    println(it.toString())
                     saveImagetoDatabase(title, it.toString())
                 }
             }
@@ -207,4 +206,31 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         var items:String = parent?.getItemAtPosition(position) as String
         categorySelected = items
     }
+
+    //different activity functions
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_GALLERY_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            Log.d("createPost", "Photo was selected")
+            Toast.makeText(this, "photo Selected", Toast.LENGTH_SHORT).show()
+            selectedPhotoUri = data.data
+            imageView.setImageURI(selectedPhotoUri)
+        }
+
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null){
+            Log.d("camera", "Picture has been taken")
+            val takenImage= BitmapFactory.decodeFile(photoFile.absolutePath)
+            //imageView.setImageBitmap(takenImage)
+            val title = fileName
+
+            //saving to camera
+            MediaStore.Images.Media.insertImage(
+                contentResolver,
+                takenImage,
+                title,
+                "Image of $title"
+            )
+        }
+    }
+    //END OF DATA SELECTIONS-----------------------------------------------------------------------------------------
 }

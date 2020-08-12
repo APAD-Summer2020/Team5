@@ -35,5 +35,6 @@
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="login_label">Login</string>
+    <string name="COU">OR Take a picture first</string>
 
 </resources>
