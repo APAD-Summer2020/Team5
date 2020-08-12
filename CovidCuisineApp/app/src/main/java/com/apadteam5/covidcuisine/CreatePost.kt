@@ -1,10 +1,15 @@
 package com.apadteam5.covidcuisine
 
+
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -13,16 +18,22 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
+import kotlinx.android.synthetic.main.activity_results.*
 import java.io.File
 import java.util.*
+import java.util.jar.Manifest
 
 private const val REQUEST_CODE = 42
+private const val PERMISSION_REQUEST = 10
+
+
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //initialize variables---------------------------------------------------------------------------------------------
@@ -34,6 +45,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var selectedPhotoUri: Uri? = null
     private lateinit var photoFile: File
     val fileName = UUID.randomUUID().toString()
+    //private var PERMISSION_ID = 1000
     //END OF INITALIZATION---------------------------------------------------------------------------------------------
 
     //start of the function.
@@ -60,8 +72,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         spinner?.adapter = arrayAdapter
         spinner?.onItemSelectedListener = this
         //END OF SPINNER---------------------------------------------------------------------------------------------
-
-
 
         //onClickListens---------------------------------------------------------------------------------------------
         //select Photo listener
@@ -127,6 +137,11 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val postContent = findViewById<EditText>(R.id.post_content)
         val title = postTitle.text.toString()
         val content = postContent.text.toString()
+        val longtitude = 1.2032
+        val latitude = 2.4123
+        val location = arrayListOf("Longitude: $longtitude","Latitude: $latitude")
+
+
 
         if(title == ""){
             Toast.makeText(this,"Please enter a title",Toast.LENGTH_LONG).show()
@@ -141,7 +156,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 "author" to username,
                 "category" to categorySelected,
                 "content" to content,
-                "title" to title
+                "title" to title,
+                "location" to location
             )
 
             db.collection("posts").document(title.toString()).set(data)
@@ -232,5 +248,29 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         }
     }
+
+    //listener for location:
+    /*
+    private fun CheckPermission(): Boolean{
+        if(
+            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ){
+            return true
+        }
+        return false
+    }
+*/
+    //get user permission
+    /*
+    private fun RequestPermission(){
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_ID
+        )
+    }
+
+     */
+
     //END OF DATA SELECTIONS-----------------------------------------------------------------------------------------
 }

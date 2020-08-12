@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.apadteam5.covidcuisine">
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -13,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUp"></activity>
+        <activity android:name=".Landing"></activity>
+        <activity android:name=".SignUp" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +33,16 @@
         <activity
             android:name=".CreatePost"
             android:exported="true" />
+
         <provider
-            android:authorities="com.apadteam5.covidcuisine.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.apadteam5.covidcuisine.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileprovider"/>
+                android:resource="@xml/fileprovider" />
         </provider>
     </application>
+
 </manifest>

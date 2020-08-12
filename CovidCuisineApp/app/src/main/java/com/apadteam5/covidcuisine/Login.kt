@@ -55,7 +55,7 @@ class Login : AppCompatActivity() {
                     pass_word.text.clear()
                 }
                 else{
-                    val intent = Intent(this,CreatePost::class.java)
+                    val intent = Intent(this,Landing::class.java)
                     intent.putExtra("username",username)
                     startActivity(intent)
                 }

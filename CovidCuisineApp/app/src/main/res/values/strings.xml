@@ -36,5 +36,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="login_label">Login</string>
     <string name="COU">OR Take a picture first</string>
+    <string name="create_post_LANDING">CREATE POST</string>
+    <string name="all_categories_LANDING">ALL CATEGORIES</string>
+    <string name="homepage">HOMEPAGE</string>
 
 </resources>
