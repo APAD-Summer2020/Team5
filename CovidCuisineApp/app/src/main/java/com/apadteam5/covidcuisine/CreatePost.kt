@@ -25,7 +25,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
-import kotlinx.android.synthetic.main.activity_results.*
 import java.io.File
 import java.util.*
 import java.util.jar.Manifest

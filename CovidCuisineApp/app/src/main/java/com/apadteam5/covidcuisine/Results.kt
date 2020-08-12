@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.apadteam5.covidcuisine.ui.main.SectionsPagerAdapter
 
 class Results : AppCompatActivity() {
 

@@ -22,7 +22,7 @@ class Landing : AppCompatActivity() {
         }
         val AllCategoriesButton = findViewById<Button>(R.id.all_categories)
         AllCategoriesButton.setOnClickListener {
-            val intent = Intent(this,AllCategoriesButton::class.java)
+            val intent = Intent(this,CategoriesMain::class.java)
             startActivity(intent)
 
         }
