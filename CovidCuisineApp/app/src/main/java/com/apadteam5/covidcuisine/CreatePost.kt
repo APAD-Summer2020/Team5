@@ -25,8 +25,14 @@ import java.util.*
 private const val REQUEST_CODE = 42
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
+    //initialize variables
     private var categorySelected:String = ""
     val db = Firebase.firestore
+    private val REQUEST_IMAGE_CAPTURE =1
+    val categories = arrayListOf("")
+    var selectedPhotoUri: Uri? = null
+
+    //start of the function.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_post)
@@ -35,18 +41,14 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         var spinner:Spinner? = null
         var arrayAdapter: ArrayAdapter<String>? = null
 
-        //in order to display options on the spinner, it has to initialize with an empty string,Why!?
-        val categories = arrayListOf("")
-
         db.collection("categories").get()
             .addOnSuccessListener { result->
                 for (category in result){
                     //Log.d("tag", "${category.id} => $ ${category.data}") }
                categories.add(category.id)
             }
-            println(categories)
-
                 Log.d("post", "Post successfully uploaded") }
+
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
         spinner = findViewById(R.id.select_categories)
@@ -88,52 +90,33 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     }
     //take a photo with camera app
-    private val REQUEST_IMAGE_CAPTURE =1
+
     private fun takePicture(){
 
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-/*
-        if (takePictureIntent.resolveActivity(this.packageManager) != null){
-            startActivityForResult(takePictureIntent, REQUEST_CODE)
-        }else{
-            Toast.makeText(this,"Unable to open camera", Toast.LENGTH_SHORT).show()
-        }
-        */
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode ==Activity.RESULT_OK){
-            val takenImage = data?.extras?.get("data") as Bitmap
-            imageView.setImageBitmap(takenImage)
-            //val imgUri = data.getData()
 
-            //println("imageinfo:" + imgUri)
-        }else{
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-    //check for upload
-    var selectedPhotoUri: Uri? = null
-/*
+    //different activity functions
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             Log.d("createPost", "Photo was selected")
             Toast.makeText(this, "photo Selected", Toast.LENGTH_SHORT).show()
-            val takenImage = data?.extras?.get("data") as Bitmap
-            imageView.setImageBitmap(takenImage)
             selectedPhotoUri = data.data
-            println(selectedPhotoUri)
+            //println(selectedPhotoUri)
+
         }
 
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null){
             Log.d("camera", "Picture has been taken")
+            val takenImage = data?.extras?.get("data") as Bitmap
+            imageView.setImageBitmap(takenImage)
         }
     }
-*/
+
     //submit function
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
@@ -196,17 +179,16 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     Log.d("Upload", "File Location: $it")
                     saveImagetoDatabase(title, it.toString())
                 }
-
             }
     }
 
+    //save image url to database
     private fun saveImagetoDatabase(title:String, imgURL:String){
         val db = Firebase.firestore
 
         db.collection("posts").document(title.toString()).update("imgURL",imgURL)
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
-
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
