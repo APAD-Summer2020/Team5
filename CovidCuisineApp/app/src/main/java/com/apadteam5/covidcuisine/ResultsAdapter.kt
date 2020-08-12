@@ -27,7 +27,6 @@ class ResultsAdapter(private val resultsList: List<ResultsItem>) : RecyclerView.
         }
         holder.name.text = currentItem.name
         holder.description.text = currentItem.description
-
     }
 
     override fun getItemCount() = resultsList.size

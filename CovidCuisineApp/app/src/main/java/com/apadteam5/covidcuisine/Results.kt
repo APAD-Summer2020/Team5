@@ -36,12 +36,9 @@ class Results : AppCompatActivity() {
 
     private fun getData(db: FirebaseFirestore, catName: String?): Any {
 
-        println(catName + " from getData()")
-
         val images = arrayListOf<String>()
         val names = arrayListOf<String>()
         val descriptions = arrayListOf<String>()
-
 
         db.collection("posts")
             .whereEqualTo("category", catName)
@@ -52,15 +49,8 @@ class Results : AppCompatActivity() {
                     names.add(post.get("title") as kotlin.String)
                     descriptions.add(post.get("content") as kotlin.String)
                 }
-                // ADD TO THE HASHMAP
-
-
-
-
                 val posts = generatedResultsList(catName, images, names, descriptions)
                 recycler_view_categories.adapter = ResultsAdapter(posts)
-
-
             }
             .addOnFailureListener { exception ->
                 Log.w("catError", "Error getting documents: ", exception)
@@ -74,15 +64,12 @@ class Results : AppCompatActivity() {
         descriptions: ArrayList<String>
     ) : List<ResultsItem> {
         val list = ArrayList<ResultsItem>()
-        println(catName + " from generated ResultsList()")
 
         for (post in 0 until names.size) {
             val drawable = R.drawable.ic_android
             val image = images[post]
             val name = names[post]
             val description = descriptions[post]
-            println(name)
-            println(description)
 
             val item = ResultsItem(image, name, description)
             list += item
