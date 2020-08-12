@@ -2,7 +2,7 @@ package com.apadteam5.covidcuisine
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,9 +17,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
 import java.io.File
-import java.io.IOException
-import java.lang.IllegalArgumentException
-import java.text.SimpleDateFormat
 import java.util.*
 
 private const val REQUEST_CODE = 42
@@ -31,6 +28,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private val REQUEST_IMAGE_CAPTURE =1
     val categories = arrayListOf("")
     var selectedPhotoUri: Uri? = null
+    private lateinit var photoFile: File
 
     //start of the function.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,10 +90,20 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //take a photo with camera app
 
     private fun takePicture(){
-
+        val fileName = UUID.randomUUID().toString()
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        photoFile = getPhotoFile(fileName)
+        val fileProvider = FileProvider.getUriForFile(this, "com.apadteam5.covidcuisine.fileprovider", photoFile)
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        println(fileProvider)
 
+
+    }
+
+    private fun getPhotoFile(fileName: String): File{
+        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(fileName,".jpg",storageDirectory)
     }
 
 
@@ -112,7 +120,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null){
             Log.d("camera", "Picture has been taken")
-            val takenImage = data?.extras?.get("data") as Bitmap
+            //val takenImage = data?.extras?.get("data") as Bitmap
+            val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             imageView.setImageBitmap(takenImage)
         }
     }
