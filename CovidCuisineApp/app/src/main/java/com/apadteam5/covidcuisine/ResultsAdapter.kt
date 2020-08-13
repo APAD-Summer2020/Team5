@@ -20,11 +20,9 @@ class ResultsAdapter(private val resultsList: List<ResultsItem>) : RecyclerView.
     override fun onBindViewHolder(holder: ResultsViewHolder, position: Int) {
         val currentItem = resultsList[position]
 
-        if (currentItem.image !== null) {
-            Glide.with(holder.image)
-                .load(currentItem.image)
-                .into(holder.image)
-        }
+        Glide.with(holder.image)
+            .load(currentItem.image)
+            .into(holder.image)
         holder.name.text = currentItem.name
         holder.description.text = currentItem.description
     }
