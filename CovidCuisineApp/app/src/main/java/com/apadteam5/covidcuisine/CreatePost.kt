@@ -3,12 +3,8 @@ package com.apadteam5.covidcuisine
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,7 +14,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -28,8 +23,6 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
 import java.io.File
 import java.util.*
-import java.util.jar.Manifest
-import kotlin.math.log
 
 private const val REQUEST_CODE = 42
 private const val PERMISSION_REQUEST = 10
@@ -54,8 +47,8 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         initLocatoinproviderClient()
         getUserLocation()
         //initializing spinner---------------------------------------------------------------------------------------------
-        var spinner:Spinner? = null
-        var arrayAdapter: ArrayAdapter<String>? = null
+        var spinner: Spinner?
+        val arrayAdapter: ArrayAdapter<String>?
 
         db.collection("categories").get()
             .addOnSuccessListener { result->
@@ -63,7 +56,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     categories.add(category.id)
                 }
                 Log.d("post", "Post successfully uploaded") }
-            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+            .addOnFailureListener { Log.w("post","Error uploading post")}
 
         spinner = findViewById(R.id.select_categories)
         arrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categories)
@@ -135,7 +128,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun getPhotoFile(fileName: String): File{
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val suffix = fileName.takeLast(4)
         return File.createTempFile(fileName,".jpg",storageDirectory)
     }
 
@@ -158,7 +150,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             Toast.makeText(this,"Please select a category",Toast.LENGTH_LONG).show()
         }
         else {
-            uploadImageToFirebaseStorage(title.toString())
+            uploadImageToFirebaseStorage(title)
 
             val data = hashMapOf(
                 "author" to username,
@@ -168,7 +160,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 "location" to location
             )
 
-            db.collection("posts").document(title.toString()).set(data)
+            db.collection("posts").document(title).set(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Post posted successfully", Toast.LENGTH_LONG).show()
                     post_title.text.clear()
@@ -211,9 +203,9 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun saveImagetoDatabase(title:String, imgURL:String){
         val db = Firebase.firestore
 
-        db.collection("posts").document(title.toString()).update("imgURL",imgURL)
+        db.collection("posts").document(title).update("imgURL",imgURL)
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
-            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+            .addOnFailureListener { Log.w("post","Error uploading post")}
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -221,7 +213,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        var items:String = parent?.getItemAtPosition(position) as String
+        val items:String = parent?.getItemAtPosition(position) as String
         categorySelected = items
     }
 
