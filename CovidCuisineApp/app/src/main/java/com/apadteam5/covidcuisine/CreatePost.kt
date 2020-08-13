@@ -1,6 +1,5 @@
 package com.apadteam5.covidcuisine
 
-
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -251,6 +250,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         }
     }
-    
+
     //END OF DATA SELECTIONS-----------------------------------------------------------------------------------------
 }
