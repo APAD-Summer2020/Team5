@@ -131,9 +131,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             //print(userLongitude)
             Log.d("Latitude", "$userLatitude")
             Log.d("Longitude", "$userLongitude")
-
-
-        }
+            }
         }
     }
     //BUTTONS ONCLICK CALLS-----------------------------------------------------------------------------------------
@@ -167,7 +165,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val content = postContent.text.toString()
         val longtitude = userLongitude
         val latitude = userLatitude
-        val location = arrayListOf("Longitude: $longtitude","Latitude: $latitude")
+        val location = arrayListOf(longtitude,latitude)
 
 
 
