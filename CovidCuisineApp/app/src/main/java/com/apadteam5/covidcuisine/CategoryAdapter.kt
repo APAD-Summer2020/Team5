@@ -1,5 +1,6 @@
 package com.apadteam5.covidcuisine
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,22 @@ class CategoryAdapter(private val categoryList: List<CategoryItem>) : RecyclerVi
 
 
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener{
+                println("YOU HAVE CLICKED ON ")
+                println(position)
+
+                val intent = Intent(itemView.context, ResultsMain::class.java)
+                val numero = position.toString()
+                intent.putExtra("numero", numero)
+
+                itemView.context.startActivity(intent)
+                //adapterList_global2[0].notifyDataSetChanged()
+                //adapterList_global[0].notifyDataSetChanged()
+            }
+        }
+
         val imageView: ImageView = itemView.image_view_cat
         val textView1: TextView = itemView.text_view_1_cat
         val textView2: TextView = itemView.text_view_2_cat
