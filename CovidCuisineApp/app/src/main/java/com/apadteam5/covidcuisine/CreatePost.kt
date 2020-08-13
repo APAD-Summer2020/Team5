@@ -1,15 +1,10 @@
 package com.apadteam5.covidcuisine
 
-
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -19,7 +14,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -29,24 +23,21 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_post.*
 import java.io.File
 import java.util.*
-import java.util.jar.Manifest
 
 private const val REQUEST_CODE = 42
 private const val PERMISSION_REQUEST = 10
-
 
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //initialize variables---------------------------------------------------------------------------------------------
     private var categorySelected:String = ""
     val db = Firebase.firestore
-    private val REQUEST_IMAGE_CAPTURE =1
+    private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_GALLERY_CODE = 0
     val categories = arrayListOf("")
     var selectedPhotoUri: Uri? = null
     private lateinit var photoFile: File
     val fileName = UUID.randomUUID().toString()
-    //private var PERMISSION_ID = 1000
     //END OF INITALIZATION---------------------------------------------------------------------------------------------
 
     //start of the function.
@@ -56,18 +47,16 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         initLocatoinproviderClient()
         getUserLocation()
         //initializing spinner---------------------------------------------------------------------------------------------
-        var spinner:Spinner? = null
-        var arrayAdapter: ArrayAdapter<String>? = null
+        var spinner: Spinner?
+        val arrayAdapter: ArrayAdapter<String>?
 
         db.collection("categories").get()
             .addOnSuccessListener { result->
                 for (category in result){
-                    //Log.d("tag", "${category.id} => $ ${category.data}") }
                     categories.add(category.id)
                 }
                 Log.d("post", "Post successfully uploaded") }
-
-            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+            .addOnFailureListener { Log.w("post","Error uploading post")}
 
         spinner = findViewById(R.id.select_categories)
         arrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categories)
@@ -102,51 +91,39 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         cancelButton.setOnClickListener{
             performCancel()
         }
-
-
-
         //END OF LISTENERS---------------------------------------------------------------------------------------------
-
-
     }
+
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
     private var userLatitude: Double? = null
     private var userLongitude: Double? = null
     private fun initLocatoinproviderClient(){
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
-
     }
 
     private fun getUserLocation(){
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-
-        }else{
+        }
+        else {
         fusedLocationProvider.lastLocation.addOnSuccessListener { location: Location? ->
             userLatitude = location?.latitude
-            //println(userLatitude)
-            //println(location?.latitude)
             userLongitude = location?.longitude
-            //println(location?.longitude)
-            //print(userLongitude)
             Log.d("Latitude", "$userLatitude")
             Log.d("Longitude", "$userLongitude")
             }
         }
     }
-    //BUTTONS ONCLICK CALLS-----------------------------------------------------------------------------------------
+
+    //BUTTONS ONCLICK CALLS----------------------------------------------------------------------------------------------
 
     //take a photo with camera app
     private fun takePicture(){
-
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         photoFile = getPhotoFile(fileName)
         val fileProvider = FileProvider.getUriForFile(this, "com.apadteam5.covidcuisine.fileprovider", photoFile)
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-
-
-
     }
 
     private fun getPhotoFile(fileName: String): File{
@@ -157,7 +134,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //submit function
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
-
         val username = intent.getStringExtra("username")
         val postTitle = findViewById<EditText>(R.id.post_title)
         val postContent = findViewById<EditText>(R.id.post_content)
@@ -167,19 +143,17 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val latitude = userLatitude
         val location = arrayListOf(longtitude,latitude)
 
-
-
-        if(title == ""){
+        if (title == "") {
             Toast.makeText(this,"Please enter a title",Toast.LENGTH_LONG).show()
         }
-        else if(categorySelected == ""){
+        else if (categorySelected == "") {
             Toast.makeText(this,"Please select a category",Toast.LENGTH_LONG).show()
         }
         else if( selectedPhotoUri == null){
             Toast.makeText(this,"Please choose a photo",Toast.LENGTH_LONG).show()
         }
         else {
-            uploadImageToFirebaseStorage(title.toString())
+            uploadImageToFirebaseStorage(title)
 
             val data = hashMapOf(
                 "author" to username,
@@ -189,33 +163,26 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 "location" to location
             )
 
-            db.collection("posts").document(title.toString()).set(data)
-
+            db.collection("posts").document(title).set(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Post posted successfully", Toast.LENGTH_LONG).show()
                     post_title.text.clear()
                     post_content.text.clear()
                     Log.d("post", "Post successfully uploaded")
                 }
-
                 .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
-
         }
-
     }
 
     //cancel function
     private fun performCancel(){
         post_title.text.clear()
         post_content.text.clear()
-
     }
 
     //END OF BUTTON ONCLICK CALLS-----------------------------------------------------------------------------------------
 
-
-
-    //DATA SELECTIONS-----------------------------------------------------------------------------------------
+    //DATA SELECTIONS-----------------------------------------------------------------------------------------------------
 
     //upload image function
     private fun uploadImageToFirebaseStorage(title:String) {
@@ -239,16 +206,17 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun saveImagetoDatabase(title:String, imgURL:String){
         val db = Firebase.firestore
 
-        db.collection("posts").document(title.toString()).update("imgURL",imgURL)
+        db.collection("posts").document(title).update("imgURL",imgURL)
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
-            .addOnFailureListener { e -> Log.w("post","Error uploading post")}
+            .addOnFailureListener { Log.w("post","Error uploading post")}
     }
+
     override fun onNothingSelected(parent: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        var items:String = parent?.getItemAtPosition(position) as String
+        val items:String = parent?.getItemAtPosition(position) as String
         categorySelected = items
     }
 
@@ -277,30 +245,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         }
     }
-
-
-    //listener for location:
-    /*
-    private fun CheckPermission(): Boolean{
-        if(
-            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                ){
-            return true
-        }
-        return false
-    }
-*/
-    //get user permission
-    /*
-    private fun RequestPermission(){
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_ID
-        )
-    }
-
-     */
 
     //END OF DATA SELECTIONS-----------------------------------------------------------------------------------------
 }

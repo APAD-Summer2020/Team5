@@ -1,24 +1,14 @@
 package com.apadteam5.covidcuisine
 
 import android.os.Bundle
-
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_categories_main.*
-import kotlinx.android.synthetic.main.activity_results_main.*
-import kotlinx.android.synthetic.main.category_item.*
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 
 class Results : AppCompatActivity() {
 
@@ -43,19 +33,24 @@ class Results : AppCompatActivity() {
             .whereEqualTo("category", catName)
             .get()
             .addOnSuccessListener { documents ->
-                for (post in documents) {
-                    images.add(post.get("imgURL") as kotlin.String)
-                    names.add(post.get("title") as kotlin.String)
-                    descriptions.add(post.get("content") as kotlin.String)
+                if (documents == null || documents.isEmpty) {
+                    Toast.makeText(this, "There are no posts available!", Toast.LENGTH_SHORT).show()
                 }
-                val posts = generatedResultsList(catName, images, names, descriptions)
-                recycler_view_categories.adapter = ResultsAdapter(posts)
+                else {
+                    for (post in documents) {
+                        images.add(post.get("imgURL") as String)
+                        names.add(post.get("title") as String)
+                        descriptions.add(post.get("content") as String)
+                    }
+                    val posts = generatedResultsList(catName, images, names, descriptions)
+                    recycler_view_categories.adapter = ResultsAdapter(posts)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w("catError", "Error getting documents: ", exception)
             }
         return ""
-    } // END FUNCTION getData
+    } //End getData function
 
     private fun generatedResultsList(
         catName: String?, images: ArrayList<String>,
@@ -65,14 +60,13 @@ class Results : AppCompatActivity() {
         val list = ArrayList<ResultsItem>()
 
         for (post in 0 until names.size) {
-            val drawable = R.drawable.ic_android
             val image = images[post]
             val name = names[post]
             val description = descriptions[post]
 
             val item = ResultsItem(image, name, description)
             list += item
-        }
+        } //End for loop
         return list
-    }
-}
+    } //End generatedResultsList function
+} //End Results class
