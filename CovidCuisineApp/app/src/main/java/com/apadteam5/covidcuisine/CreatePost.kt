@@ -146,8 +146,9 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
 
 
-
     }
+
+
 
     private fun getPhotoFile(fileName: String): File{
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
