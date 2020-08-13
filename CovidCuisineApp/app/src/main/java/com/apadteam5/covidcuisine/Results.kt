@@ -2,6 +2,7 @@ package com.apadteam5.covidcuisine
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,13 +33,18 @@ class Results : AppCompatActivity() {
             .whereEqualTo("category", catName)
             .get()
             .addOnSuccessListener { documents ->
-                for (post in documents) {
-                    images.add(post.get("imgURL") as String)
-                    names.add(post.get("title") as String)
-                    descriptions.add(post.get("content") as String)
+                if (documents == null || documents.isEmpty) {
+                    Toast.makeText(this, "There are no posts available!", Toast.LENGTH_SHORT).show()
                 }
-                val posts = generatedResultsList(catName, images, names, descriptions)
-                recycler_view_categories.adapter = ResultsAdapter(posts)
+                else {
+                    for (post in documents) {
+                        images.add(post.get("imgURL") as String)
+                        names.add(post.get("title") as String)
+                        descriptions.add(post.get("content") as String)
+                    }
+                    val posts = generatedResultsList(catName, images, names, descriptions)
+                    recycler_view_categories.adapter = ResultsAdapter(posts)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w("catError", "Error getting documents: ", exception)
