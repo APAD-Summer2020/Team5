@@ -30,23 +30,22 @@ import kotlinx.android.synthetic.main.activity_create_post.*
 import java.io.File
 import java.util.*
 import java.util.jar.Manifest
+import kotlin.math.log
 
 private const val REQUEST_CODE = 42
 private const val PERMISSION_REQUEST = 10
-
 
 class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //initialize variables---------------------------------------------------------------------------------------------
     private var categorySelected:String = ""
     val db = Firebase.firestore
-    private val REQUEST_IMAGE_CAPTURE =1
+    private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_GALLERY_CODE = 0
     val categories = arrayListOf("")
     var selectedPhotoUri: Uri? = null
     private lateinit var photoFile: File
     val fileName = UUID.randomUUID().toString()
-    //private var PERMISSION_ID = 1000
     //END OF INITALIZATION---------------------------------------------------------------------------------------------
 
     //start of the function.
@@ -62,11 +61,9 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         db.collection("categories").get()
             .addOnSuccessListener { result->
                 for (category in result){
-                    //Log.d("tag", "${category.id} => $ ${category.data}") }
                     categories.add(category.id)
                 }
                 Log.d("post", "Post successfully uploaded") }
-
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
 
         spinner = findViewById(R.id.select_categories)
@@ -102,63 +99,50 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         cancelButton.setOnClickListener{
             performCancel()
         }
-
-
-
         //END OF LISTENERS---------------------------------------------------------------------------------------------
-
-
     }
+
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
     private var userLatitude: Double? = null
     private var userLongitude: Double? = null
     private fun initLocatoinproviderClient(){
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
-
     }
 
     private fun getUserLocation(){
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-
-        }else{
+        }
+        else {
         fusedLocationProvider.lastLocation.addOnSuccessListener { location: Location? ->
             userLatitude = location?.latitude
-            //println(userLatitude)
-            //println(location?.latitude)
             userLongitude = location?.longitude
-            //println(location?.longitude)
-            //print(userLongitude)
             Log.d("Latitude", "$userLatitude")
             Log.d("Longitude", "$userLongitude")
             }
         }
     }
-    //BUTTONS ONCLICK CALLS-----------------------------------------------------------------------------------------
+
+    //BUTTONS ONCLICK CALLS----------------------------------------------------------------------------------------------
 
     //take a photo with camera app
     private fun takePicture(){
-
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         photoFile = getPhotoFile(fileName)
         val fileProvider = FileProvider.getUriForFile(this, "com.apadteam5.covidcuisine.fileprovider", photoFile)
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-
-
     }
-
-
 
     private fun getPhotoFile(fileName: String): File{
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val suffix = fileName.takeLast(4)
         return File.createTempFile(fileName,".jpg",storageDirectory)
     }
 
     //submit function
     private fun performSubmit(categorySelected:String) {
         //initializing firebase
-
         val username = intent.getStringExtra("username")
         val postTitle = findViewById<EditText>(R.id.post_title)
         val postContent = findViewById<EditText>(R.id.post_content)
@@ -168,12 +152,10 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val latitude = userLatitude
         val location = arrayListOf(longtitude,latitude)
 
-
-
-        if(title == ""){
+        if (title == "") {
             Toast.makeText(this,"Please enter a title",Toast.LENGTH_LONG).show()
         }
-        else if(categorySelected == ""){
+        else if (categorySelected == "") {
             Toast.makeText(this,"Please select a category",Toast.LENGTH_LONG).show()
         }
         else {
@@ -188,32 +170,25 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
 
             db.collection("posts").document(title.toString()).set(data)
-
                 .addOnSuccessListener {
                     Toast.makeText(this, "Post posted successfully", Toast.LENGTH_LONG).show()
                     post_title.text.clear()
                     post_content.text.clear()
                     Log.d("post", "Post successfully uploaded")
                 }
-
                 .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
-
         }
-
     }
 
     //cancel function
     private fun performCancel(){
         post_title.text.clear()
         post_content.text.clear()
-
     }
 
     //END OF BUTTON ONCLICK CALLS-----------------------------------------------------------------------------------------
 
-
-
-    //DATA SELECTIONS-----------------------------------------------------------------------------------------
+    //DATA SELECTIONS-----------------------------------------------------------------------------------------------------
 
     //upload image function
     private fun uploadImageToFirebaseStorage(title:String) {
@@ -241,6 +216,7 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             .addOnSuccessListener { Log.d("post", "Post successfully uploaded") }
             .addOnFailureListener { e -> Log.w("post","Error uploading post")}
     }
+
     override fun onNothingSelected(parent: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
     }
@@ -275,30 +251,6 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         }
     }
-
-
-    //listener for location:
-    /*
-    private fun CheckPermission(): Boolean{
-        if(
-            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                ){
-            return true
-        }
-        return false
-    }
-*/
-    //get user permission
-    /*
-    private fun RequestPermission(){
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_ID
-        )
-    }
-
-     */
-
+    
     //END OF DATA SELECTIONS-----------------------------------------------------------------------------------------
 }
