@@ -27,15 +27,12 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
         spinner?.adapter = arrayAdapter
         spinner?.onItemSelectedListener = this
 
-
         //on signup
         val signupButton = findViewById<Button>(R.id.signup)
         signupButton.setOnClickListener {
             performSignup(usertypeSelected)
         }
-
-    }
-
+    } //End onCreate function
 
     private fun performSignup(usertypeSelected:String) {
         val username = findViewById<EditText>(R.id.user_name).text.toString()
@@ -43,6 +40,7 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
         val password = findViewById<EditText>(R.id.pass_word).text.toString()
         val subscriptions = arrayListOf("")
 
+        //Check if users entered valid information
         if (username == "") {
             Toast.makeText(this, "Please enter a username", Toast.LENGTH_LONG).show()
         } else if (email == "") {
@@ -50,6 +48,7 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
         } else if (password == "") {
             Toast.makeText(this, "Please enter a password", Toast.LENGTH_LONG).show()
         } else {
+            //Add new user to the database
             db.collection("users").document(username).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
@@ -64,7 +63,6 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
                         )
 
                         db.collection("users").document(username).set(data)
-
                             .addOnSuccessListener {
                                 Toast.makeText(this, "user created successfully", Toast.LENGTH_LONG)
                                     .show()
@@ -73,17 +71,17 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
                                 startActivity(intent)
                             }
                             .addOnFailureListener { e -> Log.w("post", "Error uploading post") }
-                    }
-                }
-        }
-    }
+                    } //End else statement
+                } //End addOnSuccessListener
+        } //End else statement
+    } //End performSignup function
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
         Toast.makeText(applicationContext,"nothing selected",Toast.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        var items:String = parent?.getItemAtPosition(position) as String
+        val items:String = parent?.getItemAtPosition(position) as String
         usertypeSelected = items
     }
 }
