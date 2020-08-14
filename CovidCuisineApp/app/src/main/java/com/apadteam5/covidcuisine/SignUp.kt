@@ -66,7 +66,7 @@ class SignUp : AppCompatActivity(), AdapterView.OnItemSelectedListener{
                             .addOnSuccessListener {
                                 Toast.makeText(this, "user created successfully", Toast.LENGTH_LONG)
                                     .show()
-                                val intent = Intent(this, CreatePost::class.java)
+                                val intent = Intent(this, Login::class.java)
                                 intent.putExtra("username", username)
                                 startActivity(intent)
                             }
