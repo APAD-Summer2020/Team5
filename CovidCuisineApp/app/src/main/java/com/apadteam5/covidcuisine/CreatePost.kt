@@ -149,6 +149,9 @@ class CreatePost : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         else if (categorySelected == "") {
             Toast.makeText(this,"Please select a category",Toast.LENGTH_LONG).show()
         }
+        else if (content == "") {
+            Toast.makeText(this,"Please enter content",Toast.LENGTH_LONG).show()
+        }
         else if( selectedPhotoUri == null){
             Toast.makeText(this,"Please choose a photo",Toast.LENGTH_LONG).show()
         }
